@@ -31,7 +31,7 @@ export function analyzeProgress({ profile, weightLogs, workoutLogs, foodLogs, nu
 
   // 2. Workout consistency
   if (profile.workoutDays) {
-    const consistencyRecs = analyzeWorkoutConsistency(recentWorkouts, profile.workoutDays);
+    const consistencyRecs = analyzeWorkoutConsistency(recentWorkouts, profile.workoutDays, (workoutLogs || []).length);
     recommendations.push(...consistencyRecs);
   }
 
@@ -175,8 +175,11 @@ function analyzeWeightTrend(sortedWeights, goal) {
   return recs;
 }
 
-function analyzeWorkoutConsistency(recentWorkouts, targetDays) {
+function analyzeWorkoutConsistency(recentWorkouts, targetDays, totalWorkoutLogs) {
   const recs = [];
+  // Don't warn new users who haven't logged any workouts yet
+  if (totalWorkoutLogs === 0) return recs;
+
   // Count unique workout days in last 14 days
   const uniqueDays = new Set(recentWorkouts.map((l) => l.date)).size;
   const expectedIn14Days = targetDays * 2; // 2 weeks worth

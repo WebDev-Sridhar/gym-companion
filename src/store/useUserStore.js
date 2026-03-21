@@ -251,9 +251,9 @@ const useUserStore = create(
           level: newLevel,
         });
 
-        // Sync to Supabase
+        // Sync to Supabase (capture returned ID so unlog/delete works)
         syncToSupabase(async (userId) => {
-          await Promise.all([
+          const [saveResult] = await Promise.all([
             saveFoodLog(userId, newLog),
             saveGamification(userId, {
               xp: newXP,
@@ -265,6 +265,14 @@ const useUserStore = create(
               lastLoginDate: state.lastLoginDate,
             }),
           ]);
+          // Update local log with Supabase-generated ID so delete works
+          if (saveResult?.data?.id) {
+            set((s) => ({
+              foodLogs: s.foodLogs.map((l) =>
+                l.id === newLog.id ? { ...l, id: saveResult.data.id } : l
+              ),
+            }));
+          }
         });
       },
 

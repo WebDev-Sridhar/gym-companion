@@ -71,8 +71,26 @@ const testimonials = [
 export default function Landing() {
   return (
     <div className="min-h-screen bg-black overflow-hidden">
+      {/* Navbar */}
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/[0.06] bg-black/80 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+          <div className="flex items-center justify-between h-14 sm:h-16">
+            <Link to="/" className="flex items-center gap-2.5">
+              <img src="/logo.jpeg" alt="GymThozhan" className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg object-cover" />
+              <span className="text-base font-bold tracking-tight text-text-primary">GymThozhan</span>
+            </Link>
+            <Link
+              to="/auth"
+              className="btn-primary px-5 py-2 rounded-full text-sm font-bold inline-flex items-center gap-1.5"
+            >
+              Get Started <ArrowRight size={14} />
+            </Link>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero */}
-      <section className="relative min-h-screen flex items-center justify-center px-5 sm:px-8">
+      <section className="relative min-h-screen flex items-center justify-center px-5 sm:px-8 pt-16">
         {/* Subtle background glow */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-1/3 left-1/3 w-[500px] h-[500px] bg-accent/[0.03] rounded-full blur-[120px]" />
@@ -304,8 +322,8 @@ export default function Landing() {
       <footer className="py-8 px-5 sm:px-8 border-t border-white/[0.04]">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <Dumbbell size={18} className="text-text-muted" />
-            <span className="font-bold text-text-secondary text-sm">GymBuddy</span>
+            <img src="/logo.jpeg" alt="GymThozhan" className="w-5 h-5 rounded object-cover" />
+            <span className="font-bold text-text-secondary text-sm">GymThozhan</span>
           </div>
           <p className="text-text-muted text-xs">
             Built for beginners everywhere. Free forever.
