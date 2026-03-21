@@ -19,6 +19,7 @@ import {
   saveProgressLog,
   saveFoodLog,
   deleteFoodLog,
+  deleteAllUserData,
 } from '../lib/supabaseService';
 
 // Lazy reference to auth store to avoid circular dependency at import time
@@ -439,6 +440,11 @@ const useUserStore = create(
           personalRecords: 0,
           weightLogsCount: 0,
           earlyWorkouts: 0,
+        });
+
+        // Delete all user data from Supabase
+        syncToSupabase(async (userId) => {
+          await deleteAllUserData(userId);
         });
       },
     }),
