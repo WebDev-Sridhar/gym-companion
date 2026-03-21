@@ -442,6 +442,9 @@ const useUserStore = create(
           earlyWorkouts: 0,
         });
 
+        // Clear persisted localStorage so refresh doesn't reload stale data
+        localStorage.removeItem('gym-companion-storage');
+
         // Delete all user data from Supabase
         syncToSupabase(async (userId) => {
           await deleteAllUserData(userId);
