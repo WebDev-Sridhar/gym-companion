@@ -96,6 +96,11 @@ export const coachMessages = {
     'The journey begins — give it everything!',
     'All set! Now make every rep count!',
   ],
+  resetData: [
+    'Starting fresh? Respect. Let\'s rebuild stronger!',
+    'Clean slate — time to come back even better!',
+    'A new beginning. Make this one count!',
+  ],
 };
 
 const counters = {};

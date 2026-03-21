@@ -50,7 +50,7 @@ export default function Dashboard() {
       const lastWelcome = sessionStorage.getItem('coachWelcomeDate');
       if (lastWelcome !== today) {
         sessionStorage.setItem('coachWelcomeDate', today);
-        setTimeout(() => showCoach('dailyWelcome', 'right', 5000), 800);
+        setTimeout(() => showCoach('dailyWelcome'), 800);
       }
     }
   }, [isOnboarded]);

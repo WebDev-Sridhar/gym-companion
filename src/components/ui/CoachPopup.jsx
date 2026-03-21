@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getNextMessage } from '../../data/coachMessages';
 
@@ -16,6 +16,7 @@ const coachImages = {
   onboarding: '/coachthumbsup.png',
   planReady: '/coachdoublethumbsup.png',
   letsGo: '/coachdoublethumbsup.png',
+  resetData: '/coach.png',
 };
 
 const coachSides = {
@@ -29,36 +30,50 @@ const coachSides = {
   streak: 'right',
   coachTip: 'left',
   dailyWelcome: 'right',
-  onboarding: 'right',
+  onboarding: 'left',
   planReady: 'right',
   letsGo: 'right',
+  resetData: 'left',
 };
 
 let coachListeners = [];
 let coachId = 0;
 
-export function showCoach(type, side, duration = 4000) {
+export function showCoach(type, side) {
   const id = ++coachId;
   const message = getNextMessage(type);
   if (!message) return;
   const image = coachImages[type] || '/coach.png';
   const resolvedSide = side || coachSides[type] || 'right';
-  const popup = { id, message, image, side: resolvedSide, duration };
+  const popup = { id, message, image, side: resolvedSide };
   coachListeners.forEach((fn) => fn(popup));
   return id;
 }
 
 export function CoachPopupContainer() {
   const [popup, setPopup] = useState(null);
+  const queueRef = useRef(null);
 
   const showPopup = useCallback((data) => {
-    setPopup(data);
-    if (data.duration > 0) {
-      setTimeout(() => {
-        setPopup((prev) => (prev?.id === data.id ? null : prev));
-      }, data.duration);
-    }
+    setPopup((prev) => {
+      if (prev) {
+        // Clear first, then show new one after exit animation
+        queueRef.current = data;
+        return null;
+      }
+      return data;
+    });
   }, []);
+
+  // When popup clears and there's a queued one, show it after a short delay
+  useEffect(() => {
+    if (!popup && queueRef.current) {
+      const queued = queueRef.current;
+      queueRef.current = null;
+      const timer = setTimeout(() => setPopup(queued), 350);
+      return () => clearTimeout(timer);
+    }
+  }, [popup]);
 
   useEffect(() => {
     coachListeners.push(showPopup);

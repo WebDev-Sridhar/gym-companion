@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Edit3, Trophy, Flame, Zap, Dumbbell, Scale, RotateCcw, Save, X, Award, LogOut, Mail, Sparkles } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
+import { showCoach } from '../components/ui/CoachPopup';
 import useUserStore from '../store/useUserStore';
 import useAuthStore from '../store/useAuthStore';
 import { getLevelTitle, getLevelProgress, BADGES } from '../utils/gamification';
@@ -24,7 +25,7 @@ export default function Profile() {
 
   const startEdit = () => { setEditData({ name: profile.name, age: profile.age, height: profile.height, weight: profile.weight }); setEditing(true); };
   const saveEdit = () => { updateProfile(editData); setEditing(false); };
-  const handleReset = () => { if (confirm('This will delete ALL your data, you cannot undo this action. Are you sure?')) { resetAll(); navigate('/dashboard'); } };
+  const handleReset = () => { if (confirm('This will delete ALL your data, you cannot undo this action. Are you sure?')) { resetAll(); showCoach('resetData'); navigate('/dashboard'); } };
   const handleSignOut = async () => { await signOut(); navigate('/'); };
 
   const goalLabel = { weightLoss: 'Weight Loss', muscleGain: 'Muscle Gain', maintenance: 'Maintenance' };
