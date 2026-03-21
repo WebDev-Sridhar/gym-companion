@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Dumbbell, Flame, Beef, Wheat, Droplets, Calendar, Target, TrendingDown, TrendingUp, Activity } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import useUserStore from '../store/useUserStore';
+import { getNextMessage } from '../data/coachMessages';
 
 const goalConfig = {
   weightLoss: {
@@ -52,20 +53,25 @@ export default function PlanSummary() {
   const bmi = (profile.weight / ((profile.height / 100) ** 2)).toFixed(1);
   const goal = goalConfig[profile.goal] || goalConfig.maintenance;
   const GoalIcon = goal.icon;
+  const planReadyMessage = getNextMessage('planReady');
 
   return (
     <PageWrapper>
       {/* Greeting */}
       <motion.div {...anim(0)} className="text-center mb-10">
-        <div className="w-16 h-16 rounded-full bg-white mx-auto mb-4 flex items-center justify-center text-2xl font-black text-black">
-          {profile.name?.[0]?.toUpperCase() || '?'}
-        </div>
+        <img src="/coachdoublethumbsup.png" alt="Coach" className="w-32 h-32 object-contain mx-auto mb-4" />
         <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-text-primary">
           Here's your plan, <span className="gradient-text">{profile.name}</span>
         </h1>
         <p className="text-text-muted text-sm mt-2 max-w-md mx-auto">
           We've analyzed your data and built a personalized program just for you. Here's what you need to know.
         </p>
+      </motion.div>
+
+      {/* Coach Message */}
+      <motion.div {...anim(0.05)} className="flex items-center gap-3 bg-accent/5 border border-accent/10 rounded-xl p-4 mb-5">
+        <img src="/coachthumbsup.png" alt="Coach" className="w-14 h-14 object-contain shrink-0" />
+        <p className="text-sm text-text-muted font-medium leading-relaxed">{planReadyMessage}</p>
       </motion.div>
 
       {/* Your Numbers */}

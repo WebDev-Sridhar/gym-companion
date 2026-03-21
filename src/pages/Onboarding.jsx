@@ -11,8 +11,20 @@ import {
 } from 'lucide-react';
 import useUserStore from '../store/useUserStore';
 import { calculateBMR, calculateTDEE, getTargetCalories } from '../utils/tdee';
+import { coachMessages } from '../data/coachMessages';
 
 const TOTAL_STEPS = 8;
+
+const stepCoachImages = {
+  1: '/coach.png',
+  2: '/coachthumbsup.png',
+  3: '/coach.png',
+  4: '/coach.png',
+  5: '/coachthumbsup.png',
+  6: '/coachdoublethumbsup.png',
+  7: '/coachthumbsup.png',
+  8: '/coacheating.png',
+};
 
 const activityLevels = [
   { key: 'sedentary', label: 'Sedentary', desc: 'Little or no exercise' },
@@ -370,6 +382,12 @@ export default function Onboarding() {
               )}
             </motion.div>
           </AnimatePresence>
+
+          {/* Coach Character */}
+          <div className="flex items-center gap-3 mt-4 bg-white/[0.03] rounded-xl p-3 border border-white/[0.06]">
+            <img src={stepCoachImages[step]} alt="Coach" className="w-16 h-16 object-contain shrink-0" />
+            <p className="text-xs text-text-muted leading-relaxed font-medium">{coachMessages.onboarding[step - 1]}</p>
+          </div>
 
           {/* Navigation */}
           <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/[0.04]">

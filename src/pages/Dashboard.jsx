@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { UpgradeBanner } from '../components/ui/ProLock';
+import { showCoach } from '../components/ui/CoachPopup';
 import useUserStore from '../store/useUserStore';
 import { getTodaysWorkout } from '../utils/planGenerator';
 import { getDailyQuote } from '../data/quotes';
@@ -43,7 +44,15 @@ export default function Dashboard() {
   const isPro = plan === 'pro';
 
   useEffect(() => {
-    if (isOnboarded) checkDailyLogin();
+    if (isOnboarded) {
+      checkDailyLogin();
+      const today = new Date().toDateString();
+      const lastWelcome = sessionStorage.getItem('coachWelcomeDate');
+      if (lastWelcome !== today) {
+        sessionStorage.setItem('coachWelcomeDate', today);
+        setTimeout(() => showCoach('dailyWelcome', 'right', 5000), 800);
+      }
+    }
   }, [isOnboarded]);
 
   if (!isOnboarded) {

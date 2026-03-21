@@ -3,21 +3,25 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getNextMessage } from '../../data/coachMessages';
 
 const coachImages = {
+  workoutStart: '/coachthumbsup.png',
   workoutComplete: '/coachthumbsup.png',
   mealLogged: '/coacheating.png',
   weightLogged: '/coachthumbsup.png',
   milestone: '/coachdoublethumbsup.png',
   streak: '/coachdoublethumbsup.png',
   coachTip: '/coach.png',
+  dailyWelcome: '/coachdoublethumbsup.png',
 };
 
 const coachSides = {
+  workoutStart: 'right',
   workoutComplete: 'right',
   mealLogged: 'left',
   weightLogged: 'right',
   milestone: 'right',
   streak: 'right',
   coachTip: 'left',
+  dailyWelcome: 'right',
 };
 
 let coachListeners = [];
@@ -71,7 +75,7 @@ export function CoachPopupContainer() {
         >
           {/* Chat bubble */}
           <div
-            className={`relative max-w-[200px] bg-white/[0.08] backdrop-blur-md border border-white/[0.12] rounded-xl px-3.5 py-2.5 shadow-lg ${
+            className={`relative max-w-[220px] bg-white/[0.08] backdrop-blur-md border border-white/[0.12] rounded-xl px-4 py-3 shadow-lg ${
               isRight ? 'rounded-br-sm' : 'rounded-bl-sm'
             }`}
           >
@@ -82,7 +86,7 @@ export function CoachPopupContainer() {
           <img
             src={popup.image}
             alt="Coach"
-            className="w-20 h-20 object-contain shrink-0 drop-shadow-lg"
+            className="w-52 h-52 object-contain shrink-0 drop-shadow-lg"
           />
         </motion.div>
       )}

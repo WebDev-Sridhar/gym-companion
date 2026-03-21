@@ -38,6 +38,14 @@ export const coachMessages = {
     "Day after day — that's dedication!",
     'The streak continues! Unstoppable!',
   ],
+  workoutStart: [
+    'Time to battle, soldier! Give it everything!',
+    'The warrior has entered the arena! Let\'s go!',
+    'No mercy, fighter! Push through every rep!',
+    'Lock in, soldier! This is where champions are made!',
+    'The iron doesn\'t lift itself, warrior! Attack it!',
+    'Show no weakness, fighter! Dominate every set!',
+  ],
   coachTip: [
     'Remember: progressive overload is key!',
     'Sleep 7-9 hours — growth happens at rest',
@@ -45,6 +53,31 @@ export const coachMessages = {
     'Rest days are growth days!',
     'Form over ego — always!',
     'Warm up before every session',
+  ],
+  dailyWelcome: [
+    'Rise and grind, soldier! Time to conquer the day!',
+    'Welcome back, warrior! The iron is waiting for you!',
+    'The fighter has returned! Let\'s make today count!',
+    'Reporting for duty, soldier? Good. Let\'s dominate!',
+    'A true warrior never misses a day. Let\'s go!',
+    'Back for more, fighter? That\'s the champion mindset!',
+    'The battlefield awaits, soldier! No retreat, no surrender!',
+    'Warriors don\'t take days off. Let\'s get it!',
+  ],
+  onboarding: [
+    'Let\'s build your warrior profile, soldier!',
+    'Good to meet you, fighter! Let\'s set things up!',
+    'Every champion started here. Let\'s go, warrior!',
+    'Numbers are power, soldier! Let\'s get yours right!',
+    'Show me what you\'re made of, fighter!',
+    'A warrior always has a mission. Pick yours!',
+    'Time to plan your battle schedule, soldier!',
+    'Almost there, warrior! Final details!',
+  ],
+  planReady: [
+    'Your battle plan is ready, soldier! Time to execute!',
+    'The warrior\'s blueprint is set. No excuses now!',
+    'Everything\'s locked in, fighter. Now GO CONQUER!',
   ],
 };
 

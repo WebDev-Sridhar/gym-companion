@@ -139,7 +139,7 @@ export default function Workout() {
           <div className="flex gap-2 mb-4">
             {!isLogging ? (
               <button
-                onClick={() => setIsLogging(true)}
+                onClick={() => { setIsLogging(true); showCoach('workoutStart'); }}
                 className="btn-primary px-5 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2"
               >
                 <Play size={16} /> Start Workout
