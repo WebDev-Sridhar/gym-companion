@@ -84,20 +84,25 @@ const useUserStore = create(
       earlyWorkouts: 0,
 
       // Actions
-      setProfile: (profile) => {
+      // Prepare plan data without marking onboarding complete (used by onboarding → plan summary flow)
+      preparePlan: (profile) => {
         const nutritionTargets = calculateNutritionTargets(profile);
         const workoutPlan = generateWorkoutPlan(profile);
         const dietPlan = generateDietPlan(profile);
 
         set({
           profile,
-          isOnboarded: true,
           nutritionTargets,
           workoutPlan,
           dietPlan,
         });
+      },
 
-        // Sync to Supabase
+      // Mark onboarding complete and sync everything to Supabase
+      completeOnboarding: () => {
+        set({ isOnboarded: true });
+
+        const { profile, workoutPlan, dietPlan } = get();
         syncToSupabase(async (userId) => {
           await Promise.all([
             saveProfile(userId, profile),
@@ -114,6 +119,11 @@ const useUserStore = create(
             }),
           ]);
         });
+      },
+
+      setProfile: (profile) => {
+        get().preparePlan(profile);
+        get().completeOnboarding();
       },
 
       updateProfile: (updates) => {

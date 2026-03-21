@@ -31,7 +31,7 @@ const goals = [
 
 export default function Onboarding() {
   const navigate = useNavigate();
-  const setProfile = useUserStore((s) => s.setProfile);
+  const preparePlan = useUserStore((s) => s.preparePlan);
 
   const [saving, setSaving] = useState(false);
   const [step, setStep] = useState(1);
@@ -71,12 +71,9 @@ export default function Onboarding() {
     } else {
       setSaving(true);
       await new Promise((r) => setTimeout(r, 300));
+      preparePlan(formData);
       navigate('/plan-summary', { replace: true });
-      // Delay setProfile so navigation completes before isOnboarded triggers route guard
-      setTimeout(() => {
-        setProfile(formData);
-        setSaving(false);
-      }, 100);
+      setSaving(false);
     }
   };
 

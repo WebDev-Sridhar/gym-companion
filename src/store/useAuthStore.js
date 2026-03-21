@@ -39,11 +39,10 @@ const useAuthStore = create((set, get) => ({
           // Only hydrate if not already onboarded (avoid re-loading on tab focus/return)
           const alreadyLoaded = useUserStore.getState().isOnboarded;
           if (!alreadyLoaded) {
-            set({ loading: true });
             try {
               await get().hydrateProfile(session.user.id);
-            } finally {
-              set({ loading: false });
+            } catch (e) {
+              console.warn('Auth change hydration failed:', e.message);
             }
           }
         }

@@ -44,7 +44,7 @@ const anim = (delay = 0) => ({
 
 export default function PlanSummary() {
   const navigate = useNavigate();
-  const { profile, nutritionTargets, workoutPlan, dietPlan } = useUserStore();
+  const { profile, nutritionTargets, workoutPlan, dietPlan, completeOnboarding } = useUserStore();
 
   if (!profile || !nutritionTargets || !workoutPlan) {
     navigate('/dashboard', { replace: true });
@@ -194,7 +194,7 @@ export default function PlanSummary() {
       <motion.div {...anim(0.5)} className="text-center">
         <p className="text-text-muted text-xs mb-4">Your plan is ready. Let's make it happen.</p>
         <button
-          onClick={() => { showCoach('letsGo'); navigate('/dashboard', { replace: true }); }}
+          onClick={() => { completeOnboarding(); showCoach('letsGo'); navigate('/dashboard', { replace: true }); }}
           className="btn-primary w-full py-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2"
         >
           Let's Go <ArrowRight size={16} />
