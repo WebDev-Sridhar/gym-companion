@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Edit3, Trophy, Flame, Zap, Dumbbell, Scale, RotateCcw, Save, X, Award, LogOut, Mail } from 'lucide-react';
+import { User, Edit3, Trophy, Flame, Zap, Dumbbell, Scale, RotateCcw, Save, X, Award, LogOut, Mail, Sparkles } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import useUserStore from '../store/useUserStore';
 import useAuthStore from '../store/useAuthStore';
@@ -9,7 +9,8 @@ import { getLevelTitle, getLevelProgress, BADGES } from '../utils/gamification';
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { profile, xp, level, currentStreak, longestStreak, totalWorkouts, earnedBadges, weightLogs, resetAll, updateProfile } = useUserStore();
+  const { profile, xp, level, currentStreak, longestStreak, totalWorkouts, earnedBadges, weightLogs, resetAll, updateProfile, plan } = useUserStore();
+  const isPro = plan === 'pro';
   const { user, signOut } = useAuthStore();
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState({});
@@ -132,6 +133,25 @@ export default function Profile() {
           </div>
         )}
       </motion.div>
+
+      {/* Subscription */}
+      {!isPro && (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="border border-accent/15 rounded-xl p-5 mb-6 bg-gradient-to-br from-accent/[0.04] to-transparent">
+          <h3 className="font-bold mb-3 flex items-center gap-2 text-sm text-text-secondary">
+            <Sparkles size={16} className="text-accent" /> Subscription
+          </h3>
+          <div className="bg-white/[0.03] rounded-lg p-3 mb-3">
+            <div className="text-[10px] text-text-muted uppercase tracking-wider">Current Plan</div>
+            <div className="text-sm font-bold text-text-primary mt-0.5">Free Plan</div>
+          </div>
+          <p className="text-xs text-text-muted leading-relaxed mb-3">
+            You've completed your basic plan. Unlock advanced workouts, diet plans & progress tracking.
+          </p>
+          <button className="w-full py-2.5 rounded-lg text-sm font-medium bg-accent/10 text-accent border border-accent/20 hover:bg-accent/15 transition-all flex items-center justify-center gap-2">
+            <Sparkles size={14} /> Upgrade to Pro
+          </button>
+        </motion.div>
+      )}
 
       {/* Account */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="border border-white/[0.06] rounded-xl p-5">

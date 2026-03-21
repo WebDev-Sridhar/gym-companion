@@ -12,6 +12,8 @@ import {
   Zap,
   Star,
   ArrowRight,
+  Check,
+  Lock,
 } from 'lucide-react';
 
 const fadeInUp = {
@@ -116,7 +118,7 @@ export default function Landing() {
 
             <p className="text-base sm:text-lg text-text-muted max-w-xl mx-auto mb-12 leading-relaxed">
               Zero gym knowledge? No problem. Personalized workouts, Indian diet plans,
-              progress tracking — all free, forever.
+              progress tracking — start free, upgrade anytime.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -146,7 +148,7 @@ export default function Landing() {
             {[
               { value: '30+', label: 'Exercises' },
               { value: '7', label: 'Diet Tiers' },
-              { value: '100%', label: 'Free' },
+              { value: 'Free', label: 'To Start' },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
                 <div className="text-2xl sm:text-3xl font-black text-text-primary">{stat.value}</div>
@@ -214,6 +216,44 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Why GymThozhan */}
+      <section className="py-24 sm:py-32 px-5 sm:px-8 relative">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <motion.div variants={fadeInUp} custom={0} className="text-center mb-12">
+              <h2 className="text-3xl sm:text-5xl md:text-6xl font-black mb-4 tracking-tight">
+                Can't afford a <span className="gradient-text">personal trainer?</span>
+              </h2>
+            </motion.div>
+
+            <motion.div variants={fadeInUp} custom={1} className="border border-white/[0.06] rounded-2xl p-8 sm:p-12 bg-white/[0.02] text-center">
+              <p className="text-lg sm:text-xl text-text-secondary leading-relaxed mb-6">
+                Personal trainers charge <span className="text-text-primary font-bold">₹3,000–₹10,000/month</span>. Online fitness courses cost <span className="text-text-primary font-bold">₹5,000–₹15,000</span>. Most beginners can't afford either.
+              </p>
+              <p className="text-lg sm:text-xl text-text-secondary leading-relaxed mb-8">
+                <span className="text-accent font-black">GymThozhan is your solution.</span> The same personalized workout plans, Indian diet plans, and progress tracking — at a fraction of the cost. Or completely free.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4 text-sm">
+                {[
+                  { label: 'Personal Trainer', price: '₹5,000+/mo', crossed: true },
+                  { label: 'Online Course', price: '₹8,000+', crossed: true },
+                  { label: 'GymThozhan Pro', price: '₹83/mo', highlight: true },
+                ].map((item) => (
+                  <div key={item.label} className={`px-5 py-3 rounded-xl border ${item.highlight ? 'border-accent/30 bg-accent/5' : 'border-white/[0.06]'}`}>
+                    <span className="text-text-muted text-xs block">{item.label}</span>
+                    <span className={`font-black text-base ${item.crossed ? 'line-through text-text-muted' : 'text-accent'}`}>{item.price}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* How It Works */}
       <section className="py-24 sm:py-32 px-5 sm:px-8 relative">
         <div className="max-w-5xl mx-auto">
@@ -247,6 +287,139 @@ export default function Landing() {
                 <p className="text-text-muted leading-relaxed max-w-lg">{step.desc}</p>
               </motion.div>
             ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section id="pricing" className="py-24 sm:py-32 px-5 sm:px-8 relative">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <motion.h2 variants={fadeInUp} custom={0} className="text-3xl sm:text-5xl md:text-6xl font-black mb-4 tracking-tight">
+              Simple pricing
+            </motion.h2>
+            <motion.p variants={fadeInUp} custom={1} className="text-text-muted text-lg max-w-xl mx-auto">
+              Start free. Upgrade when you're ready for more.
+            </motion.p>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto"
+          >
+            {/* Free Plan */}
+            <motion.div variants={fadeInUp} custom={0} className="border border-white/[0.06] rounded-2xl p-7 sm:p-8 bg-white/[0.02]">
+              <h3 className="text-lg font-bold text-text-primary mb-1">Free</h3>
+              <p className="text-text-muted text-xs mb-6">Everything to get started</p>
+              <div className="mb-6">
+                <span className="text-4xl font-black text-text-primary">₹0</span>
+                <span className="text-text-muted text-sm ml-1">/ forever</span>
+              </div>
+              <ul className="space-y-2.5 mb-8">
+                {[
+                  'Personalized workout plan',
+                  'Indian diet plan (5 meals/day)',
+                  'Workout & meal logging',
+                  'Weight logging',
+                  'XP, levels & streaks',
+                  'Daily dashboard',
+                  '3 Knowledge Hub guides',
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm text-text-secondary">
+                    <Check size={14} className="text-accent flex-shrink-0 mt-0.5" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/auth"
+                className="w-full py-3 rounded-full text-sm font-bold border border-white/10 hover:border-white/25 text-text-primary hover:text-white transition-all flex items-center justify-center gap-2"
+              >
+                Get Started Free
+              </Link>
+            </motion.div>
+
+            {/* Pro Monthly */}
+            <motion.div variants={fadeInUp} custom={1} className="border border-white/[0.08] rounded-2xl p-7 sm:p-8 bg-white/[0.02] relative overflow-hidden">
+              <div className="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-white/[0.06] text-text-muted text-[10px] font-bold uppercase tracking-wider">
+                Coming Soon
+              </div>
+              <h3 className="text-lg font-bold text-text-primary mb-1">Pro Monthly</h3>
+              <p className="text-text-muted text-xs mb-6">Unlock your full potential</p>
+              <div className="mb-2">
+                <span className="text-4xl font-black text-text-primary">₹149</span>
+                <span className="text-text-muted text-sm ml-1">/ month</span>
+              </div>
+              <p className="text-xs text-text-muted font-medium mb-6">Build muscle at the cost of a haircut</p>
+              <ul className="space-y-2.5 mb-4">
+                <li className="text-[11px] text-text-muted font-medium uppercase tracking-wider mb-1">Everything in Free, plus:</li>
+                {[
+                  'Video tutorials & form guides',
+                  'Alternative exercises',
+                  'Meal swaps & supplements',
+                  'Smart Coach AI insights',
+                  'Progress charts & analytics',
+                  'Full workout history',
+                  'Detailed macro tracking',
+                  'All guides & badges',
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm text-text-secondary">
+                    <Sparkles size={12} className="text-text-muted flex-shrink-0 mt-0.5" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <button
+                disabled
+                className="w-full py-3 rounded-full text-sm font-bold border border-white/[0.08] text-text-muted cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                <Lock size={14} /> Coming Soon
+              </button>
+            </motion.div>
+
+            {/* Pro Yearly */}
+            <motion.div variants={fadeInUp} custom={2} className="border border-accent/30 rounded-2xl p-7 sm:p-8 bg-accent/[0.03] relative overflow-hidden">
+              <div className="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-[10px] font-bold uppercase tracking-wider">
+                Best Value
+              </div>
+              <h3 className="text-lg font-bold text-text-primary mb-1">Pro Yearly</h3>
+              <p className="text-text-muted text-xs mb-6">Maximum savings</p>
+              <div className="mb-1">
+                <span className="text-4xl font-black text-accent">₹999</span>
+                <span className="text-text-muted text-sm ml-1">/ year</span>
+              </div>
+              <p className="text-xs text-text-muted mb-1">
+                Just <span className="text-accent font-bold">₹83/month</span> — save 44%
+              </p>
+              <p className="text-xs text-accent font-medium mb-6">Transform your body at the cost of a movie ticket</p>
+              <ul className="space-y-2.5 mb-4">
+                <li className="text-[11px] text-text-muted font-medium uppercase tracking-wider mb-1">Everything in Pro, plus:</li>
+                {[
+                  'All Pro features included',
+                  '5 months free vs monthly',
+                  'Lock in the lowest price',
+                  'Priority support',
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm text-text-secondary">
+                    <Sparkles size={12} className="text-accent flex-shrink-0 mt-0.5" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <button
+                disabled
+                className="w-full py-3 rounded-full text-sm font-bold bg-accent/10 border border-accent/20 text-accent/50 cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                <Lock size={14} /> Coming Soon
+              </button>
+            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -326,7 +499,7 @@ export default function Landing() {
             <span className="font-bold text-text-secondary text-sm">GymThozhan</span>
           </div>
           <p className="text-text-muted text-xs">
-            Built for beginners everywhere. Free forever.
+            Built for beginners everywhere.
           </p>
         </div>
       </footer>

@@ -14,10 +14,12 @@ import {
   Info,
 } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
+import ProLock from '../components/ui/ProLock';
 import useUserStore from '../store/useUserStore';
 
 export default function Workout() {
-  const { workoutPlan, logWorkout } = useUserStore();
+  const { workoutPlan, logWorkout, plan } = useUserStore();
+  const isPro = plan === 'pro';
   const [activeDay, setActiveDay] = useState(0);
   const [isLogging, setIsLogging] = useState(false);
   const [expandedExercise, setExpandedExercise] = useState(null);
@@ -89,7 +91,7 @@ export default function Workout() {
               <p className="text-text-muted text-sm">No workouts logged yet.</p>
             </div>
           ) : (
-            [...workoutLogs].reverse().map((log) => (
+            [...workoutLogs].reverse().slice(0, isPro ? undefined : 3).map((log) => (
               <div key={log.id} className="border border-white/[0.06] rounded-xl p-4">
                 <div className="flex items-center justify-between mb-3">
                   <span className="font-bold text-text-primary text-sm">{log.dayName}</span>
@@ -106,6 +108,11 @@ export default function Workout() {
                 ))}
               </div>
             ))
+          )}
+          {!isPro && workoutLogs.length > 3 && (
+            <ProLock message="Full workout history">
+              <div className="border border-white/[0.06] rounded-xl p-4 h-24" />
+            </ProLock>
           )}
         </div>
       ) : (
@@ -245,44 +252,83 @@ export default function Workout() {
 
                             {/* Common Mistakes */}
                             {exercise.donts?.length > 0 && (
-                              <div className="bg-red-500/5 border border-red-500/10 rounded-lg p-3">
-                                <h4 className="text-xs font-bold text-red-400 mb-2 uppercase tracking-wider flex items-center gap-1.5">
-                                  <AlertTriangle size={12} /> Common Mistakes
-                                </h4>
-                                <ul className="space-y-1.5">
-                                  {exercise.donts.map((dont, j) => (
-                                    <li key={j} className="text-sm text-text-muted flex items-start gap-2">
-                                      <span className="text-red-400 mt-0.5 text-xs shrink-0">✕</span>
-                                      {dont}
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
+                              isPro ? (
+                                <div className="bg-red-500/5 border border-red-500/10 rounded-lg p-3">
+                                  <h4 className="text-xs font-bold text-red-400 mb-2 uppercase tracking-wider flex items-center gap-1.5">
+                                    <AlertTriangle size={12} /> Common Mistakes
+                                  </h4>
+                                  <ul className="space-y-1.5">
+                                    {exercise.donts.map((dont, j) => (
+                                      <li key={j} className="text-sm text-text-muted flex items-start gap-2">
+                                        <span className="text-red-400 mt-0.5 text-xs shrink-0">✕</span>
+                                        {dont}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              ) : (
+                                <ProLock compact>
+                                  <div className="bg-red-500/5 border border-red-500/10 rounded-lg p-3">
+                                    <h4 className="text-xs font-bold text-red-400 mb-2 uppercase tracking-wider flex items-center gap-1.5">
+                                      <AlertTriangle size={12} /> Common Mistakes
+                                    </h4>
+                                    <ul className="space-y-1.5">
+                                      {exercise.donts.slice(0, 2).map((dont, j) => (
+                                        <li key={j} className="text-sm text-text-muted flex items-start gap-2">
+                                          <span className="text-red-400 mt-0.5 text-xs shrink-0">✕</span>
+                                          {dont}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                </ProLock>
+                              )
                             )}
 
                             {/* Alternatives */}
                             {exercise.alternatives?.length > 0 && (
-                              <div>
-                                <span className="text-[11px] text-text-muted font-medium mb-1.5 block uppercase tracking-wider">Alternatives</span>
-                                <div className="flex flex-wrap gap-1.5">
-                                  {exercise.alternatives.map((alt, j) => (
-                                    <span key={j} className="text-xs bg-white/[0.04] px-2.5 py-1 rounded-md text-text-muted">{alt}</span>
-                                  ))}
+                              isPro ? (
+                                <div>
+                                  <span className="text-[11px] text-text-muted font-medium mb-1.5 block uppercase tracking-wider">Alternatives</span>
+                                  <div className="flex flex-wrap gap-1.5">
+                                    {exercise.alternatives.map((alt, j) => (
+                                      <span key={j} className="text-xs bg-white/[0.04] px-2.5 py-1 rounded-md text-text-muted">{alt}</span>
+                                    ))}
+                                  </div>
                                 </div>
-                              </div>
+                              ) : (
+                                <ProLock compact>
+                                  <div>
+                                    <span className="text-[11px] text-text-muted font-medium mb-1.5 block uppercase tracking-wider">Alternatives</span>
+                                    <div className="flex flex-wrap gap-1.5">
+                                      {exercise.alternatives.map((alt, j) => (
+                                        <span key={j} className="text-xs bg-white/[0.04] px-2.5 py-1 rounded-md text-text-muted">{alt}</span>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </ProLock>
+                              )
                             )}
                           </div>
 
                           {/* Right — Video */}
                           <div className="lg:w-[45%] shrink-0">
-                            <div className="video-container rounded-lg overflow-hidden lg:sticky lg:top-4">
-                              <iframe
-                                src={`https://www.youtube.com/embed/${exercise.videoId}`}
-                                title={exercise.name}
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                              />
-                            </div>
+                            {isPro ? (
+                              <div className="video-container rounded-lg overflow-hidden lg:sticky lg:top-4">
+                                <iframe
+                                  src={`https://www.youtube.com/embed/${exercise.videoId}`}
+                                  title={exercise.name}
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                  allowFullScreen
+                                />
+                              </div>
+                            ) : (
+                              <ProLock message="Video tutorials">
+                                <div className="aspect-video bg-white/[0.03] rounded-lg flex items-center justify-center">
+                                  <Play size={40} className="text-text-muted" />
+                                </div>
+                              </ProLock>
+                            )}
                           </div>
                         </div>
 

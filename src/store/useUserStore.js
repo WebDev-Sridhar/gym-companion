@@ -74,6 +74,9 @@ const useUserStore = create(
       earnedBadges: [],
       lastLoginDate: null,
 
+      // Subscription
+      plan: 'free', // 'free' | 'pro'
+
       // Stats
       totalWorkouts: 0,
       personalRecords: 0,

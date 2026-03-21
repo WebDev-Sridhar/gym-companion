@@ -300,14 +300,17 @@ export async function fetchFoodLogs(userId) {
 // =====================
 export async function deleteAllUserData(userId) {
   // Delete dependent tables first, then profiles last (FK constraints)
-  await Promise.all([
-    supabase.from('exercise_logs').delete().eq('user_id', userId),
-    supabase.from('food_logs').delete().eq('user_id', userId),
-    supabase.from('progress').delete().eq('user_id', userId),
-    supabase.from('workout_plans').delete().eq('user_id', userId),
-    supabase.from('diet_plans').delete().eq('user_id', userId),
-    supabase.from('gamification').delete().eq('user_id', userId),
-  ]);
+  const tables = ['exercise_logs', 'food_logs', 'progress', 'workout_plans', 'diet_plans', 'gamification'];
+  const results = await Promise.all(
+    tables.map((table) => supabase.from(table).delete().eq('user_id', userId))
+  );
+
+  // Log any failures (usually missing DELETE RLS policies)
+  results.forEach((res, i) => {
+    if (res.error) console.error(`Failed to delete from ${tables[i]}:`, res.error.message);
+  });
+
   // Delete profile last after all dependent rows are gone
-  await supabase.from('profiles').delete().eq('user_id', userId);
+  const profileRes = await supabase.from('profiles').delete().eq('user_id', userId);
+  if (profileRes.error) console.error('Failed to delete from profiles:', profileRes.error.message);
 }

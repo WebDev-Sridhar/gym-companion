@@ -16,6 +16,7 @@ import {
   RotateCcw,
 } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
+import { UpgradeBanner } from '../components/ui/ProLock';
 import useUserStore from '../store/useUserStore';
 import { getTodaysWorkout } from '../utils/planGenerator';
 import { getDailyQuote } from '../data/quotes';
@@ -37,7 +38,9 @@ export default function Dashboard() {
     weightLogs,
     workoutLogs,
     foodLogs,
+    plan,
   } = useUserStore();
+  const isPro = plan === 'pro';
 
   useEffect(() => {
     if (isOnboarded) checkDailyLogin();
@@ -303,6 +306,18 @@ export default function Dashboard() {
           })}
         </div>
       </motion.div>
+
+      {/* Upgrade Banner */}
+      {!isPro && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.75 }}
+          className="mb-10 sm:mb-14"
+        >
+          <UpgradeBanner />
+        </motion.div>
+      )}
 
       {/* Quick Links */}
       <motion.div

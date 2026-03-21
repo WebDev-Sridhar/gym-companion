@@ -21,6 +21,7 @@ import {
   Info,
 } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
+import ProLock, { ProBadge } from '../components/ui/ProLock';
 import useUserStore from '../store/useUserStore';
 import { mealAlternatives } from '../data/dietPlans';
 
@@ -41,7 +42,8 @@ const mealLabels = {
 };
 
 export default function Diet() {
-  const { dietPlan, nutritionTargets, profile, logFood, unlogFood, getTodaysFoodLogs, getTodaysCalories, getTodaysProtein } = useUserStore();
+  const { dietPlan, nutritionTargets, profile, logFood, unlogFood, getTodaysFoodLogs, getTodaysCalories, getTodaysProtein, plan } = useUserStore();
+  const isPro = plan === 'pro';
   const [expandedMeal, setExpandedMeal] = useState(null);
   const [showAlts, setShowAlts] = useState(null);
 
@@ -156,15 +158,28 @@ export default function Diet() {
         transition={{ delay: 0.05 }}
         className="border border-white/[0.06] rounded-xl p-5 sm:p-6 mb-8"
       >
-        <h3 className="font-bold mb-4 text-xs text-text-muted uppercase tracking-wider">Daily Targets</h3>
+        <h3 className="font-bold mb-4 text-xs text-text-muted uppercase tracking-wider flex items-center gap-2">
+          Daily Targets {!isPro && <ProBadge />}
+        </h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
             { icon: Flame, value: nutritionTargets?.targetCalories, label: 'Calories', accent: true },
             { icon: Beef, value: `${nutritionTargets?.macros?.protein}g`, label: 'Protein' },
-            { icon: Wheat, value: `${nutritionTargets?.macros?.carbs}g`, label: 'Carbs' },
-            { icon: Droplets, value: `${nutritionTargets?.macros?.fat}g`, label: 'Fats' },
+            { icon: Wheat, value: `${nutritionTargets?.macros?.carbs}g`, label: 'Carbs', proOnly: true },
+            { icon: Droplets, value: `${nutritionTargets?.macros?.fat}g`, label: 'Fats', proOnly: true },
           ].map((item) => {
             const Icon = item.icon;
+            if (item.proOnly && !isPro) {
+              return (
+                <ProLock key={item.label} compact>
+                  <div className="text-center">
+                    <Icon size={18} className="mx-auto mb-2 text-text-muted" />
+                    <div className="text-lg sm:text-xl font-black text-text-primary">{item.value}</div>
+                    <div className="text-[10px] text-text-muted mt-0.5 uppercase tracking-wider">{item.label}</div>
+                  </div>
+                </ProLock>
+              );
+            }
             return (
               <div key={item.label} className="text-center">
                 <Icon size={18} className={`mx-auto mb-2 ${item.accent ? 'text-accent' : 'text-text-muted'}`} />
@@ -176,18 +191,33 @@ export default function Diet() {
         </div>
 
         {/* Macro Bar */}
-        <div className="mt-5">
-          <div className="h-1.5 bg-white/[0.04] rounded-full overflow-hidden flex">
-            <div className="h-full bg-white" style={{ width: `${(nutritionTargets?.macros?.protein * 4 / nutritionTargets?.targetCalories) * 100}%` }} />
-            <div className="h-full bg-white/40" style={{ width: `${(nutritionTargets?.macros?.carbs * 4 / nutritionTargets?.targetCalories) * 100}%` }} />
-            <div className="h-full bg-white/15" style={{ width: `${(nutritionTargets?.macros?.fat * 9 / nutritionTargets?.targetCalories) * 100}%` }} />
+        {isPro ? (
+          <div className="mt-5">
+            <div className="h-1.5 bg-white/[0.04] rounded-full overflow-hidden flex">
+              <div className="h-full bg-white" style={{ width: `${(nutritionTargets?.macros?.protein * 4 / nutritionTargets?.targetCalories) * 100}%` }} />
+              <div className="h-full bg-white/40" style={{ width: `${(nutritionTargets?.macros?.carbs * 4 / nutritionTargets?.targetCalories) * 100}%` }} />
+              <div className="h-full bg-white/15" style={{ width: `${(nutritionTargets?.macros?.fat * 9 / nutritionTargets?.targetCalories) * 100}%` }} />
+            </div>
+            <div className="flex gap-4 mt-2 text-[11px] text-text-muted">
+              <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-white"></span> Protein</span>
+              <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-white/40"></span> Carbs</span>
+              <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-white/15"></span> Fats</span>
+            </div>
           </div>
-          <div className="flex gap-4 mt-2 text-[11px] text-text-muted">
-            <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-white"></span> Protein</span>
-            <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-white/40"></span> Carbs</span>
-            <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-white/15"></span> Fats</span>
-          </div>
-        </div>
+        ) : (
+          <ProLock compact>
+            <div className="mt-5">
+              <div className="h-1.5 bg-white/[0.04] rounded-full overflow-hidden flex">
+                <div className="h-full bg-white" style={{ width: '30%' }} />
+                <div className="h-full bg-white/40" style={{ width: '45%' }} />
+                <div className="h-full bg-white/15" style={{ width: '25%' }} />
+              </div>
+              <div className="flex gap-4 mt-2 text-[11px] text-text-muted">
+                <span>Protein</span><span>Carbs</span><span>Fats</span>
+              </div>
+            </div>
+          </ProLock>
+        )}
       </motion.div>
 
       {/* Meal Cards */}
@@ -274,24 +304,32 @@ export default function Diet() {
                     )}
 
                     {mealAlternatives[key] && (
-                      <div>
-                        <button
-                          onClick={(e) => { e.stopPropagation(); setShowAlts(showAlts === key ? null : key); }}
-                          className="flex items-center gap-1 text-[11px] text-text-muted font-medium mb-2 hover:text-text-muted"
-                        >
-                          <RefreshCw size={11} /> Swap with alternative
-                        </button>
-                        {showAlts === key && (
-                          <div className="space-y-1">
-                            {mealAlternatives[key].map((alt, j) => (
-                              <div key={j} className="flex items-center justify-between bg-white/[0.03] rounded-lg p-2 text-sm">
-                                <span className="text-text-muted">{alt.name}</span>
-                                <span className="text-[11px] text-text-muted">{alt.calories} cal · {alt.protein}g P</span>
-                              </div>
-                            ))}
+                      isPro ? (
+                        <div>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setShowAlts(showAlts === key ? null : key); }}
+                            className="flex items-center gap-1 text-[11px] text-text-muted font-medium mb-2 hover:text-text-muted"
+                          >
+                            <RefreshCw size={11} /> Swap with alternative
+                          </button>
+                          {showAlts === key && (
+                            <div className="space-y-1">
+                              {mealAlternatives[key].map((alt, j) => (
+                                <div key={j} className="flex items-center justify-between bg-white/[0.03] rounded-lg p-2 text-sm">
+                                  <span className="text-text-muted">{alt.name}</span>
+                                  <span className="text-[11px] text-text-muted">{alt.calories} cal · {alt.protein}g P</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <ProLock compact>
+                          <div className="flex items-center gap-1 text-[11px] text-text-muted font-medium py-1">
+                            <RefreshCw size={11} /> Swap with alternative
                           </div>
-                        )}
-                      </div>
+                        </ProLock>
+                      )
                     )}
                   </motion.div>
                 )}
@@ -321,23 +359,38 @@ export default function Diet() {
           className="mt-6 border border-white/[0.06] rounded-xl p-5"
         >
           <h3 className="font-bold mb-4 flex items-center gap-2 text-sm text-text-secondary">
-            <Pill size={16} /> Supplement Plan
+            <Pill size={16} /> Supplement Plan {!isPro && <ProBadge />}
           </h3>
-          <div className="space-y-3">
-            {Object.entries(dietPlan.supplements).map(([key, supp]) => (
-              <div key={key} className="bg-white/[0.03] rounded-lg p-3">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="font-medium text-sm text-text-primary">{supp.name}</span>
-                  <span className="text-[11px] text-text-muted">{supp.calories} cal · {supp.protein}g P</span>
+          {isPro ? (
+            <div className="space-y-3">
+              {Object.entries(dietPlan.supplements).map(([key, supp]) => (
+                <div key={key} className="bg-white/[0.03] rounded-lg p-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-medium text-sm text-text-primary">{supp.name}</span>
+                    <span className="text-[11px] text-text-muted">{supp.calories} cal · {supp.protein}g P</span>
+                  </div>
+                  <ul className="space-y-0.5">
+                    {supp.items.map((item, j) => (
+                      <li key={j} className="text-xs text-text-muted">· {item}</li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="space-y-0.5">
-                  {supp.items.map((item, j) => (
-                    <li key={j} className="text-xs text-text-muted">· {item}</li>
-                  ))}
-                </ul>
+              ))}
+            </div>
+          ) : (
+            <ProLock message="Supplement recommendations">
+              <div className="space-y-3">
+                {Object.entries(dietPlan.supplements).slice(0, 2).map(([key, supp]) => (
+                  <div key={key} className="bg-white/[0.03] rounded-lg p-3">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-medium text-sm text-text-primary">{supp.name}</span>
+                      <span className="text-[11px] text-text-muted">{supp.calories} cal</span>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </ProLock>
+          )}
         </motion.div>
       )}
     </PageWrapper>
