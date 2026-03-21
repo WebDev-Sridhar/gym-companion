@@ -299,6 +299,7 @@ export async function fetchFoodLogs(userId) {
 // Delete All User Data (for Reset)
 // =====================
 export async function deleteAllUserData(userId) {
+  // Delete dependent tables first, then profiles last (FK constraints)
   await Promise.all([
     supabase.from('exercise_logs').delete().eq('user_id', userId),
     supabase.from('food_logs').delete().eq('user_id', userId),
@@ -306,6 +307,7 @@ export async function deleteAllUserData(userId) {
     supabase.from('workout_plans').delete().eq('user_id', userId),
     supabase.from('diet_plans').delete().eq('user_id', userId),
     supabase.from('gamification').delete().eq('user_id', userId),
-    supabase.from('profiles').delete().eq('user_id', userId),
   ]);
+  // Delete profile last after all dependent rows are gone
+  await supabase.from('profiles').delete().eq('user_id', userId);
 }

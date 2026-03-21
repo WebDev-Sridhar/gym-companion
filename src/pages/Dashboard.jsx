@@ -13,6 +13,7 @@ import {
   Award,
   ArrowRight,
   BookOpen,
+  RotateCcw,
 } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import useUserStore from '../store/useUserStore';
@@ -24,6 +25,7 @@ import { analyzeProgress } from '../utils/smartCoach';
 export default function Dashboard() {
   const {
     profile,
+    isOnboarded,
     workoutPlan,
     nutritionTargets,
     currentStreak,
@@ -38,8 +40,39 @@ export default function Dashboard() {
   } = useUserStore();
 
   useEffect(() => {
-    checkDailyLogin();
-  }, []);
+    if (isOnboarded) checkDailyLogin();
+  }, [isOnboarded]);
+
+  if (!isOnboarded) {
+    return (
+      <PageWrapper>
+        <div className="flex flex-col items-center justify-center text-center py-24 sm:py-32">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="w-20 h-20 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mx-auto mb-6">
+              <RotateCcw size={32} className="text-text-muted" />
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-black text-text-primary tracking-tight mb-3">
+              Start Fresh
+            </h1>
+            <p className="text-text-muted text-sm sm:text-base max-w-sm mx-auto leading-relaxed mb-8">
+              Your data has been reset. Enter your details again to get a new personalized workout and diet plan.
+            </p>
+            <Link
+              to="/onboarding"
+              className="btn-primary px-8 py-3.5 rounded-full text-sm font-bold inline-flex items-center gap-2 group"
+            >
+              Begin Setup
+              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </motion.div>
+        </div>
+      </PageWrapper>
+    );
+  }
 
   const todaysWorkout = getTodaysWorkout(workoutPlan);
   const quote = getDailyQuote();

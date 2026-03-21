@@ -23,7 +23,7 @@ export default function Profile() {
 
   const startEdit = () => { setEditData({ name: profile.name, age: profile.age, height: profile.height, weight: profile.weight }); setEditing(true); };
   const saveEdit = () => { updateProfile(editData); setEditing(false); };
-  const handleReset = () => { if (confirm('This will delete ALL your data, you cannot undo this action. Are you sure?')) { resetAll(); navigate('/'); } };
+  const handleReset = () => { if (confirm('This will delete ALL your data, you cannot undo this action. Are you sure?')) { resetAll(); navigate('/dashboard'); } };
   const handleSignOut = async () => { await signOut(); navigate('/'); };
 
   const goalLabel = { weightLoss: 'Weight Loss', muscleGain: 'Muscle Gain', maintenance: 'Maintenance' };

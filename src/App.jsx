@@ -29,10 +29,8 @@ function LoadingScreen() {
 
 function ProtectedRoute({ children }) {
   const session = useAuthStore((s) => s.session);
-  const isOnboarded = useUserStore((s) => s.isOnboarded);
 
   if (!session) return <Navigate to="/auth" replace />;
-  if (!isOnboarded) return <Navigate to="/onboarding" replace />;
 
   return (
     <>
