@@ -23,7 +23,11 @@ const useAuthStore = create((set, get) => ({
 
       if (session) {
         set({ session, user: session.user });
-        await get().hydrateProfile(session.user.id);
+        try {
+          await get().hydrateProfile(session.user.id);
+        } catch (e) {
+          console.warn('Initial hydration failed:', e.message);
+        }
       }
 
       set({ loading: false });
@@ -32,11 +36,15 @@ const useAuthStore = create((set, get) => ({
         set({ session, user: session?.user ?? null });
 
         if (event === 'SIGNED_IN' && session) {
-          // Only hydrate if not already onboarded (avoid re-loading on tab focus)
-          if (!useUserStore.getState().isOnboarded) {
+          // Only hydrate if not already onboarded (avoid re-loading on tab focus/return)
+          const alreadyLoaded = useUserStore.getState().isOnboarded;
+          if (!alreadyLoaded) {
             set({ loading: true });
-            await get().hydrateProfile(session.user.id);
-            set({ loading: false });
+            try {
+              await get().hydrateProfile(session.user.id);
+            } finally {
+              set({ loading: false });
+            }
           }
         }
       });

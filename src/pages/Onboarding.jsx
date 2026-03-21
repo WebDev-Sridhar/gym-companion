@@ -70,10 +70,10 @@ export default function Onboarding() {
       setStep(step + 1);
     } else {
       setSaving(true);
-      setProfile(formData);
       await new Promise((r) => setTimeout(r, 300));
+      navigate('/plan-summary', { replace: true });
+      setProfile(formData);
       setSaving(false);
-      navigate('/plan-summary');
     }
   };
 

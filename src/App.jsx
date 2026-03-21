@@ -53,10 +53,10 @@ function OnboardingRoute({ children }) {
 
 function PlanSummaryRoute({ children }) {
   const session = useAuthStore((s) => s.session);
-  const isOnboarded = useUserStore((s) => s.isOnboarded);
+  const profile = useUserStore((s) => s.profile);
 
   if (!session) return <Navigate to="/auth" replace />;
-  if (!isOnboarded) return <Navigate to="/onboarding" replace />;
+  if (!profile) return <Navigate to="/onboarding" replace />;
 
   return children;
 }
