@@ -13,7 +13,7 @@ const coachImages = {
   streak: '/coachdoublethumbsup.png',
   coachTip: '/coach.png',
   dailyWelcome: '/coachdoublethumbsup.png',
-  onboarding: '/coachthumbsup.png',
+  onboarding: '/coach.png',
   planReady: '/coachdoublethumbsup.png',
   letsGo: '/coachdoublethumbsup.png',
   resetData: '/coach.png',
@@ -53,11 +53,17 @@ export function showCoach(type, side) {
 export function CoachPopupContainer() {
   const [popup, setPopup] = useState(null);
   const queueRef = useRef(null);
+  const timerRef = useRef(null);
+
+  const dismiss = useCallback(() => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    setPopup(null);
+  }, []);
 
   const showPopup = useCallback((data) => {
+    if (timerRef.current) clearTimeout(timerRef.current);
     setPopup((prev) => {
       if (prev) {
-        // Clear first, then show new one after exit animation
         queueRef.current = data;
         return null;
       }
@@ -65,7 +71,15 @@ export function CoachPopupContainer() {
     });
   }, []);
 
-  // When popup clears and there's a queued one, show it after a short delay
+  // Auto-dismiss after 10 seconds as safety
+  useEffect(() => {
+    if (popup) {
+      timerRef.current = setTimeout(dismiss, 10000);
+      return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+    }
+  }, [popup, dismiss]);
+
+  // Queue handling
   useEffect(() => {
     if (!popup && queueRef.current) {
       const queued = queueRef.current;
@@ -87,29 +101,41 @@ export function CoachPopupContainer() {
   return (
     <AnimatePresence>
       {popup && (
-        <motion.div
-          key={popup.id}
-          initial={{ opacity: 0, y: 80, x: isRight ? 40 : -40 }}
-          animate={{ opacity: 1, y: 0, x: 0 }}
-          exit={{ opacity: 0, y: 80, x: isRight ? 40 : -40 }}
-          transition={{ type: 'spring', stiffness: 170, damping: 20, mass: 1.2 }}
-          className={`fixed bottom-24 z-[110] flex flex-col items-center ${
-            isRight ? 'right-4' : 'left-4'
-          }`}
-          onClick={() => setPopup(null)}
-        >
-          {/* Chat bubble — above the coach */}
-          <div className="max-w-[220px] bg-white/90 backdrop-blur-md rounded-xl px-4 py-3 shadow-lg mb-2">
-            <p className="text-sm text-black font-semibold leading-snug">{popup.message}</p>
-          </div>
-
-          {/* Coach image */}
-          <img
-            src={popup.image}
-            alt="Coach"
-            className="w-52 h-52 object-contain shrink-0 drop-shadow-lg"
+        <>
+          {/* Full-screen click overlay to dismiss */}
+          <motion.div
+            key={`overlay-${popup.id}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[109]"
+            onClick={dismiss}
           />
-        </motion.div>
+
+          {/* Coach popup */}
+          <motion.div
+            key={popup.id}
+            initial={{ opacity: 0, y: 80, x: isRight ? 40 : -40 }}
+            animate={{ opacity: 1, y: 0, x: 0 }}
+            exit={{ opacity: 0, y: 80, x: isRight ? 40 : -40 }}
+            transition={{ type: 'spring', stiffness: 170, damping: 20, mass: 1.2 }}
+            className={`fixed bottom-4 z-[110] flex flex-col items-center ${
+              isRight ? 'right-4' : 'left-4'
+            }`}
+          >
+            {/* Chat bubble */}
+            <div className="max-w-[220px] sm:max-w-[280px] bg-white/90 backdrop-blur-md rounded-xl px-4 py-3 shadow-lg mb-2">
+              <p className="text-sm sm:text-base text-black font-semibold leading-snug">{popup.message}</p>
+            </div>
+
+            {/* Coach image — medium on mobile, half-screen on laptop */}
+            <img
+              src={popup.image}
+              alt="Coach"
+              className="w-40 h-40 sm:w-56 sm:h-56 lg:w-[45vh] lg:h-[45vh] object-contain shrink-0 drop-shadow-lg"
+            />
+          </motion.div>
+        </>
       )}
     </AnimatePresence>
   );

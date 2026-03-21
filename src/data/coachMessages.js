@@ -76,14 +76,7 @@ export const coachMessages = {
     'Another day, another chance to level up!',
   ],
   onboarding: [
-    'Let\'s get you set up! First things first.',
-    'Nice to meet you! Let\'s make this personal.',
-    'Good — every champion started right here.',
-    'Getting your numbers right is half the battle!',
-    'Show me what you\'re working with!',
-    'A clear goal makes all the difference.',
-    'Time to plan your training schedule!',
-    'Almost done — the finish line is right there!',
+    'Welcome! Let\'s build your perfect plan together.',
   ],
   planReady: [
     'Your battle plan is ready! Time to execute!',

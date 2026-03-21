@@ -92,7 +92,7 @@ export default function Onboarding() {
   };
 
   const [direction, setDirection] = useState(1);
-  const goNext = () => { setDirection(1); handleNext(); showCoach('onboarding'); };
+  const goNext = () => { setDirection(1); handleNext(); };
   const goBack = () => { setDirection(-1); handleBack(); };
 
   useEffect(() => {
