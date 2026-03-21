@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import ProLock from '../components/ui/ProLock';
+import { showCoach } from '../components/ui/CoachPopup';
 import useUserStore from '../store/useUserStore';
 
 export default function Workout() {
@@ -59,7 +60,7 @@ export default function Workout() {
     logWorkout({ dayName: currentDay.day, exercises });
     setIsLogging(false);
     setLogData({});
-    alert('Workout logged! +100 XP');
+    showCoach('workoutComplete');
   };
 
   return (

@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { TrendingUp, Scale, Dumbbell, Lightbulb, Check } from 'lucide-react';
+import { TrendingUp, Scale, Dumbbell, Check } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import ProLock from '../components/ui/ProLock';
+import { showCoach } from '../components/ui/CoachPopup';
 import useUserStore from '../store/useUserStore';
 import { analyzeProgress } from '../utils/smartCoach';
 
@@ -42,7 +43,7 @@ export default function Progress() {
     }
   };
 
-  const handleLog = () => { if (newWeight > 0) { logWeight(parseFloat(newWeight)); setNewWeight(''); setShowInput(false); } };
+  const handleLog = () => { if (newWeight > 0) { logWeight(parseFloat(newWeight)); setNewWeight(''); setShowInput(false); showCoach('weightLogged'); } };
 
   const tooltipStyle = { background: '#111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', color: '#fff', fontSize: '12px' };
 
@@ -130,7 +131,7 @@ export default function Progress() {
           {/* Smart Coach */}
           <div className="space-y-3">
             <h3 className="font-bold flex items-center gap-2 text-sm text-text-secondary">
-              <Lightbulb size={16} className="text-accent" /> Smart Coach
+              <img src="/coach.png" alt="Coach" className="w-6 h-6 object-contain" /> Smart Coach
             </h3>
             {recommendations.map((rec, i) => (
               <motion.div

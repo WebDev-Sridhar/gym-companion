@@ -15,6 +15,7 @@ import Profile from './pages/Profile';
 import KnowledgeHub from './pages/KnowledgeHub';
 import PlanSummary from './pages/PlanSummary';
 import { ToastContainer } from './components/ui/Toast';
+import { CoachPopupContainer } from './components/ui/CoachPopup';
 
 function LoadingScreen() {
   return (
@@ -82,6 +83,7 @@ export default function App() {
   return (
     <Router>
       <ToastContainer />
+      <CoachPopupContainer />
       <AnimatePresence mode="wait">
         <Routes>
           <Route path="/" element={<PublicRoute><Landing /></PublicRoute>} />

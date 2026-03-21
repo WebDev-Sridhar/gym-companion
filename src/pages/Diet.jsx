@@ -23,6 +23,7 @@ import {
 import PageWrapper from '../components/layout/PageWrapper';
 import ProLock from '../components/ui/ProLock';
 import useUserStore from '../store/useUserStore';
+import { showCoach } from '../components/ui/CoachPopup';
 import { mealAlternatives } from '../data/dietPlans';
 
 const mealIcons = {
@@ -72,6 +73,7 @@ export default function Diet() {
 
   const handleQuickLog = (mealKey, meal) => {
     logFood(mealKey, meal.items, meal.calories, meal.protein);
+    showCoach('mealLogged', 'left');
   };
 
   return (
