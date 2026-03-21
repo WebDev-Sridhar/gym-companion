@@ -126,17 +126,6 @@ export default function Diet() {
         </div>
       </motion.div>
 
-      {/* Daily Total — Free for all */}
-      <div className="mb-8 border border-white/[0.06] rounded-xl p-4">
-        <div className="flex items-center justify-between">
-          <span className="font-bold text-text-primary text-sm">Daily Total</span>
-          <div className="text-right">
-            <span className="text-lg font-black text-accent">{dietPlan.totalCalories} cal</span>
-            <span className="text-sm text-text-muted block">{dietPlan.totalProtein}g protein</span>
-          </div>
-        </div>
-      </div>
-
       {/* Today's Intake, Meals, Supplements — Pro Only */}
       {isPro ? (
         <>
