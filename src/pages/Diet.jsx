@@ -270,7 +270,7 @@ export default function Diet() {
                               onClick={(e) => {
                                 e.stopPropagation();
                                 const todayLog = todaysLogs.filter((l) => l.mealType === key).pop();
-                                if (todayLog) unlogFood(todayLog.id);
+                                if (todayLog) { unlogFood(todayLog.id); showCoach('mealUndo', 'left'); }
                               }}
                               className="px-3 py-2.5 rounded-lg text-sm font-medium text-text-muted border border-white/[0.08] hover:text-red-400 hover:border-red-400/20 transition-all flex items-center gap-1"
                             >

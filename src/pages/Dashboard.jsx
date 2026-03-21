@@ -154,7 +154,7 @@ export default function Dashboard() {
         >
           <Link to="/progress" className="block border border-accent/20 rounded-xl p-5 hover:border-accent/40 transition-all group bg-accent/[0.03]">
             <div className="flex items-start gap-4">
-              <img src="/coach.png" alt="Coach" className="w-10 h-10 object-contain shrink-0" />
+              <img src="/coach.png" alt="Coach" className="w-30 h-30 object-contain shrink-0" />
               <div className="flex-1 min-w-0">
                 <h3 className="font-bold text-sm text-accent mb-1">Coach Alert</h3>
                 <p className="text-sm text-text-muted leading-relaxed">{coachAlerts[0].message}</p>

@@ -153,7 +153,7 @@ export default function Workout() {
                   <Save size={16} /> Save Workout
                 </button>
                 <button
-                  onClick={() => { setIsLogging(false); setLogData({}); }}
+                  onClick={() => { setIsLogging(false); setLogData({}); showCoach('workoutCancel', 'left'); }}
                   className="px-4 py-2.5 rounded-lg text-sm font-medium text-text-muted border border-white/[0.06] hover:text-text-secondary"
                 >
                   Cancel

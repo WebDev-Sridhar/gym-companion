@@ -4,6 +4,7 @@ import { ArrowRight, Dumbbell, Flame, Beef, Wheat, Droplets, Calendar, Target, T
 import PageWrapper from '../components/layout/PageWrapper';
 import useUserStore from '../store/useUserStore';
 import { getNextMessage } from '../data/coachMessages';
+import { showCoach } from '../components/ui/CoachPopup';
 
 const goalConfig = {
   weightLoss: {
@@ -70,7 +71,7 @@ export default function PlanSummary() {
 
       {/* Coach Message */}
       <motion.div {...anim(0.05)} className="flex items-center gap-3 bg-accent/5 border border-accent/10 rounded-xl p-4 mb-5">
-        <img src="/coachthumbsup.png" alt="Coach" className="w-14 h-14 object-contain shrink-0" />
+        <img src="/coach.png" alt="Coach" className="w-14 h-14 object-contain shrink-0" />
         <p className="text-sm text-text-muted font-medium leading-relaxed">{planReadyMessage}</p>
       </motion.div>
 
@@ -193,7 +194,7 @@ export default function PlanSummary() {
       <motion.div {...anim(0.5)} className="text-center">
         <p className="text-text-muted text-xs mb-4">Your plan is ready. Let's make it happen.</p>
         <button
-          onClick={() => navigate('/dashboard', { replace: true })}
+          onClick={() => { showCoach('letsGo'); navigate('/dashboard', { replace: true }); }}
           className="btn-primary w-full py-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2"
         >
           Let's Go <ArrowRight size={16} />

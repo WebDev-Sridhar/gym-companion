@@ -5,23 +5,33 @@ import { getNextMessage } from '../../data/coachMessages';
 const coachImages = {
   workoutStart: '/coachthumbsup.png',
   workoutComplete: '/coachthumbsup.png',
+  workoutCancel: '/coach.png',
   mealLogged: '/coacheating.png',
+  mealUndo: '/coach.png',
   weightLogged: '/coachthumbsup.png',
   milestone: '/coachdoublethumbsup.png',
   streak: '/coachdoublethumbsup.png',
   coachTip: '/coach.png',
   dailyWelcome: '/coachdoublethumbsup.png',
+  onboarding: '/coachthumbsup.png',
+  planReady: '/coachdoublethumbsup.png',
+  letsGo: '/coachdoublethumbsup.png',
 };
 
 const coachSides = {
   workoutStart: 'right',
   workoutComplete: 'right',
+  workoutCancel: 'left',
   mealLogged: 'left',
+  mealUndo: 'left',
   weightLogged: 'right',
   milestone: 'right',
   streak: 'right',
   coachTip: 'left',
   dailyWelcome: 'right',
+  onboarding: 'right',
+  planReady: 'right',
+  letsGo: 'right',
 };
 
 let coachListeners = [];
@@ -64,22 +74,18 @@ export function CoachPopupContainer() {
       {popup && (
         <motion.div
           key={popup.id}
-          initial={{ opacity: 0, y: 40, x: isRight ? 60 : -60 }}
+          initial={{ opacity: 0, y: 80, x: isRight ? 40 : -40 }}
           animate={{ opacity: 1, y: 0, x: 0 }}
-          exit={{ opacity: 0, y: 40, x: isRight ? 60 : -60 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-          className={`fixed bottom-24 z-[110] flex items-end gap-2 ${
-            isRight ? 'right-4 flex-row' : 'left-4 flex-row-reverse'
+          exit={{ opacity: 0, y: 80, x: isRight ? 40 : -40 }}
+          transition={{ type: 'spring', stiffness: 170, damping: 20, mass: 1.2 }}
+          className={`fixed bottom-24 z-[110] flex flex-col items-center ${
+            isRight ? 'right-4' : 'left-4'
           }`}
           onClick={() => setPopup(null)}
         >
-          {/* Chat bubble */}
-          <div
-            className={`relative max-w-[220px] bg-white/[0.08] backdrop-blur-md border border-white/[0.12] rounded-xl px-4 py-3 shadow-lg ${
-              isRight ? 'rounded-br-sm' : 'rounded-bl-sm'
-            }`}
-          >
-            <p className="text-sm text-text-primary font-medium leading-snug">{popup.message}</p>
+          {/* Chat bubble — above the coach */}
+          <div className="max-w-[220px] bg-white/90 backdrop-blur-md rounded-xl px-4 py-3 shadow-lg mb-2">
+            <p className="text-sm text-black font-semibold leading-snug">{popup.message}</p>
           </div>
 
           {/* Coach image */}
