@@ -148,10 +148,15 @@ export function CoachPopupContainer() {
             isRight ? 'right-4' : 'left-4'
           }`}
         >
-          {/* Chat bubble */}
-          <div className="max-w-[220px] sm:max-w-[280px] bg-white/90 backdrop-blur-md rounded-xl px-4 py-3 shadow-lg mb-2">
+          {/* Chat bubble — appears after coach slides in */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3, duration: 0.2 }}
+            className="max-w-[220px] sm:max-w-[280px] bg-white/90 backdrop-blur-md rounded-xl px-4 py-3 shadow-lg mb-2"
+          >
             <p className="text-sm sm:text-base text-black font-semibold leading-snug">{popup.message}</p>
-          </div>
+          </motion.div>
 
           {/* Coach image */}
           <img

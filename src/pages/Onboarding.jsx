@@ -72,8 +72,11 @@ export default function Onboarding() {
       setSaving(true);
       await new Promise((r) => setTimeout(r, 300));
       navigate('/plan-summary', { replace: true });
-      setProfile(formData);
-      setSaving(false);
+      // Delay setProfile so navigation completes before isOnboarded triggers route guard
+      setTimeout(() => {
+        setProfile(formData);
+        setSaving(false);
+      }, 100);
     }
   };
 
