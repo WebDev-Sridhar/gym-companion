@@ -325,12 +325,12 @@ export default function Landing() {
               <ul className="space-y-2.5 mb-8">
                 {[
                   'Personalized workout plan',
-                  'Indian diet plan (5 meals/day)',
-                  'Workout & meal logging',
+                  'Full diet plan with macros',
+                  'Workout logging',
                   'Weight logging',
                   'XP, levels & streaks',
                   'Daily dashboard',
-                  '3 Knowledge Hub guides',
+                  'All Knowledge Hub guides',
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-text-secondary">
                     <Check size={14} className="text-accent flex-shrink-0 mt-0.5" />
@@ -362,13 +362,13 @@ export default function Landing() {
                 <li className="text-[11px] text-text-muted font-medium uppercase tracking-wider mb-1">Everything in Free, plus:</li>
                 {[
                   'Video tutorials & form guides',
-                  'Alternative exercises',
-                  'Meal swaps & supplements',
+                  'Common mistakes & alternatives',
+                  'Meal logging, swaps & supplements',
                   'Smart Coach AI insights',
                   'Progress charts & analytics',
                   'Full workout history',
-                  'Detailed macro tracking',
-                  'All guides & badges',
+                  'Today\'s intake tracking',
+                  'All badges unlocked',
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-text-secondary">
                     <Sparkles size={12} className="text-text-muted flex-shrink-0 mt-0.5" />

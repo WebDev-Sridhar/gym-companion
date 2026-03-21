@@ -280,12 +280,14 @@ export default function Workout() {
                                 )}
                               </>
                             ) : (
-                              <ProLock message="Common mistakes, alternatives & video tutorials">
-                                <div className="space-y-3">
-                                  <div className="bg-red-500/5 rounded-lg p-3 h-16" />
-                                  <div className="bg-white/[0.03] rounded-lg p-3 h-10" />
-                                </div>
-                              </ProLock>
+                              <div className="my-2">
+                                <ProLock message="Common mistakes, alternatives & video tutorials">
+                                  <div className="space-y-3">
+                                    <div className="bg-red-500/5 rounded-lg p-3 h-16" />
+                                    <div className="bg-white/[0.03] rounded-lg p-3 h-10" />
+                                  </div>
+                                </ProLock>
+                              </div>
                             )}
                           </div>
 
