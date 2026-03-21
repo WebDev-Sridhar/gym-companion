@@ -32,9 +32,12 @@ const useAuthStore = create((set, get) => ({
         set({ session, user: session?.user ?? null });
 
         if (event === 'SIGNED_IN' && session) {
-          set({ loading: true });
-          await get().hydrateProfile(session.user.id);
-          set({ loading: false });
+          // Only hydrate if not already onboarded (avoid re-loading on tab focus)
+          if (!useUserStore.getState().isOnboarded) {
+            set({ loading: true });
+            await get().hydrateProfile(session.user.id);
+            set({ loading: false });
+          }
         }
       });
     } catch (error) {

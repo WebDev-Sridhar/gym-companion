@@ -57,6 +57,7 @@ export default function Diet() {
     );
   }
 
+  const mealOrder = ['breakfast', 'midMorning', 'lunch', 'evening', 'dinner'];
   const meals = dietPlan.meals;
   const todaysLogs = getTodaysFoodLogs();
   const loggedMeals = new Set(todaysLogs.map((l) => l.mealType));
@@ -126,7 +127,7 @@ export default function Diet() {
           </div>
         </div>
         <div className="flex gap-1.5 mt-4">
-          {Object.keys(meals).map((key) => {
+          {mealOrder.filter((key) => meals[key]).map((key) => {
             const logged = loggedMeals.has(key);
             return (
               <div
@@ -191,7 +192,8 @@ export default function Diet() {
 
       {/* Meal Cards */}
       <div className="space-y-2">
-        {Object.entries(meals).map(([key, meal], i) => {
+        {mealOrder.filter((key) => meals[key]).map((key, i) => {
+          const meal = meals[key];
           const Icon = mealIcons[key] || UtensilsCrossed;
           const isExpanded = expandedMeal === key;
           const isLogged = loggedMeals.has(key);

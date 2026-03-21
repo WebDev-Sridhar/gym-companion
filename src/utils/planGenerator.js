@@ -42,9 +42,6 @@ export function generateWorkoutPlan(profile) {
           const n = parseInt(r);
           return isNaN(n) ? r : n + 2;
         }).join('-') : ex.reps;
-      } else if (goal === 'muscleGain') {
-        // Slightly more sets for hypertrophy
-        sets = Math.min(5, sets + 1);
       }
 
       return {

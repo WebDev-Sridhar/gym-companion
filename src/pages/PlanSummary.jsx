@@ -132,6 +132,11 @@ export default function PlanSummary() {
             </div>
           ))}
         </div>
+        <div className="mt-4 bg-accent/5 border border-accent/10 rounded-lg p-3">
+          <p className="text-xs text-text-muted leading-relaxed">
+            <span className="text-accent font-semibold">How to progress:</span> Pick a weight you can do for 8 reps. Stick with it until 12 reps feel easy, then increase the weight. Push to failure on your last set — that's where growth happens.
+          </p>
+        </div>
       </motion.div>
 
       {/* Diet Overview */}

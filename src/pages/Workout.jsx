@@ -168,6 +168,14 @@ export default function Workout() {
             </motion.div>
           )}
 
+          {/* Progressive Overload Note */}
+          <div className="mb-6 flex items-start gap-2.5 border border-white/[0.06] rounded-lg px-4 py-3">
+            <Dumbbell size={14} className="text-accent shrink-0 mt-0.5" />
+            <p className="text-xs text-text-muted">
+              <span className="text-text-secondary font-medium">How to progress:</span> Pick a weight you can do for 8 reps with good form. Stick with that weight until you can do 12 reps easily, then increase the weight and go back to 8 reps. Push to failure on your last set.
+            </p>
+          </div>
+
           {/* Exercise List */}
           <div className="space-y-2">
             {currentDay.exercises.map((exercise, i) => (

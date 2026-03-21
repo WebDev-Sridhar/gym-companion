@@ -40,16 +40,20 @@ export const guides = [
         text: 'Progressive overload means gradually increasing the stress placed on your muscles over time. This is THE most important principle for getting stronger and building muscle.'
       },
       {
-        heading: 'How to Apply It',
-        text: 'You can progressively overload by: 1) Increasing weight (add 2.5kg each week), 2) Increasing reps (do 1-2 more reps), 3) Increasing sets (add one more set), 4) Improving form (slower negatives, better mind-muscle connection), 5) Decreasing rest time.'
+        heading: 'The Simple Method',
+        text: 'Pick a weight you can do for 8 reps with good form. Stick with that same weight across workouts until you can comfortably do 12 reps. Once 12 reps feel easy, increase the weight and go back to 8 reps. Repeat this cycle. On your last set, always push to failure — that\'s where the growth happens.'
       },
       {
-        heading: 'Example',
-        text: 'Week 1: Bench Press 40kg × 8 reps. Week 2: 40kg × 10 reps. Week 3: 42.5kg × 8 reps. Week 4: 42.5kg × 10 reps. This is progressive overload in action!'
+        heading: 'Example in Action',
+        text: 'Week 1: Bench Press 40kg × 8 reps (challenging). Week 2: 40kg × 9 reps. Week 3: 40kg × 11 reps. Week 4: 40kg × 12 reps (feels easy now). Week 5: 42.5kg × 8 reps (challenging again). This is progressive overload in action — your muscles are forced to adapt and grow.'
+      },
+      {
+        heading: 'Sets, Reps & Failure',
+        text: 'The sets and reps in your plan are guidelines — they vary based on your strength and stamina. What matters is the intensity. Your first 2-3 sets should be hard but controlled. Your last set should be taken to failure (the point where you can\'t do another rep with good form). That failure set is where the magic happens.'
       },
       {
         heading: 'Common Mistake',
-        text: 'Don\'t increase weight too fast. Focus on doing the same weight with PERFECT form and more reps before adding weight. Form > Ego.'
+        text: 'Don\'t increase weight too fast. If your form breaks down, the weight is too heavy — drop it back down. Lifting with bad form to hit a number is the fastest path to injury, not gains. Form > Ego, always.'
       }
     ]
   },
@@ -70,7 +74,7 @@ export const guides = [
       },
       {
         heading: 'When to Increase Weight',
-        text: 'Only increase weight when you can complete all your sets and reps with PERFECT form. If your form breaks down, the weight is too heavy.'
+        text: 'Start with a weight you can do for 8 reps with perfect form. Train with that weight until you can do 12 reps easily. Then increase the weight and go back to 8 reps. Always push to failure on your last set. If your form breaks down, the weight is too heavy — drop it back down.'
       }
     ]
   },

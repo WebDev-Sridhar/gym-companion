@@ -359,7 +359,7 @@ const useUserStore = create(
 
       // Hydrate from Supabase (called after login)
       hydrateFromSupabase: (data) => {
-        const { profile, workoutPlan, dietPlan, gamification, exerciseLogs, progressLogs, foodLogs } = data;
+        const { profile, gamification, exerciseLogs, progressLogs, foodLogs } = data;
 
         if (!profile) return;
 
@@ -369,8 +369,8 @@ const useUserStore = create(
           profile,
           isOnboarded: true,
           nutritionTargets,
-          workoutPlan: workoutPlan || generateWorkoutPlan(profile),
-          dietPlan: dietPlan || generateDietPlan(profile),
+          workoutPlan: generateWorkoutPlan(profile),
+          dietPlan: generateDietPlan(profile),
           workoutLogs: exerciseLogs || [],
           weightLogs: progressLogs || [],
           foodLogs: foodLogs || [],
