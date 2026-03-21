@@ -250,30 +250,16 @@ export default function Workout() {
                               <p className="text-sm text-text-muted leading-relaxed">{exercise.instructions}</p>
                             </div>
 
-                            {/* Common Mistakes */}
-                            {exercise.donts?.length > 0 && (
-                              isPro ? (
-                                <div className="bg-red-500/5 border border-red-500/10 rounded-lg p-3">
-                                  <h4 className="text-xs font-bold text-red-400 mb-2 uppercase tracking-wider flex items-center gap-1.5">
-                                    <AlertTriangle size={12} /> Common Mistakes
-                                  </h4>
-                                  <ul className="space-y-1.5">
-                                    {exercise.donts.map((dont, j) => (
-                                      <li key={j} className="text-sm text-text-muted flex items-start gap-2">
-                                        <span className="text-red-400 mt-0.5 text-xs shrink-0">✕</span>
-                                        {dont}
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              ) : (
-                                <ProLock compact>
+                            {/* Common Mistakes, Alternatives, Video — Pro Only */}
+                            {isPro ? (
+                              <>
+                                {exercise.donts?.length > 0 && (
                                   <div className="bg-red-500/5 border border-red-500/10 rounded-lg p-3">
                                     <h4 className="text-xs font-bold text-red-400 mb-2 uppercase tracking-wider flex items-center gap-1.5">
                                       <AlertTriangle size={12} /> Common Mistakes
                                     </h4>
                                     <ul className="space-y-1.5">
-                                      {exercise.donts.slice(0, 2).map((dont, j) => (
+                                      {exercise.donts.map((dont, j) => (
                                         <li key={j} className="text-sm text-text-muted flex items-start gap-2">
                                           <span className="text-red-400 mt-0.5 text-xs shrink-0">✕</span>
                                           {dont}
@@ -281,23 +267,8 @@ export default function Workout() {
                                       ))}
                                     </ul>
                                   </div>
-                                </ProLock>
-                              )
-                            )}
-
-                            {/* Alternatives */}
-                            {exercise.alternatives?.length > 0 && (
-                              isPro ? (
-                                <div>
-                                  <span className="text-[11px] text-text-muted font-medium mb-1.5 block uppercase tracking-wider">Alternatives</span>
-                                  <div className="flex flex-wrap gap-1.5">
-                                    {exercise.alternatives.map((alt, j) => (
-                                      <span key={j} className="text-xs bg-white/[0.04] px-2.5 py-1 rounded-md text-text-muted">{alt}</span>
-                                    ))}
-                                  </div>
-                                </div>
-                              ) : (
-                                <ProLock compact>
+                                )}
+                                {exercise.alternatives?.length > 0 && (
                                   <div>
                                     <span className="text-[11px] text-text-muted font-medium mb-1.5 block uppercase tracking-wider">Alternatives</span>
                                     <div className="flex flex-wrap gap-1.5">
@@ -306,8 +277,15 @@ export default function Workout() {
                                       ))}
                                     </div>
                                   </div>
-                                </ProLock>
-                              )
+                                )}
+                              </>
+                            ) : (
+                              <ProLock message="Common mistakes, alternatives & video tutorials">
+                                <div className="space-y-3">
+                                  <div className="bg-red-500/5 rounded-lg p-3 h-16" />
+                                  <div className="bg-white/[0.03] rounded-lg p-3 h-10" />
+                                </div>
+                              </ProLock>
                             )}
                           </div>
 
@@ -323,11 +301,12 @@ export default function Workout() {
                                 />
                               </div>
                             ) : (
-                              <ProLock message="Video tutorials">
-                                <div className="aspect-video bg-white/[0.03] rounded-lg flex items-center justify-center">
-                                  <Play size={40} className="text-text-muted" />
+                              <div className="aspect-video bg-white/[0.03] rounded-lg flex items-center justify-center border border-white/[0.06]">
+                                <div className="text-center">
+                                  <Play size={32} className="text-text-muted mx-auto mb-1" />
+                                  <span className="text-[10px] text-text-muted uppercase tracking-wider">Pro</span>
                                 </div>
-                              </ProLock>
+                              </div>
                             )}
                           </div>
                         </div>

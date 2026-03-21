@@ -1,17 +1,12 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, ChevronRight, ArrowLeft, Clock, Search, Lock } from 'lucide-react';
+import { BookOpen, ChevronRight, ArrowLeft, Clock, Search } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
-import { ProBadge } from '../components/ui/ProLock';
-import useUserStore from '../store/useUserStore';
 import { guides } from '../data/guides';
-
-const FREE_GUIDE_LIMIT = 3;
 
 export default function KnowledgeHub() {
   const [activeGuide, setActiveGuide] = useState(null);
   const [search, setSearch] = useState('');
-  const isPro = useUserStore((s) => s.plan) === 'pro';
 
   const categories = [...new Set(guides.map((g) => g.category))];
   const filtered = search ? guides.filter((g) => g.title.toLowerCase().includes(search.toLowerCase()) || g.category.toLowerCase().includes(search.toLowerCase())) : guides;
@@ -69,42 +64,26 @@ export default function KnowledgeHub() {
 
       {/* Guide Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {filtered.map((guide, i) => {
-          const isLocked = !isPro && i >= FREE_GUIDE_LIMIT;
-          return (
-            <motion.button
-              key={guide.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.03 }}
-              onClick={() => !isLocked && setActiveGuide(guide.id)}
-              className={`border rounded-xl p-5 text-left transition-all group w-full relative ${
-                isLocked ? 'border-white/[0.04] opacity-60 cursor-not-allowed' : 'border-white/[0.06] hover:border-white/[0.12]'
-              }`}
-            >
-              <div className="flex items-start justify-between mb-3">
-                <span className="text-2xl">{guide.icon}</span>
-                {isLocked ? (
-                  <div className="flex items-center gap-1">
-                    <ProBadge />
-                  </div>
-                ) : (
-                  <ChevronRight size={14} className="text-text-muted group-hover:text-text-muted transition-colors mt-1" />
-                )}
-              </div>
-              <h3 className="font-bold text-text-primary text-sm mb-1">{guide.title}</h3>
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] text-accent font-medium">{guide.category}</span>
-                <span className="text-[11px] text-text-muted flex items-center gap-1"><Clock size={10} /> {guide.readTime}</span>
-              </div>
-              {isLocked && (
-                <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-dark-bg/50">
-                  <Lock size={16} className="text-text-muted" />
-                </div>
-              )}
-            </motion.button>
-          );
-        })}
+        {filtered.map((guide, i) => (
+          <motion.button
+            key={guide.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.03 }}
+            onClick={() => setActiveGuide(guide.id)}
+            className="border border-white/[0.06] rounded-xl p-5 text-left transition-all group w-full hover:border-white/[0.12]"
+          >
+            <div className="flex items-start justify-between mb-3">
+              <span className="text-2xl">{guide.icon}</span>
+              <ChevronRight size={14} className="text-text-muted group-hover:text-text-muted transition-colors mt-1" />
+            </div>
+            <h3 className="font-bold text-text-primary text-sm mb-1">{guide.title}</h3>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] text-accent font-medium">{guide.category}</span>
+              <span className="text-[11px] text-text-muted flex items-center gap-1"><Clock size={10} /> {guide.readTime}</span>
+            </div>
+          </motion.button>
+        ))}
       </div>
     </PageWrapper>
   );

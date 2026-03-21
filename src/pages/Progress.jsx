@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { TrendingUp, Scale, Dumbbell, Lightbulb, Check } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
-import ProLock, { ProBadge } from '../components/ui/ProLock';
+import ProLock from '../components/ui/ProLock';
 import useUserStore from '../store/useUserStore';
 import { analyzeProgress } from '../utils/smartCoach';
 
@@ -84,106 +84,97 @@ export default function Progress() {
         </div>
       )}
 
-      {/* Weight Chart */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="border border-white/[0.06] rounded-xl p-5 mb-6">
-        <h3 className="font-bold mb-4 flex items-center gap-2 text-sm text-text-secondary">
-          <TrendingUp size={16} /> Weight Trend {!isPro && <ProBadge />}
-        </h3>
-        {isPro ? (
-          weightData.length > 1 ? (
-            <ResponsiveContainer width="100%" height={200}>
-              <AreaChart data={weightData}>
-                <defs><linearGradient id="wg" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#09cadb" stopOpacity={0.2} /><stop offset="95%" stopColor="#09cadb" stopOpacity={0} /></linearGradient></defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
-                <XAxis dataKey="date" tick={{ fill: '#555', fontSize: 11 }} />
-                <YAxis domain={['dataMin - 2', 'dataMax + 2']} tick={{ fill: '#555', fontSize: 11 }} />
-                <Tooltip contentStyle={tooltipStyle} />
-                <Area type="monotone" dataKey="weight" stroke="#09cadb" strokeWidth={2} fill="url(#wg)" dot={{ fill: '#09cadb', r: 3, strokeWidth: 0 }} />
-              </AreaChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="text-center py-12 text-text-muted">
-              <Scale size={36} className="mx-auto mb-3 opacity-40" />
-              <p className="text-sm">Log weight twice to see trend.</p>
-            </div>
-          )
-        ) : (
-          <ProLock message="Weight trend chart">
-            <div className="h-[200px] bg-white/[0.02] rounded-lg" />
-          </ProLock>
-        )}
-      </motion.div>
-
-      {/* Workout Frequency */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="border border-white/[0.06] rounded-xl p-5 mb-8">
-        <h3 className="font-bold mb-4 flex items-center gap-2 text-sm text-text-secondary">
-          <Dumbbell size={16} /> Workout Frequency {!isPro && <ProBadge />}
-        </h3>
-        {isPro ? (
-          <ResponsiveContainer width="100%" height={160}>
-            <BarChart data={workoutFreq}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
-              <XAxis dataKey="week" tick={{ fill: '#555', fontSize: 11 }} />
-              <YAxis tick={{ fill: '#555', fontSize: 11 }} />
-              <Tooltip contentStyle={tooltipStyle} />
-              <Bar dataKey="workouts" fill="#fff" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        ) : (
-          <ProLock message="Workout frequency chart">
-            <div className="h-[160px] bg-white/[0.02] rounded-lg" />
-          </ProLock>
-        )}
-      </motion.div>
-
-      {/* Smart Coach */}
-      <div className="space-y-3">
-        <h3 className="font-bold flex items-center gap-2 text-sm text-text-secondary">
-          <Lightbulb size={16} className="text-accent" /> Smart Coach {!isPro && <ProBadge />}
-        </h3>
-        {isPro ? (
-          recommendations.map((rec, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 + i * 0.05 }}
-              className={`border rounded-xl p-4 ${
-                rec.severity === 'high' ? 'border-accent/30' : 'border-white/[0.06]'
-              }`}
-            >
-              <div className="flex items-start gap-3">
-                <span className="text-lg">{rec.icon}</span>
-                <div className="flex-1">
-                  <h4 className="font-bold text-sm text-text-primary mb-1">{rec.title}</h4>
-                  <p className="text-sm text-text-muted">{rec.message}</p>
-                  {rec.action && !appliedActions.has(i) && (
-                    <button
-                      onClick={() => handleApplyAction(rec, i)}
-                      className="mt-2 px-4 py-1.5 text-xs font-medium rounded-md bg-accent/10 text-accent border border-accent/20 hover:bg-accent/15 transition-all"
-                    >
-                      Apply: {rec.action.value > 0 ? '+' : ''}{rec.action.value} cal/day
-                    </button>
-                  )}
-                  {appliedActions.has(i) && (
-                    <span className="mt-2 inline-flex items-center gap-1 text-xs text-accent font-medium">
-                      <Check size={12} /> Applied
-                    </span>
-                  )}
-                </div>
+      {/* Charts & Smart Coach */}
+      {isPro ? (
+        <>
+          {/* Weight Chart */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="border border-white/[0.06] rounded-xl p-5 mb-6">
+            <h3 className="font-bold mb-4 flex items-center gap-2 text-sm text-text-secondary">
+              <TrendingUp size={16} /> Weight Trend
+            </h3>
+            {weightData.length > 1 ? (
+              <ResponsiveContainer width="100%" height={200}>
+                <AreaChart data={weightData}>
+                  <defs><linearGradient id="wg" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#09cadb" stopOpacity={0.2} /><stop offset="95%" stopColor="#09cadb" stopOpacity={0} /></linearGradient></defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+                  <XAxis dataKey="date" tick={{ fill: '#555', fontSize: 11 }} />
+                  <YAxis domain={['dataMin - 2', 'dataMax + 2']} tick={{ fill: '#555', fontSize: 11 }} />
+                  <Tooltip contentStyle={tooltipStyle} />
+                  <Area type="monotone" dataKey="weight" stroke="#09cadb" strokeWidth={2} fill="url(#wg)" dot={{ fill: '#09cadb', r: 3, strokeWidth: 0 }} />
+                </AreaChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="text-center py-12 text-text-muted">
+                <Scale size={36} className="mx-auto mb-3 opacity-40" />
+                <p className="text-sm">Log weight twice to see trend.</p>
               </div>
-            </motion.div>
-          ))
-        ) : (
-          <ProLock message="AI-powered coaching insights">
-            <div className="space-y-3">
-              {[1, 2].map((n) => (
-                <div key={n} className="border border-white/[0.06] rounded-xl p-4 h-20" />
-              ))}
-            </div>
-          </ProLock>
-        )}
-      </div>
+            )}
+          </motion.div>
+
+          {/* Workout Frequency */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="border border-white/[0.06] rounded-xl p-5 mb-8">
+            <h3 className="font-bold mb-4 flex items-center gap-2 text-sm text-text-secondary">
+              <Dumbbell size={16} /> Workout Frequency
+            </h3>
+            <ResponsiveContainer width="100%" height={160}>
+              <BarChart data={workoutFreq}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+                <XAxis dataKey="week" tick={{ fill: '#555', fontSize: 11 }} />
+                <YAxis tick={{ fill: '#555', fontSize: 11 }} />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Bar dataKey="workouts" fill="#fff" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </motion.div>
+
+          {/* Smart Coach */}
+          <div className="space-y-3">
+            <h3 className="font-bold flex items-center gap-2 text-sm text-text-secondary">
+              <Lightbulb size={16} className="text-accent" /> Smart Coach
+            </h3>
+            {recommendations.map((rec, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 + i * 0.05 }}
+                className={`border rounded-xl p-4 ${
+                  rec.severity === 'high' ? 'border-accent/30' : 'border-white/[0.06]'
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <span className="text-lg">{rec.icon}</span>
+                  <div className="flex-1">
+                    <h4 className="font-bold text-sm text-text-primary mb-1">{rec.title}</h4>
+                    <p className="text-sm text-text-muted">{rec.message}</p>
+                    {rec.action && !appliedActions.has(i) && (
+                      <button
+                        onClick={() => handleApplyAction(rec, i)}
+                        className="mt-2 px-4 py-1.5 text-xs font-medium rounded-md bg-accent/10 text-accent border border-accent/20 hover:bg-accent/15 transition-all"
+                      >
+                        Apply: {rec.action.value > 0 ? '+' : ''}{rec.action.value} cal/day
+                      </button>
+                    )}
+                    {appliedActions.has(i) && (
+                      <span className="mt-2 inline-flex items-center gap-1 text-xs text-accent font-medium">
+                        <Check size={12} /> Applied
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </>
+      ) : (
+        <ProLock message="Charts, analytics & AI coaching insights">
+          <div className="space-y-4">
+            <div className="border border-white/[0.06] rounded-xl p-5 h-[240px]" />
+            <div className="border border-white/[0.06] rounded-xl p-5 h-[180px]" />
+            <div className="border border-white/[0.06] rounded-xl p-4 h-20" />
+          </div>
+        </ProLock>
+      )}
     </PageWrapper>
   );
 }
