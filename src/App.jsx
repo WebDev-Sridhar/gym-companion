@@ -67,6 +67,7 @@ function PublicRoute({ children }) {
   const isOnboarded = useUserStore((s) => s.isOnboarded);
 
   if (session && isOnboarded) return <Navigate to="/dashboard" replace />;
+  if (session && !isOnboarded) return <Navigate to="/onboarding" replace />;
   return children;
 }
 
