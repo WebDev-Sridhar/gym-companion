@@ -1,5 +1,10 @@
 import supabase from './supabase';
 
+const PLAN_AMOUNTS = {
+  monthly: 14900, // ₹149 in paise
+  yearly: 99900,  // ₹999 in paise
+};
+
 let scriptLoaded = null;
 
 export function loadRazorpayScript() {
@@ -23,35 +28,57 @@ export function loadRazorpayScript() {
   return scriptLoaded;
 }
 
-export async function createOrder(planType) {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) throw new Error('Not authenticated');
+export async function createPendingSubscription(planType, userId) {
+  const amount = PLAN_AMOUNTS[planType];
+  const { data, error } = await supabase
+    .from('subscriptions')
+    .insert({
+      user_id: userId,
+      plan_type: planType,
+      status: 'pending',
+      amount,
+      currency: 'INR',
+    })
+    .select()
+    .single();
 
-  const { data, error } = await supabase.functions.invoke('create-order', {
-    body: { planType },
-  });
-
-  if (error) throw new Error(error.message || 'Failed to create order');
+  if (error) throw new Error(error.message);
   return data;
 }
 
-export async function verifyPayment(paymentData) {
-  const { data, error } = await supabase.functions.invoke('verify-payment', {
-    body: paymentData,
-  });
+export async function activateSubscription(subscriptionId, paymentId, planType) {
+  const now = new Date();
+  const expiresAt = new Date(now);
+  if (planType === 'monthly') {
+    expiresAt.setMonth(expiresAt.getMonth() + 1);
+  } else {
+    expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+  }
 
-  if (error) throw new Error(error.message || 'Payment verification failed');
+  const { data, error } = await supabase
+    .from('subscriptions')
+    .update({
+      status: 'active',
+      razorpay_payment_id: paymentId,
+      starts_at: now.toISOString(),
+      expires_at: expiresAt.toISOString(),
+      updated_at: now.toISOString(),
+    })
+    .eq('id', subscriptionId)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
   return data;
 }
 
-export function openCheckout({ orderId, amount, planType, userEmail, userName, onSuccess, onFailure }) {
+export function openCheckout({ amount, planType, userEmail, userName, onSuccess, onFailure }) {
   const options = {
     key: import.meta.env.VITE_RAZORPAY_KEY_ID,
     amount,
     currency: 'INR',
     name: 'GymThozhan',
     description: planType === 'monthly' ? 'Pro Monthly Plan' : 'Pro Yearly Plan',
-    order_id: orderId,
     prefill: {
       name: userName || '',
       email: userEmail || '',
