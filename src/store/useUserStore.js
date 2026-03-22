@@ -19,6 +19,8 @@ import {
   saveProgressLog,
   saveFoodLog,
   deleteFoodLog,
+  deleteExerciseLog,
+  deleteProgressLog,
   deleteAllUserData,
 } from '../lib/supabaseService';
 
@@ -278,6 +280,66 @@ const useUserStore = create(
             saveProgressLog(userId, newLog),
             saveGamification(userId, buildGamSaveData({ ...state, weightLogsCount: count, transformationLevel: newLevel, xp: newXp })),
           ]);
+        });
+      },
+
+      // Delete Workout Log
+      deleteWorkoutLog: (logId) => {
+        const state = get();
+        const logToRemove = state.workoutLogs.find((l) => l.id === logId);
+        if (!logToRemove) return;
+
+        const newLogs = state.workoutLogs.filter((l) => l.id !== logId);
+        const workoutDates = [...new Set(newLogs.map((l) => l.date))];
+        const newStreak = calculateStreak(workoutDates);
+        const totalWorkouts = Math.max(0, state.totalWorkouts - 1);
+        const newLongestStreak = Math.max(newStreak, state.longestStreak);
+
+        const stats = computeTransformationStats(
+          newLogs, state.weightLogs, state.foodLogs,
+          newStreak, newLongestStreak, state.nutritionTargets
+        );
+        const newLevel = getCurrentTransformationLevel(stats).id;
+
+        set({
+          workoutLogs: newLogs,
+          totalWorkouts,
+          currentStreak: newStreak,
+          longestStreak: newLongestStreak,
+          transformationLevel: newLevel,
+          level: newLevel,
+        });
+
+        syncToSupabase(async (userId) => {
+          await Promise.all([
+            deleteExerciseLog(logId),
+            saveGamification(userId, buildGamSaveData({
+              ...get(),
+            })),
+          ]);
+        });
+      },
+
+      // Delete Weight Log
+      deleteWeightLog: (logId) => {
+        const state = get();
+        const newWeightLogs = state.weightLogs.filter((l) => l.id !== logId);
+
+        const stats = computeTransformationStats(
+          state.workoutLogs, newWeightLogs, state.foodLogs,
+          state.currentStreak, state.longestStreak, state.nutritionTargets
+        );
+        const newLevel = getCurrentTransformationLevel(stats).id;
+
+        set({
+          weightLogs: newWeightLogs,
+          weightLogsCount: newWeightLogs.length,
+          transformationLevel: newLevel,
+          level: newLevel,
+        });
+
+        syncToSupabase(async () => {
+          await deleteProgressLog(logId);
         });
       },
 

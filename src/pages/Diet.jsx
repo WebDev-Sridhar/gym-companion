@@ -504,12 +504,12 @@ export default function Diet() {
                           <button
                             onClick={(e) => { e.stopPropagation(); handleLog(key); }}
                             disabled={!hasSelection}
-                            className="w-full py-2.5 rounded-lg text-sm font-medium bg-accent/10 text-accent border border-accent/20 hover:bg-accent/15 transition-all flex items-center justify-center gap-2 mb-3 disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="w-full py-2.5 rounded-lg text-sm font-medium bg-accent/10 text-accent border border-accent/20 hover:bg-accent/15 transition-all flex items-center justify-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed"
                           >
                             <Plus size={14} /> Log Selected ({adjusted.calories} cal) +20 XP
                           </button>
                         ) : (
-                          <div className="flex items-center gap-2 mb-3">
+                          <div className="flex items-center gap-2">
                             <div className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-accent/5 text-accent/50 text-center flex items-center justify-center gap-2">
                               <Check size={14} /> Logged
                             </div>
@@ -526,154 +526,150 @@ export default function Diet() {
                           </div>
                         )}
 
-                        {/* Add Custom Food Item */}
+                        {/* Add Custom + Swap Meal — single row */}
                         {!isLogged && (
-                          <div className="mb-2">
-                            {customMealSlot !== key ? (
+                          <div className="flex items-center gap-3 mt-3">
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setCustomMealSlot(customMealSlot === key ? null : key); setShowAlts(null); }}
+                              className={`flex items-center gap-1.5 text-[11px] font-medium transition-colors ${customMealSlot === key ? 'text-accent' : 'text-text-muted hover:text-accent'}`}
+                            >
+                              <PenLine size={11} /> Add Items
+                            </button>
+                            {isArray && mealOptions.length > 1 && (
                               <button
-                                onClick={(e) => { e.stopPropagation(); setCustomMealSlot(key); }}
-                                className="flex items-center gap-1.5 text-[11px] text-text-muted font-medium hover:text-accent transition-colors"
+                                onClick={(e) => { e.stopPropagation(); setShowAlts(showAlts === key ? null : key); setCustomMealSlot(null); }}
+                                className={`flex items-center gap-1.5 text-[11px] font-medium transition-colors ${showAlts === key ? 'text-accent' : 'text-text-muted hover:text-accent'}`}
                               >
-                                <PenLine size={11} /> Add custom food item
+                                <RefreshCw size={11} /> Swap Meal
                               </button>
-                            ) : (
-                              <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                className="bg-white/[0.03] rounded-lg p-3 space-y-2"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                {/* Food name with search */}
-                                <div className="relative">
-                                  <input
-                                    type="text"
-                                    placeholder="Type food name (e.g. Curd Rice, Idli)"
-                                    value={customMeal.name}
-                                    onChange={(e) => {
-                                      const val = e.target.value;
-                                      setCustomMeal((p) => ({ ...p, name: val }));
-                                      const results = searchFoods(val);
-                                      setFoodSuggestions(results);
-                                      if (results.length === 0 && val.length >= 2) {
-                                        setManualEntry(true);
-                                      } else {
-                                        setManualEntry(false);
-                                      }
-                                    }}
-                                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted/50 outline-none focus:border-accent/30"
-                                  />
-
-                                  {/* Search suggestions dropdown */}
-                                  {foodSuggestions.length > 0 && (
-                                    <div className="absolute left-0 right-0 top-full mt-1 bg-bg-primary border border-white/[0.1] rounded-lg overflow-hidden z-10 shadow-lg">
-                                      {foodSuggestions.map((food, fi) => (
-                                        <button
-                                          key={fi}
-                                          onClick={() => {
-                                            setCustomMeal({ name: food.name, calories: String(food.calories), protein: String(food.protein) });
-                                            setFoodSuggestions([]);
-                                            setManualEntry(false);
-                                          }}
-                                          className="w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-white/[0.06] transition-colors text-left"
-                                        >
-                                          <span className="text-text-secondary truncate mr-2">{food.name}</span>
-                                          <span className="text-[10px] text-text-muted whitespace-nowrap">{food.calories} cal · {food.protein}g P</span>
-                                        </button>
-                                      ))}
-                                    </div>
-                                  )}
-                                </div>
-
-                                {/* Show "not found" hint when no suggestions */}
-                                {manualEntry && foodSuggestions.length === 0 && customMeal.name.length >= 2 && (
-                                  <p className="text-[11px] text-amber-400/80">Not found in our database — enter calories & protein below.</p>
-                                )}
-
-                                {/* Calories & protein fields — show when food is selected or manual entry */}
-                                {(customMeal.calories || manualEntry) && (
-                                  <div className="grid grid-cols-2 gap-2">
-                                    <input
-                                      type="number"
-                                      placeholder="Calories"
-                                      value={customMeal.calories}
-                                      onChange={(e) => setCustomMeal((p) => ({ ...p, calories: e.target.value }))}
-                                      className="bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted/50 outline-none focus:border-accent/30"
-                                    />
-                                    <input
-                                      type="number"
-                                      placeholder="Protein (g)"
-                                      value={customMeal.protein}
-                                      onChange={(e) => setCustomMeal((p) => ({ ...p, protein: e.target.value }))}
-                                      className="bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted/50 outline-none focus:border-accent/30"
-                                    />
-                                  </div>
-                                )}
-
-                                <div className="flex gap-2">
-                                  <button
-                                    onClick={() => addCustomItem(key)}
-                                    disabled={!customMeal.name || !customMeal.calories}
-                                    className="flex-1 py-2 rounded-lg text-sm font-medium bg-accent/10 text-accent border border-accent/20 hover:bg-accent/15 transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
-                                  >
-                                    <Plus size={12} /> Add Item
-                                  </button>
-                                  <button
-                                    onClick={() => {
-                                      setCustomMealSlot(null);
-                                      setCustomMeal({ name: '', calories: '', protein: '' });
-                                      setFoodSuggestions([]);
-                                      setManualEntry(false);
-                                    }}
-                                    className="px-3 py-2 rounded-lg text-sm text-text-muted border border-white/[0.08] hover:text-text-primary transition-all"
-                                  >
-                                    Cancel
-                                  </button>
-                                </div>
-                              </motion.div>
                             )}
                           </div>
                         )}
 
-                        {/* Swap Meal Options */}
-                        {isArray && mealOptions.length > 1 && (
-                          <div>
-                            <button
-                              onClick={(e) => { e.stopPropagation(); setShowAlts(showAlts === key ? null : key); }}
-                              className="flex items-center gap-1.5 text-[11px] text-text-muted font-medium mb-2 hover:text-accent transition-colors"
-                            >
-                              <RefreshCw size={11} /> Swap meal ({mealOptions.length} options)
-                            </button>
-                            <AnimatePresence>
-                              {showAlts === key && (
-                                <motion.div
-                                  initial={{ height: 0, opacity: 0 }}
-                                  animate={{ height: 'auto', opacity: 1 }}
-                                  exit={{ height: 0, opacity: 0 }}
-                                  className="space-y-1 max-h-56 overflow-y-auto"
-                                >
-                                  {mealOptions.map((opt, j) => (
+                        {/* Custom Food Form (expanded) */}
+                        {!isLogged && customMealSlot === key && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            className="bg-[#1a1a1a] rounded-lg p-3 space-y-2 mt-2"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            {/* Food name with search */}
+                            <div className="relative">
+                              <input
+                                type="text"
+                                placeholder="Type food name (e.g. Curd Rice, Idli)"
+                                value={customMeal.name}
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  setCustomMeal((p) => ({ ...p, name: val }));
+                                  const results = searchFoods(val);
+                                  setFoodSuggestions(results);
+                                  if (results.length === 0 && val.length >= 2) {
+                                    setManualEntry(true);
+                                  } else {
+                                    setManualEntry(false);
+                                  }
+                                }}
+                                className="w-full bg-white/[0.06] border border-white/[0.1] rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted/50 outline-none focus:border-accent/30"
+                              />
+
+                              {/* Search suggestions dropdown */}
+                              {foodSuggestions.length > 0 && (
+                                <div className="absolute left-0 right-0 top-full mt-1 bg-[#222] border border-white/[0.12] rounded-lg z-20 shadow-xl max-h-48 overflow-y-auto">
+                                  {foodSuggestions.map((food, fi) => (
                                     <button
-                                      key={j}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleSwap(key, j);
+                                      key={fi}
+                                      onClick={() => {
+                                        setCustomMeal({ name: food.name, calories: String(food.calories), protein: String(food.protein) });
+                                        setFoodSuggestions([]);
+                                        setManualEntry(false);
                                       }}
-                                      className={`w-full flex items-center justify-between rounded-lg p-2.5 text-sm text-left transition-all ${
-                                        j === activeIndex
-                                          ? 'bg-accent/10 border border-accent/20'
-                                          : 'bg-white/[0.03] border border-transparent hover:bg-white/[0.06]'
-                                      }`}
+                                      className="w-full flex items-center justify-between px-3 py-2.5 text-sm hover:bg-white/[0.08] transition-colors text-left border-b border-white/[0.06] last:border-b-0"
                                     >
-                                      <span className={`flex-1 mr-3 ${j === activeIndex ? 'text-accent font-medium' : 'text-text-secondary'}`}>
-                                        {opt.name}
-                                      </span>
-                                      <span className="text-[11px] text-text-muted whitespace-nowrap">{opt.calories} cal · {opt.protein}g P</span>
+                                      <span className="text-text-primary truncate mr-2">{food.name}</span>
+                                      <span className="text-[10px] text-text-muted whitespace-nowrap">{food.calories} cal · {food.protein}g P</span>
                                     </button>
                                   ))}
-                                </motion.div>
+                                </div>
                               )}
-                            </AnimatePresence>
-                          </div>
+                            </div>
+
+                            {/* Show "not found" hint when no suggestions */}
+                            {manualEntry && foodSuggestions.length === 0 && customMeal.name.length >= 2 && (
+                              <p className="text-[11px] text-amber-400/80">Not found in our database — enter calories & protein below.</p>
+                            )}
+
+                            {/* Calories & protein fields — show when food is selected or manual entry */}
+                            {(customMeal.calories || manualEntry) && (
+                              <div className="grid grid-cols-2 gap-2">
+                                <input
+                                  type="number"
+                                  placeholder="Calories"
+                                  value={customMeal.calories}
+                                  onChange={(e) => setCustomMeal((p) => ({ ...p, calories: e.target.value }))}
+                                  className="bg-white/[0.06] border border-white/[0.1] rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted/50 outline-none focus:border-accent/30"
+                                />
+                                <input
+                                  type="number"
+                                  placeholder="Protein (g)"
+                                  value={customMeal.protein}
+                                  onChange={(e) => setCustomMeal((p) => ({ ...p, protein: e.target.value }))}
+                                  className="bg-white/[0.06] border border-white/[0.1] rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted/50 outline-none focus:border-accent/30"
+                                />
+                              </div>
+                            )}
+
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => addCustomItem(key)}
+                                disabled={!customMeal.name || !customMeal.calories}
+                                className="flex-1 py-2 rounded-lg text-sm font-medium bg-accent/10 text-accent border border-accent/20 hover:bg-accent/15 transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
+                              >
+                                <Plus size={12} /> Add Item
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setCustomMealSlot(null);
+                                  setCustomMeal({ name: '', calories: '', protein: '' });
+                                  setFoodSuggestions([]);
+                                  setManualEntry(false);
+                                }}
+                                className="px-3 py-2 rounded-lg text-sm text-text-muted border border-white/[0.08] hover:text-text-primary transition-all"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </motion.div>
+                        )}
+
+                        {/* Swap Meal Options */}
+                        {isArray && mealOptions.length > 1 && showAlts === key && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            className="space-y-1 max-h-56 overflow-y-auto mt-2"
+                          >
+                            {mealOptions.map((opt, j) => (
+                              <button
+                                key={j}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleSwap(key, j);
+                                }}
+                                className={`w-full flex items-center justify-between rounded-lg p-2.5 text-sm text-left transition-all ${
+                                  j === activeIndex
+                                    ? 'bg-accent/10 border border-accent/20'
+                                    : 'bg-white/[0.03] border border-transparent hover:bg-white/[0.06]'
+                                }`}
+                              >
+                                <span className={`flex-1 mr-3 ${j === activeIndex ? 'text-accent font-medium' : 'text-text-secondary'}`}>
+                                  {opt.name}
+                                </span>
+                                <span className="text-[11px] text-text-muted whitespace-nowrap">{opt.calories} cal · {opt.protein}g P</span>
+                              </button>
+                            ))}
+                          </motion.div>
                         )}
                       </motion.div>
                     )}

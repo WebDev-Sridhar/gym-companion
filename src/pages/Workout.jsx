@@ -14,6 +14,7 @@ import {
   Minus,
   AlertTriangle,
   Info,
+  Trash2,
 } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import ProLock from '../components/ui/ProLock';
@@ -21,7 +22,7 @@ import { showCoach } from '../components/ui/CoachPopup';
 import useUserStore from '../store/useUserStore';
 
 export default function Workout() {
-  const { workoutPlan, logWorkout, plan } = useUserStore();
+  const { workoutPlan, logWorkout, deleteWorkoutLog, plan } = useUserStore();
   const isPro = plan === 'pro';
   const [activeDay, setActiveDay] = useState(0);
   const [isLogging, setIsLogging] = useState(false);
@@ -30,7 +31,14 @@ export default function Workout() {
   const [showHistory, setShowHistory] = useState(false);
   const [videoMode, setVideoMode] = useState({}); // { [exerciseId]: 'shorts' | 'full' }
   const [mobileVideo, setMobileVideo] = useState({}); // { [exerciseId]: true/false }
+  const [saveError, setSaveError] = useState('');
   const workoutLogs = useUserStore((s) => s.workoutLogs);
+
+  const today = new Date().toISOString().split('T')[0];
+  const todaysLogs = workoutLogs.filter((l) => l.date === today);
+  const hasLoggedToday = todaysLogs.length > 0;
+  // Get all dayNames logged today to prevent logging multiple different days on the same day
+  const todaysLoggedDays = new Set(todaysLogs.map((l) => l.dayName));
 
   if (!workoutPlan) {
     return (
@@ -92,6 +100,35 @@ export default function Workout() {
   };
 
   const handleSaveWorkout = () => {
+    setSaveError('');
+
+    // Prevent logging more than one workout per day
+    if (hasLoggedToday) {
+      setSaveError('You\'ve already logged a workout today. Only one workout per day is allowed.');
+      return;
+    }
+
+    // Prevent logging a different day's workout if one was already logged today
+    if (todaysLoggedDays.size > 0 && !todaysLoggedDays.has(currentDay.day)) {
+      setSaveError('You\'ve already logged a different workout today.');
+      return;
+    }
+
+    // Validate: at least 2 sets with reps filled across all exercises
+    let totalFilledSets = 0;
+    for (const ex of currentDay.exercises) {
+      const logged = logData[ex.id];
+      if (logged?.sets) {
+        for (const s of logged.sets) {
+          if (Number(s.reps) > 0) totalFilledSets++;
+        }
+      }
+    }
+    if (totalFilledSets < 2) {
+      setSaveError('Enter at least 2 sets with reps before saving.');
+      return;
+    }
+
     const exercises = currentDay.exercises.map((ex) => {
       const logged = logData[ex.id];
       return {
@@ -99,8 +136,8 @@ export default function Workout() {
         muscle: ex.muscle,
         planned: { sets: ex.sets, reps: ex.reps },
         logged: logged?.sets?.length
-          ? { sets: logged.sets.map((s) => ({ reps: Number(s.reps) || 0, weight: Number(s.weight) || 0 })) }
-          : { sets: Array.from({ length: ex.sets }, () => ({ reps: Number(ex.reps) || 0, weight: 0 })) },
+          ? { sets: logged.sets.filter((s) => Number(s.reps) > 0).map((s) => ({ reps: Number(s.reps), weight: Number(s.weight) || 0 })) }
+          : { sets: [] },
       };
     });
     logWorkout({ dayName: currentDay.day, exercises });
@@ -142,7 +179,16 @@ export default function Workout() {
               <div key={log.id} className="border border-white/[0.06] rounded-xl p-4">
                 <div className="flex items-center justify-between mb-3">
                   <span className="font-bold text-text-primary text-sm">{log.dayName}</span>
-                  <span className="text-xs text-text-muted">{new Date(log.timestamp || log.date).toLocaleDateString()}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-text-muted">{new Date(log.timestamp || log.date).toLocaleDateString()}</span>
+                    <button
+                      onClick={() => { if (confirm('Delete this workout log?')) deleteWorkoutLog(log.id); }}
+                      className="p-1 rounded text-text-muted/40 hover:text-red-400 transition-colors"
+                      title="Delete log"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
                 </div>
                 {log.exercises?.map((ex, i) => (
                   <div key={i} className="py-2 border-b border-white/[0.04] last:border-0">
@@ -197,29 +243,37 @@ export default function Workout() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-2 mb-4">
-            {!isLogging ? (
-              <button
-                onClick={() => { setIsLogging(true); showCoach('workoutStart'); }}
-                className="btn-primary px-5 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2"
-              >
-                <Play size={16} /> Start Workout
-              </button>
-            ) : (
-              <>
+          <div className="mb-4">
+            <div className="flex gap-2">
+              {!isLogging ? (
                 <button
-                  onClick={handleSaveWorkout}
-                  className="btn-secondary px-5 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2"
+                  onClick={() => { setSaveError(''); setIsLogging(true); showCoach('workoutStart'); }}
+                  disabled={hasLoggedToday}
+                  className="btn-primary px-5 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  <Save size={16} /> Save Workout
+                  <Play size={16} /> {hasLoggedToday ? 'Already Logged Today' : 'Start Workout'}
                 </button>
-                <button
-                  onClick={() => { setIsLogging(false); setLogData({}); showCoach('workoutCancel', 'left'); }}
-                  className="px-4 py-2.5 rounded-lg text-sm font-medium text-text-muted border border-white/[0.06] hover:text-text-secondary"
-                >
-                  Cancel
-                </button>
-              </>
+              ) : (
+                <>
+                  <button
+                    onClick={handleSaveWorkout}
+                    className="btn-secondary px-5 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2"
+                  >
+                    <Save size={16} /> Save Workout
+                  </button>
+                  <button
+                    onClick={() => { setIsLogging(false); setLogData({}); setSaveError(''); showCoach('workoutCancel', 'left'); }}
+                    className="px-4 py-2.5 rounded-lg text-sm font-medium text-text-muted border border-white/[0.06] hover:text-text-secondary"
+                  >
+                    Cancel
+                  </button>
+                </>
+              )}
+            </div>
+            {saveError && (
+              <p className="text-red-400 text-xs mt-2 flex items-center gap-1.5">
+                <AlertTriangle size={12} /> {saveError}
+              </p>
             )}
           </div>
 

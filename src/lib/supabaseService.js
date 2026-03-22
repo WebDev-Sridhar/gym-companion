@@ -269,6 +269,14 @@ export async function saveFoodLog(userId, log) {
   return supabase.from('food_logs').insert(data).select().single();
 }
 
+export async function deleteExerciseLog(logId) {
+  return supabase.from('exercise_logs').delete().eq('id', logId);
+}
+
+export async function deleteProgressLog(logId) {
+  return supabase.from('progress').delete().eq('id', logId);
+}
+
 export async function deleteFoodLog(logId) {
   return supabase.from('food_logs').delete().eq('id', logId);
 }

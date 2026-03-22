@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { TrendingUp, Scale, Dumbbell, Check } from 'lucide-react';
+import { TrendingUp, Scale, Dumbbell, Check, Trash2, Lock } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import ProLock from '../components/ui/ProLock';
 import { showCoach } from '../components/ui/CoachPopup';
@@ -9,11 +9,15 @@ import useUserStore from '../store/useUserStore';
 import { analyzeProgress } from '../utils/smartCoach';
 
 export default function Progress() {
-  const { weightLogs, workoutLogs, foodLogs, logWeight, profile, nutritionTargets, adjustNutrition, plan } = useUserStore();
+  const { weightLogs, workoutLogs, foodLogs, logWeight, deleteWeightLog, profile, nutritionTargets, adjustNutrition, plan } = useUserStore();
   const isPro = plan === 'pro';
   const [newWeight, setNewWeight] = useState('');
   const [showInput, setShowInput] = useState(false);
   const [appliedActions, setAppliedActions] = useState(new Set());
+
+  const isMonday = new Date().getDay() === 1;
+  const today = new Date().toISOString().split('T')[0];
+  const hasLoggedToday = weightLogs.some((l) => l.date === today);
 
   const weightData = weightLogs.map((l) => ({
     date: new Date(l.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
@@ -84,16 +88,50 @@ export default function Progress() {
         ))}
       </div>
 
-      {/* Log Weight */}
-      {!showInput ? (
+      {/* Log Weight — only on Mondays */}
+      {!isMonday ? (
+        <div className="flex items-center gap-2 mb-8 px-4 py-3 border border-white/[0.06] rounded-lg">
+          <Lock size={14} className="text-text-muted" />
+          <p className="text-sm text-text-muted">Weight logging is available on <span className="text-text-secondary font-medium">Mondays</span> for consistent weekly tracking.</p>
+        </div>
+      ) : hasLoggedToday ? (
+        <div className="flex items-center gap-2 mb-8 px-4 py-3 border border-accent/20 rounded-lg bg-accent/5">
+          <Check size={14} className="text-accent" />
+          <p className="text-sm text-text-muted">Weight logged today. See you next Monday!</p>
+        </div>
+      ) : !showInput ? (
         <button onClick={() => setShowInput(true)} className="btn-primary px-6 py-3 rounded-lg text-sm font-bold inline-flex items-center gap-2 mb-8">
-          <Scale size={16} /> Log Today's Weight
+          <Scale size={16} /> Log This Week's Weight
         </button>
       ) : (
         <div className="border border-white/[0.06] rounded-xl p-3 flex gap-2 mb-8">
           <input type="number" step="0.1" value={newWeight} onChange={(e) => setNewWeight(e.target.value)} placeholder="Weight (kg)" autoFocus className="flex-1 min-w-0 px-4 py-3 bg-white/[0.04] border border-white/[0.06] rounded-lg text-text-primary font-bold focus:outline-none focus:border-white/20 text-center" />
           <button onClick={handleLog} disabled={!newWeight} className="btn-primary px-6 py-3 rounded-lg font-bold disabled:opacity-30">Save</button>
           <button onClick={() => setShowInput(false)} className="px-3 py-3 rounded-lg text-text-muted border border-white/[0.06]">✕</button>
+        </div>
+      )}
+
+      {/* Weight Log History */}
+      {weightLogs.length > 0 && (
+        <div className="border border-white/[0.06] rounded-xl p-4 mb-8">
+          <h3 className="font-bold text-sm text-text-secondary mb-3">Weight Log History</h3>
+          <div className="space-y-1.5 max-h-40 overflow-y-auto">
+            {[...weightLogs].reverse().map((log) => (
+              <div key={log.id} className="flex items-center justify-between py-1.5 px-2 rounded-lg hover:bg-white/[0.02]">
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-bold text-text-primary">{log.weight} kg</span>
+                  <span className="text-xs text-text-muted">{new Date(log.date).toLocaleDateString()}</span>
+                </div>
+                <button
+                  onClick={() => { if (confirm('Delete this weight log?')) deleteWeightLog(log.id); }}
+                  className="p-1 rounded text-text-muted/40 hover:text-red-400 transition-colors"
+                  title="Delete log"
+                >
+                  <Trash2 size={13} />
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
