@@ -98,6 +98,9 @@ const useUserStore = create(
       longestStreak: 0,
       lastLoginDate: null,
 
+      // Meal Swaps (per-date slot overrides)
+      mealSwaps: {}, // { '2026-03-22': { breakfast: 3, dinner: 5 }, ... }
+
       // Subscription
       plan: 'free', // 'free' | 'pro'
       subscription: null, // { id, planType, status, startsAt, expiresAt }
@@ -105,6 +108,16 @@ const useUserStore = create(
       // Stats
       totalWorkouts: 0,
       weightLogsCount: 0,
+
+      // Meal Swap Actions
+      swapMeal: (date, mealKey, optionIndex) => {
+        set((s) => ({
+          mealSwaps: {
+            ...s.mealSwaps,
+            [date]: { ...(s.mealSwaps[date] || {}), [mealKey]: optionIndex },
+          },
+        }));
+      },
 
       // Subscription Actions
       activatePro: (subscriptionData) => {
@@ -507,6 +520,7 @@ const useUserStore = create(
           lastLoginDate: null,
           totalWorkouts: 0,
           weightLogsCount: 0,
+          mealSwaps: {},
           plan: 'free',
           subscription: null,
         });

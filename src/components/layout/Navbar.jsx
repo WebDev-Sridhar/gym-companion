@@ -174,7 +174,9 @@ export default function Navbar() {
                     <motion.div
                       layoutId="bottomTabIndicator"
                       className="absolute -top-1.5 w-6 h-[2px] rounded-full bg-accent"
-                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                      style={{ willChange: 'transform' }}
+                      transition={{ type: 'spring', stiffness: 500, damping: 35, layout: { type: 'spring', stiffness: 500, damping: 35 } }}
+                      layout="position"
                     />
                   )}
                   <div className={`p-1 transition-all ${isActive ? 'text-text-primary' : 'text-text-muted'}`}>

@@ -105,6 +105,14 @@ export function generateDietPlan(profile, calorieOverride) {
 }
 
 /**
+ * Get the meal option for a given day (rotation through available options)
+ */
+export function getMealForDay(mealOptions, dayIndex) {
+  if (!Array.isArray(mealOptions)) return mealOptions;
+  return mealOptions[dayIndex % mealOptions.length];
+}
+
+/**
  * Get workout tips based on goal
  */
 function getWorkoutTips(goal) {

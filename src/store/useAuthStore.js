@@ -24,10 +24,14 @@ const useAuthStore = create((set, get) => ({
 
       if (session) {
         set({ session, user: session.user });
-        try {
-          await get().hydrateProfile(session.user.id);
-        } catch (e) {
-          console.warn('Initial hydration failed:', e.message);
+        // Only hydrate from Supabase if local state is empty (not already onboarded)
+        const alreadyLoaded = useUserStore.getState().isOnboarded;
+        if (!alreadyLoaded) {
+          try {
+            await get().hydrateProfile(session.user.id);
+          } catch (e) {
+            console.warn('Initial hydration failed:', e.message);
+          }
         }
       }
 
