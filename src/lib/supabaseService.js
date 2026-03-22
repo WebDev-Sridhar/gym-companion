@@ -207,12 +207,10 @@ export async function fetchProgressLogs(userId) {
 export async function saveGamification(userId, gamData) {
   const data = {
     user_id: userId,
-    xp: gamData.xp,
-    level: gamData.level,
+    transformation_level: gamData.transformationLevel || 0,
     current_streak: gamData.currentStreak,
     longest_streak: gamData.longestStreak,
     total_workouts: gamData.totalWorkouts,
-    earned_badges: gamData.earnedBadges,
     last_login_date: gamData.lastLoginDate,
     updated_at: new Date().toISOString(),
   };
@@ -244,12 +242,10 @@ export async function fetchGamification(userId) {
   if (!data) return { data: null, error };
   return {
     data: {
-      xp: data.xp,
-      level: data.level,
+      transformationLevel: data.transformation_level || 0,
       currentStreak: data.current_streak,
       longestStreak: data.longest_streak,
       totalWorkouts: data.total_workouts,
-      earnedBadges: data.earned_badges || [],
       lastLoginDate: data.last_login_date,
     },
     error,

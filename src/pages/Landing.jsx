@@ -74,7 +74,7 @@ const features = [
   {
     icon: Trophy,
     title: 'Gamification',
-    description: 'Earn XP, level up, unlock badges, and maintain streaks. Fitness made addictive.',
+    description: 'Complete real transformation levels based on your actual progress. No fake XP — just real results.',
   },
   {
     icon: BookOpen,
@@ -86,7 +86,7 @@ const features = [
 const steps = [
   { num: '01', title: 'Tell Us About You', desc: 'Quick onboarding to understand your goals, body type, and preferences.' },
   { num: '02', title: 'Get Your Plan', desc: 'Receive a personalized workout + diet plan tailored just for you.' },
-  { num: '03', title: 'Track & Level Up', desc: 'Log workouts, track progress, earn XP, and watch yourself transform.' },
+  { num: '03', title: 'Track & Transform', desc: 'Log workouts, track progress, and unlock transformation levels as your body changes.' },
 ];
 
 const testimonials = [
@@ -365,7 +365,7 @@ export default function Landing() {
                     <rect x="56" y="22" width="8" height="43" rx="2" fill="#c8ee44" fillOpacity="0.8" />
                     {/* Trophy */}
                     <path d="M38 18 L42 12 L46 18" stroke="#c8ee44" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-                    <text x="40" y="95" textAnchor="middle" fill="#888" fontSize="11" fontWeight="600">Level Up</text>
+                    <text x="40" y="95" textAnchor="middle" fill="#888" fontSize="11" fontWeight="600">Transform</text>
                   </g>
 
                   {/* Floating accent elements */}
@@ -374,7 +374,7 @@ export default function Landing() {
                   <circle cx="350" cy="250" r="3" fill="#c8ee44" fillOpacity="0.2" />
                   <circle cx="100" cy="180" r="2" fill="#c8ee44" fillOpacity="0.15" />
 
-                  {/* XP sparkle */}
+                  {/* Sparkle */}
                   <g transform="translate(310, 370)">
                     <path d="M0 -8 L2 -2 L8 0 L2 2 L0 8 L-2 2 L-8 0 L-2 -2 Z" fill="#c8ee44" fillOpacity="0.4" />
                   </g>
@@ -432,7 +432,7 @@ export default function Landing() {
                   'Full diet plan with macros',
                   'Workout logging',
                   'Weight logging',
-                  'XP, levels & streaks',
+                  'Transformation levels & streaks',
                   'Daily dashboard',
                   'All Knowledge Hub guides',
                 ].map((f) => (
@@ -469,7 +469,7 @@ export default function Landing() {
                   'Progress charts & analytics',
                   'Full workout history',
                   'Today\'s intake tracking',
-                  'All badges unlocked',
+                  'All 12 transformation levels',
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-text-secondary">
                     <Sparkles size={12} className="text-text-muted flex-shrink-0 mt-0.5" />

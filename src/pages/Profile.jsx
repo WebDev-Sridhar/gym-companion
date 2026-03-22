@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Edit3, Trophy, Flame, Zap, Dumbbell, Scale, RotateCcw, Save, X, Award, LogOut, Mail, Sparkles, Crown } from 'lucide-react';
+import { User, Edit3, Trophy, Flame, TrendingUp, Dumbbell, RotateCcw, Save, X, LogOut, Mail, Sparkles, Crown, Check, Lock } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { showCoach } from '../components/ui/CoachPopup';
 import { showUpgradeModal } from '../components/ui/PaymentModal';
 import useUserStore from '../store/useUserStore';
 import useAuthStore from '../store/useAuthStore';
 import { cancelSubscription } from '../lib/supabaseService';
-import { getLevelTitle, getLevelProgress, BADGES } from '../utils/gamification';
+import { TRANSFORMATION_LEVELS, computeTransformationStats, getCurrentTransformationLevel, getLevelProgress } from '../utils/gamification';
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { profile, xp, level, currentStreak, longestStreak, totalWorkouts, earnedBadges, weightLogs, resetAll, updateProfile, plan, subscription, deactivatePro } = useUserStore();
+  const { profile, transformationLevel, currentStreak, longestStreak, totalWorkouts, weightLogs, workoutLogs, foodLogs, nutritionTargets, resetAll, updateProfile, plan, subscription, deactivatePro } = useUserStore();
   const isPro = plan === 'pro';
   const { user, signOut } = useAuthStore();
   const [editing, setEditing] = useState(false);
@@ -22,8 +22,8 @@ export default function Profile() {
     return <PageWrapper><div className="text-center py-20"><User size={48} className="text-text-muted mx-auto mb-4" /><p className="text-text-muted">No profile found.</p></div></PageWrapper>;
   }
 
-  const levelProgress = getLevelProgress(xp);
-  const levelTitle = getLevelTitle(level);
+  const stats = computeTransformationStats(workoutLogs, weightLogs, foodLogs, currentStreak, longestStreak, nutritionTargets);
+  const currentLevel = getCurrentTransformationLevel(stats);
 
   const startEdit = () => { setEditData({ name: profile.name, age: profile.age, height: profile.height, weight: profile.weight }); setEditing(true); };
   const saveEdit = () => { updateProfile(editData); setEditing(false); };
@@ -45,13 +45,10 @@ export default function Profile() {
           {profile.name?.[0]?.toUpperCase() || '?'}
         </div>
         <h2 className="text-lg sm:text-xl font-bold text-text-primary">{profile.name}</h2>
-        <p className="text-accent text-sm font-medium">Level {level} — {levelTitle}</p>
-        <div className="mt-4 max-w-xs mx-auto">
-          <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
-            <div className="h-full bg-accent rounded-full progress-fill" style={{ width: `${levelProgress.percentage}%` }} />
-          </div>
-          <p className="text-[11px] text-text-muted mt-1.5">{levelProgress.current}/{levelProgress.needed} XP to next level</p>
-        </div>
+        <p className="text-accent text-sm font-medium">Level {currentLevel.id} — {currentLevel.name}</p>
+        {currentLevel.id > 0 && (
+          <p className="text-xs text-text-muted italic mt-1">{currentLevel.rewardMessage}</p>
+        )}
       </motion.div>
 
       {/* Stats */}
@@ -59,7 +56,7 @@ export default function Profile() {
         {[
           { icon: Dumbbell, value: totalWorkouts, label: 'Workouts' },
           { icon: Flame, value: currentStreak, label: 'Streak', accent: true },
-          { icon: Zap, value: xp, label: 'Total XP' },
+          { icon: TrendingUp, value: currentLevel.id, label: 'Level' },
           { icon: Trophy, value: longestStreak, label: 'Best Streak' },
         ].map((s) => (
           <div key={s.label} className="border border-white/[0.06] rounded-xl p-3 sm:p-4 text-center">
@@ -70,19 +67,72 @@ export default function Profile() {
         ))}
       </div>
 
-      {/* Badges */}
+      {/* Transformation Journey */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="border border-white/[0.06] rounded-xl p-5 mb-6">
-        <h3 className="font-bold mb-4 flex items-center gap-2 text-sm text-text-secondary">
-          <Award size={16} /> Badges
+        <h3 className="font-bold mb-5 flex items-center gap-2 text-sm text-text-secondary">
+          <Trophy size={16} /> Transformation Journey
         </h3>
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-          {BADGES.map((badge) => {
-            const earned = earnedBadges.includes(badge.id);
+        <div className="space-y-3">
+          {TRANSFORMATION_LEVELS.map((tl) => {
+            const isCompleted = tl.id <= currentLevel.id;
+            const isCurrent = tl.id === currentLevel.id + 1;
+            const progress = isCurrent ? getLevelProgress(tl.id, stats) : null;
+
             return (
-              <div key={badge.id} className={`text-center p-3 rounded-lg transition-all ${earned ? 'bg-accent/5 border border-accent/20' : 'bg-white/[0.02] opacity-30'}`}>
-                <div className="text-2xl mb-1">{badge.icon}</div>
-                <p className="text-[11px] font-semibold text-text-primary">{badge.name}</p>
-                <p className="text-[10px] text-text-muted">{badge.description}</p>
+              <div
+                key={tl.id}
+                className={`rounded-lg p-4 transition-all ${
+                  isCompleted
+                    ? 'bg-accent/5 border border-accent/20'
+                    : isCurrent
+                    ? 'border border-white/[0.12] bg-white/[0.03]'
+                    : 'border border-white/[0.04] opacity-40'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+                      isCompleted ? 'bg-accent text-white' : isCurrent ? 'bg-white/[0.08] text-text-secondary' : 'bg-white/[0.04] text-text-muted'
+                    }`}>
+                      {isCompleted ? <Check size={12} /> : tl.id}
+                    </div>
+                    <span className={`text-sm font-semibold ${isCompleted ? 'text-accent' : isCurrent ? 'text-text-primary' : 'text-text-muted'}`}>
+                      {tl.name}
+                    </span>
+                  </div>
+                  <span className={`text-[10px] uppercase tracking-wider font-medium ${
+                    tl.difficulty === 'Elite' ? 'text-accent' : tl.difficulty === 'High' ? 'text-orange-400' : tl.difficulty === 'Medium' ? 'text-yellow-400' : 'text-green-400'
+                  }`}>
+                    {tl.difficulty}
+                  </span>
+                </div>
+
+                {isCompleted && (
+                  <p className="text-xs text-accent/70 italic ml-8">{tl.rewardMessage}</p>
+                )}
+
+                {isCurrent && progress && (
+                  <div className="ml-8 mt-2">
+                    <div className="h-1 bg-white/[0.06] rounded-full overflow-hidden mb-2">
+                      <div className="h-full bg-accent rounded-full" style={{ width: `${progress.percentage}%` }} />
+                    </div>
+                    <div className="space-y-1">
+                      {progress.taskDetails.map((task, ti) => (
+                        <div key={ti} className="flex items-center gap-2 text-xs">
+                          <span className={task.completed ? 'text-accent' : 'text-text-muted/40'}>{task.completed ? '✓' : '○'}</span>
+                          <span className={task.completed ? 'text-text-secondary line-through opacity-60' : 'text-text-muted'}>{task.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {!isCompleted && !isCurrent && (
+                  <div className="ml-8 mt-1 flex items-center gap-1 text-text-muted/50">
+                    <Lock size={10} />
+                    <span className="text-[10px]">{tl.taskChecks.length} tasks</span>
+                  </div>
+                )}
               </div>
             );
           })}
@@ -198,7 +248,7 @@ export default function Profile() {
             <div className="text-sm font-medium text-text-primary mt-0.5">{user.email}</div>
           </div>
         )}
-        <div className="space-y-2">
+        <div className="space-y-2 gap-2">
           <button onClick={handleSignOut} className="px-5 py-3 rounded-lg text-sm font-medium text-text-muted border border-white/[0.06] hover:border-white/[0.12] hover:text-text-secondary transition-all inline-flex items-center gap-2">
             <LogOut size={14} /> Sign Out
           </button>

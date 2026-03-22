@@ -29,6 +29,7 @@ export default function Workout() {
   const [logData, setLogData] = useState({});
   const [showHistory, setShowHistory] = useState(false);
   const [videoMode, setVideoMode] = useState({}); // { [exerciseId]: 'shorts' | 'full' }
+  const [mobileVideo, setMobileVideo] = useState({}); // { [exerciseId]: true/false }
   const workoutLogs = useUserStore((s) => s.workoutLogs);
 
   if (!workoutPlan) {
@@ -46,20 +47,60 @@ export default function Workout() {
   const schedule = workoutPlan.schedule;
   const currentDay = schedule[activeDay];
 
-  const handleLogEntry = (exerciseId, field, value) => {
-    setLogData((prev) => ({
-      ...prev,
-      [exerciseId]: { ...prev[exerciseId], [field]: value },
-    }));
+  const initSetsForExercise = (exerciseId, numSets) => {
+    setLogData((prev) => {
+      if (prev[exerciseId]?.sets?.length) return prev;
+      return {
+        ...prev,
+        [exerciseId]: {
+          sets: Array.from({ length: numSets }, () => ({ reps: '', weight: '' })),
+        },
+      };
+    });
+  };
+
+  const handleSetEntry = (exerciseId, setIndex, field, value) => {
+    setLogData((prev) => {
+      const exercise = prev[exerciseId] || { sets: [] };
+      const sets = [...exercise.sets];
+      sets[setIndex] = { ...sets[setIndex], [field]: value };
+      return { ...prev, [exerciseId]: { sets } };
+    });
+  };
+
+  const handleAddSet = (exerciseId) => {
+    setLogData((prev) => {
+      const exercise = prev[exerciseId] || { sets: [] };
+      return {
+        ...prev,
+        [exerciseId]: { sets: [...exercise.sets, { reps: '', weight: '' }] },
+      };
+    });
+  };
+
+  const handleRemoveSet = (exerciseId) => {
+    setLogData((prev) => {
+      const exercise = prev[exerciseId] || { sets: [] };
+      if (exercise.sets.length <= 1) return prev;
+      return {
+        ...prev,
+        [exerciseId]: { sets: exercise.sets.slice(0, -1) },
+      };
+    });
   };
 
   const handleSaveWorkout = () => {
-    const exercises = currentDay.exercises.map((ex) => ({
-      name: ex.name,
-      muscle: ex.muscle,
-      planned: { sets: ex.sets, reps: ex.reps },
-      logged: logData[ex.id] || { sets: ex.sets, reps: ex.reps, weight: 0 },
-    }));
+    const exercises = currentDay.exercises.map((ex) => {
+      const logged = logData[ex.id];
+      return {
+        name: ex.name,
+        muscle: ex.muscle,
+        planned: { sets: ex.sets, reps: ex.reps },
+        logged: logged?.sets?.length
+          ? { sets: logged.sets.map((s) => ({ reps: Number(s.reps) || 0, weight: Number(s.weight) || 0 })) }
+          : { sets: Array.from({ length: ex.sets }, () => ({ reps: Number(ex.reps) || 0, weight: 0 })) },
+      };
+    });
     logWorkout({ dayName: currentDay.day, exercises });
     setIsLogging(false);
     setLogData({});
@@ -102,12 +143,27 @@ export default function Workout() {
                   <span className="text-xs text-text-muted">{new Date(log.timestamp).toLocaleDateString()}</span>
                 </div>
                 {log.exercises?.map((ex, i) => (
-                  <div key={i} className="flex items-center justify-between text-sm py-2 border-b border-white/[0.04] last:border-0">
-                    <span className="text-text-muted">{ex.name}</span>
-                    <span className="text-text-muted font-mono text-xs">
-                      {ex.logged?.sets || ex.planned?.sets}×{ex.logged?.reps || ex.planned?.reps}
-                      {ex.logged?.weight > 0 && ` @ ${ex.logged.weight}kg`}
-                    </span>
+                  <div key={i} className="py-2 border-b border-white/[0.04] last:border-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-text-muted text-sm">{ex.name}</span>
+                      <span className="text-[11px] text-text-muted">
+                        {Array.isArray(ex.logged?.sets) ? `${ex.logged.sets.length} sets` : `${ex.logged?.sets || ex.planned?.sets} sets`}
+                      </span>
+                    </div>
+                    {Array.isArray(ex.logged?.sets) ? (
+                      <div className="flex flex-wrap gap-1.5 mt-1">
+                        {ex.logged.sets.map((s, si) => (
+                          <span key={si} className="text-[11px] font-mono bg-white/[0.04] px-2 py-0.5 rounded text-text-muted">
+                            S{si + 1}: {s.reps}×{s.weight > 0 ? `${s.weight}kg` : '—'}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="text-text-muted font-mono text-xs">
+                        {ex.logged?.sets || ex.planned?.sets}×{ex.logged?.reps || ex.planned?.reps}
+                        {ex.logged?.weight > 0 && ` @ ${ex.logged.weight}kg`}
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
@@ -199,7 +255,11 @@ export default function Workout() {
               >
                 <div
                   className="p-4 flex items-center justify-between cursor-pointer hover:bg-white/[0.02] transition-colors"
-                  onClick={() => setExpandedExercise(expandedExercise === exercise.id ? null : exercise.id)}
+                  onClick={() => {
+                    const closing = expandedExercise === exercise.id;
+                    setExpandedExercise(closing ? null : exercise.id);
+                    if (closing) setMobileVideo((prev) => ({ ...prev, [exercise.id]: false }));
+                  }}
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-lg bg-white/[0.04] flex items-center justify-center shrink-0">
@@ -298,47 +358,97 @@ export default function Workout() {
                           {/* Right — Video (Shorts first, toggle to full) */}
                           <div className="lg:w-[45%] shrink-0">
                             {isPro ? (
-                              <div className="lg:sticky lg:top-4">
-                                {(() => {
-                                  const hasShorts = !!exercise.shortsId;
-                                  const mode = videoMode[exercise.id] || (hasShorts ? 'shorts' : 'full');
-                                  const isShorts = mode === 'shorts' && hasShorts;
-                                  const currentVideoId = isShorts ? exercise.shortsId : exercise.videoId;
-
-                                  return (
+                              <>
+                                {/* Mobile: Show Video button */}
+                                <div className="lg:hidden">
+                                  {!mobileVideo[exercise.id] ? (
+                                    <button
+                                      onClick={() => setMobileVideo((prev) => ({ ...prev, [exercise.id]: true }))}
+                                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-white/[0.08] text-text-muted hover:text-text-secondary hover:border-white/15 transition-colors text-sm font-medium"
+                                    >
+                                      <Play size={14} /> Show Video
+                                    </button>
+                                  ) : (
                                     <>
-                                      <div className={`${isShorts ? 'shorts-container' : 'video-container'} rounded-lg overflow-hidden`}>
-                                        <iframe
-                                          src={`https://www.youtube.com/embed/${currentVideoId}`}
-                                          title={exercise.name}
-                                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                          allowFullScreen
-                                        />
-                                      </div>
-                                      {hasShorts && (
-                                        <div className="flex items-center justify-between mt-2">
-                                          <span className="text-[10px] text-text-muted uppercase tracking-wider">
-                                            {isShorts ? 'Quick Form Guide' : 'Full Tutorial'}
-                                          </span>
-                                          <button
-                                            onClick={() => setVideoMode((prev) => ({
-                                              ...prev,
-                                              [exercise.id]: isShorts ? 'full' : 'shorts',
-                                            }))}
-                                            className="flex items-center gap-1 text-xs font-medium text-accent hover:text-accent/80 transition-colors"
-                                          >
-                                            {isShorts ? (
-                                              <>Full Video <ChevronRight size={14} /></>
-                                            ) : (
-                                              <><ChevronLeft size={14} /> Quick Guide</>
-                                            )}
-                                          </button>
-                                        </div>
-                                      )}
+                                      {(() => {
+                                        const hasShorts = !!exercise.shortsId;
+                                        const mode = videoMode[exercise.id] || (hasShorts ? 'shorts' : 'full');
+                                        const isShorts = mode === 'shorts' && hasShorts;
+                                        const currentVideoId = isShorts ? exercise.shortsId : exercise.videoId;
+                                        return (
+                                          <>
+                                            <div className={`${isShorts ? 'shorts-container' : 'video-container'} rounded-lg overflow-hidden`}>
+                                              <iframe
+                                                src={`https://www.youtube.com/embed/${currentVideoId}`}
+                                                title={exercise.name}
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowFullScreen
+                                              />
+                                            </div>
+                                            <div className="flex items-center justify-between mt-2">
+                                              <span className="text-[10px] text-text-muted uppercase tracking-wider">
+                                                {isShorts ? 'Quick Form Guide' : 'Full Tutorial'}
+                                              </span>
+                                              <div className="flex items-center gap-2">
+                                                {hasShorts && (
+                                                  <button
+                                                    onClick={() => setVideoMode((prev) => ({ ...prev, [exercise.id]: isShorts ? 'full' : 'shorts' }))}
+                                                    className="flex items-center gap-1 text-xs font-medium text-accent hover:text-accent/80 transition-colors"
+                                                  >
+                                                    {isShorts ? <>Full Video <ChevronRight size={14} /></> : <><ChevronLeft size={14} /> Quick Guide</>}
+                                                  </button>
+                                                )}
+                                                <button
+                                                  onClick={() => setMobileVideo((prev) => ({ ...prev, [exercise.id]: false }))}
+                                                  className="text-xs text-text-muted hover:text-text-secondary transition-colors"
+                                                >
+                                                  Hide
+                                                </button>
+                                              </div>
+                                            </div>
+                                          </>
+                                        );
+                                      })()}
                                     </>
-                                  );
-                                })()}
-                              </div>
+                                  )}
+                                </div>
+                                {/* Desktop: always visible */}
+                                <div className="hidden lg:block">
+                                  <div className="lg:sticky lg:top-4">
+                                    {(() => {
+                                      const hasShorts = !!exercise.shortsId;
+                                      const mode = videoMode[exercise.id] || (hasShorts ? 'shorts' : 'full');
+                                      const isShorts = mode === 'shorts' && hasShorts;
+                                      const currentVideoId = isShorts ? exercise.shortsId : exercise.videoId;
+                                      return (
+                                        <>
+                                          <div className={`${isShorts ? 'shorts-container' : 'video-container'} rounded-lg overflow-hidden`}>
+                                            <iframe
+                                              src={`https://www.youtube.com/embed/${currentVideoId}`}
+                                              title={exercise.name}
+                                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                              allowFullScreen
+                                            />
+                                          </div>
+                                          {hasShorts && (
+                                            <div className="flex items-center justify-between mt-2">
+                                              <span className="text-[10px] text-text-muted uppercase tracking-wider">
+                                                {isShorts ? 'Quick Form Guide' : 'Full Tutorial'}
+                                              </span>
+                                              <button
+                                                onClick={() => setVideoMode((prev) => ({ ...prev, [exercise.id]: isShorts ? 'full' : 'shorts' }))}
+                                                className="flex items-center gap-1 text-xs font-medium text-accent hover:text-accent/80 transition-colors"
+                                              >
+                                                {isShorts ? <>Full Video <ChevronRight size={14} /></> : <><ChevronLeft size={14} /> Quick Guide</>}
+                                              </button>
+                                            </div>
+                                          )}
+                                        </>
+                                      );
+                                    })()}
+                                  </div>
+                                </div>
+                              </>
                             ) : (
                               <div className="aspect-video bg-white/[0.03] rounded-lg flex items-center justify-center border border-white/[0.06]">
                                 <div className="text-center">
@@ -350,54 +460,63 @@ export default function Workout() {
                           </div>
                         </div>
 
-                        {/* Logging Inputs — Full Width Below Split */}
-                        {isLogging && (
-                          <div className="bg-white/[0.03] rounded-lg p-4 mt-4">
-                            <h4 className="text-xs font-bold text-text-secondary mb-3 uppercase tracking-wider">Log this exercise</h4>
-                            <div className="grid grid-cols-3 gap-3">
-                              <div>
-                                <label className="text-[11px] text-text-muted block mb-1">Sets</label>
+                        {/* Logging Inputs — Per-Set Tracking */}
+                        {isLogging && (() => {
+                          initSetsForExercise(exercise.id, exercise.sets);
+                          const setsData = logData[exercise.id]?.sets || [];
+                          return (
+                            <div className="bg-white/[0.03] rounded-lg p-4 mt-4">
+                              <div className="flex items-center justify-between mb-3">
+                                <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider">Log this exercise</h4>
                                 <div className="flex items-center gap-1">
                                   <button
-                                    onClick={() => handleLogEntry(exercise.id, 'sets', Math.max(1, (logData[exercise.id]?.sets || exercise.sets) - 1))}
-                                    className="p-1 rounded bg-white/[0.04] text-text-muted hover:text-text-secondary"
+                                    onClick={() => handleRemoveSet(exercise.id)}
+                                    className="p-1 rounded bg-white/[0.04] text-text-muted hover:text-text-secondary disabled:opacity-30"
+                                    disabled={setsData.length <= 1}
                                   >
                                     <Minus size={12} />
                                   </button>
-                                  <span className="text-lg font-bold text-text-primary w-8 text-center">
-                                    {logData[exercise.id]?.sets || exercise.sets}
-                                  </span>
+                                  <span className="text-xs text-text-muted px-1">{setsData.length} sets</span>
                                   <button
-                                    onClick={() => handleLogEntry(exercise.id, 'sets', (logData[exercise.id]?.sets || exercise.sets) + 1)}
+                                    onClick={() => handleAddSet(exercise.id)}
                                     className="p-1 rounded bg-white/[0.04] text-text-muted hover:text-text-secondary"
                                   >
                                     <Plus size={12} />
                                   </button>
                                 </div>
                               </div>
-                              <div>
-                                <label className="text-[11px] text-text-muted block mb-1">Reps</label>
-                                <input
-                                  type="number"
-                                  value={logData[exercise.id]?.reps || ''}
-                                  onChange={(e) => handleLogEntry(exercise.id, 'reps', e.target.value)}
-                                  placeholder={exercise.reps}
-                                  className="w-full px-2 py-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-center text-text-primary text-base font-bold focus:outline-none focus:border-white/20"
-                                />
-                              </div>
-                              <div>
-                                <label className="text-[11px] text-text-muted block mb-1">Weight (kg)</label>
-                                <input
-                                  type="number"
-                                  value={logData[exercise.id]?.weight || ''}
-                                  onChange={(e) => handleLogEntry(exercise.id, 'weight', e.target.value)}
-                                  placeholder="0"
-                                  className="w-full px-2 py-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-center text-text-primary text-base font-bold focus:outline-none focus:border-white/20"
-                                />
+                              <div className="space-y-2">
+                                {setsData.map((setData, si) => (
+                                  <div key={si} className="flex items-center gap-3">
+                                    <span className="text-xs font-bold text-accent w-12 shrink-0">Set {si + 1}</span>
+                                    <div className="flex-1 flex gap-2">
+                                      <div className="flex-1">
+                                        {si === 0 && <label className="text-[10px] text-text-muted block mb-1">Reps</label>}
+                                        <input
+                                          type="number"
+                                          value={setData.reps}
+                                          onChange={(e) => handleSetEntry(exercise.id, si, 'reps', e.target.value)}
+                                          placeholder={String(exercise.reps)}
+                                          className="w-full px-2 py-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-center text-text-primary text-sm font-bold focus:outline-none focus:border-accent/30"
+                                        />
+                                      </div>
+                                      <div className="flex-1">
+                                        {si === 0 && <label className="text-[10px] text-text-muted block mb-1">Weight (kg)</label>}
+                                        <input
+                                          type="number"
+                                          value={setData.weight}
+                                          onChange={(e) => handleSetEntry(exercise.id, si, 'weight', e.target.value)}
+                                          placeholder="0"
+                                          className="w-full px-2 py-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-center text-text-primary text-sm font-bold focus:outline-none focus:border-accent/30"
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
                               </div>
                             </div>
-                          </div>
-                        )}
+                          );
+                        })()}
                       </div>
                     </motion.div>
                   )}

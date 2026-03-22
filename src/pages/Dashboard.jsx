@@ -6,11 +6,9 @@ import {
   UtensilsCrossed,
   TrendingUp,
   Flame,
-  Zap,
   Target,
   Play,
   Calendar,
-  Award,
   ArrowRight,
   BookOpen,
   RotateCcw,
@@ -21,7 +19,7 @@ import { showCoach } from '../components/ui/CoachPopup';
 import useUserStore from '../store/useUserStore';
 import { getTodaysWorkout } from '../utils/planGenerator';
 import { getDailyQuote } from '../data/quotes';
-import { getLevelProgress, getLevelTitle } from '../utils/gamification';
+import { computeTransformationStats, getCurrentTransformationLevel, getNextLevel, getLevelProgress } from '../utils/gamification';
 import { analyzeProgress } from '../utils/smartCoach';
 
 export default function Dashboard() {
@@ -31,14 +29,13 @@ export default function Dashboard() {
     workoutPlan,
     nutritionTargets,
     currentStreak,
-    xp,
-    level,
+    transformationLevel,
     totalWorkouts,
-    earnedBadges,
     checkDailyLogin,
     weightLogs,
     workoutLogs,
     foodLogs,
+    nutritionTargets: nutTargets,
     plan,
   } = useUserStore();
   const isPro = plan === 'pro';
@@ -88,8 +85,12 @@ export default function Dashboard() {
 
   const todaysWorkout = getTodaysWorkout(workoutPlan);
   const quote = getDailyQuote();
-  const levelProgress = getLevelProgress(xp);
-  const levelTitle = getLevelTitle(level);
+
+  // Transformation level progress
+  const stats = computeTransformationStats(workoutLogs, weightLogs, foodLogs, currentStreak, 0, nutTargets);
+  const currentLevel = getCurrentTransformationLevel(stats);
+  const nextLevel = getNextLevel(currentLevel.id);
+  const nextProgress = nextLevel ? getLevelProgress(nextLevel.id, stats) : null;
 
   const coachAlerts = analyzeProgress({ profile, weightLogs, workoutLogs, foodLogs: foodLogs || [], nutritionTargets })
     .filter((r) => r.severity === 'high');
@@ -177,8 +178,8 @@ export default function Dashboard() {
         {[
           { Icon: Flame, value: currentStreak, label: 'Day Streak', accent: true },
           { Icon: Dumbbell, value: totalWorkouts, label: 'Workouts' },
-          { Icon: Zap, value: xp, label: 'Total XP' },
-          { Icon: Award, value: earnedBadges.length, label: 'Badges' },
+          { Icon: TrendingUp, value: transformationLevel, label: 'Level' },
+          { Icon: Target, value: nextProgress ? `${nextProgress.completedTasks}/${nextProgress.totalTasks}` : 'Max', label: 'Tasks' },
         ].map((stat, i) => (
           <motion.div
             key={stat.label}
@@ -196,28 +197,48 @@ export default function Dashboard() {
         ))}
       </motion.div>
 
-      {/* Level Progress */}
+      {/* Transformation Level Progress */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
         className="mb-10 sm:mb-14 border border-white/[0.06] rounded-xl p-5 sm:p-6"
       >
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-1">
           <div>
-            <span className="text-[11px] text-text-muted uppercase tracking-wider font-medium">Level {level}</span>
-            <h3 className="text-lg sm:text-xl font-bold text-text-primary">{levelTitle}</h3>
+            <span className="text-[11px] text-text-muted uppercase tracking-wider font-medium">Level {currentLevel.id}</span>
+            <h3 className="text-lg sm:text-xl font-bold text-text-primary">{currentLevel.name}</h3>
           </div>
-          <span className="text-xs font-medium text-text-muted">{levelProgress.current} / {levelProgress.needed} XP</span>
+          {nextLevel && (
+            <span className="text-xs font-medium text-text-muted">{nextProgress?.completedTasks}/{nextProgress?.totalTasks} tasks</span>
+          )}
         </div>
-        <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: `${levelProgress.percentage}%` }}
-            transition={{ duration: 1, delay: 0.5 }}
-            className="h-full bg-accent rounded-full"
-          />
-        </div>
+        {currentLevel.id > 0 && (
+          <p className="text-xs text-accent/80 italic mb-3">{currentLevel.rewardMessage}</p>
+        )}
+        {nextLevel && nextProgress ? (
+          <>
+            <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden mb-3">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${nextProgress.percentage}%` }}
+                transition={{ duration: 1, delay: 0.5 }}
+                className="h-full bg-accent rounded-full"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <p className="text-[11px] text-text-muted uppercase tracking-wider font-medium mb-1">Next: {nextLevel.name}</p>
+              {nextProgress.taskDetails.map((task, i) => (
+                <div key={i} className="flex items-center gap-2 text-xs">
+                  <span className={task.completed ? 'text-accent' : 'text-text-muted/40'}>{task.completed ? '✓' : '○'}</span>
+                  <span className={task.completed ? 'text-text-secondary line-through opacity-60' : 'text-text-muted'}>{task.text}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <p className="text-sm text-accent font-medium mt-2">All levels completed!</p>
+        )}
       </motion.div>
 
       {/* Workout + Nutrition */}
