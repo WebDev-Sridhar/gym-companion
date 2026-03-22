@@ -157,3 +157,38 @@ ALTER TABLE food_logs ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view own food logs" ON food_logs FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "Users can insert own food logs" ON food_logs FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE INDEX idx_food_logs_user_date ON food_logs(user_id, date);
+
+-- ============================================
+-- Subscriptions Table (Razorpay Payments)
+-- ============================================
+CREATE TABLE subscriptions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  plan_type TEXT CHECK (plan_type IN ('monthly', 'yearly')) NOT NULL,
+  status TEXT CHECK (status IN ('pending', 'active', 'expired', 'cancelled')) DEFAULT 'pending',
+  amount INTEGER NOT NULL,
+  currency TEXT DEFAULT 'INR',
+  razorpay_order_id TEXT,
+  razorpay_payment_id TEXT,
+  razorpay_signature TEXT,
+  starts_at TIMESTAMPTZ,
+  expires_at TIMESTAMPTZ,
+  cancelled_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
+
+-- Users can only view their own subscriptions
+CREATE POLICY "Users can view own subscriptions" ON subscriptions FOR SELECT USING (auth.uid() = user_id);
+-- Users can insert their own subscriptions (order creation)
+CREATE POLICY "Users can insert own subscriptions" ON subscriptions FOR INSERT WITH CHECK (auth.uid() = user_id);
+-- Users can update their own subscriptions (payment verification, cancellation)
+CREATE POLICY "Users can update own subscriptions" ON subscriptions FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE INDEX idx_subscriptions_user ON subscriptions(user_id);
+CREATE INDEX idx_subscriptions_order ON subscriptions(razorpay_order_id);
+
+-- Delete policy for reset
+CREATE POLICY "Users can delete own subscriptions" ON subscriptions FOR DELETE USING (auth.uid() = user_id);

@@ -296,11 +296,52 @@ export async function fetchFoodLogs(userId) {
 }
 
 // =====================
+// Subscriptions
+// =====================
+export async function fetchSubscription(userId) {
+  const { data, error } = await supabase
+    .from('subscriptions')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('status', 'active')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (!data) return { data: null, error };
+  return {
+    data: {
+      id: data.id,
+      planType: data.plan_type,
+      status: data.status,
+      amount: data.amount,
+      startsAt: data.starts_at,
+      expiresAt: data.expires_at,
+      razorpayPaymentId: data.razorpay_payment_id,
+    },
+    error,
+  };
+}
+
+export async function cancelSubscription(subscriptionId) {
+  return supabase
+    .from('subscriptions')
+    .update({
+      status: 'cancelled',
+      cancelled_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', subscriptionId)
+    .select()
+    .single();
+}
+
+// =====================
 // Delete All User Data (for Reset)
 // =====================
 export async function deleteAllUserData(userId) {
   // Delete dependent tables first, then profiles last (FK constraints)
-  const tables = ['exercise_logs', 'food_logs', 'progress', 'workout_plans', 'diet_plans', 'gamification'];
+  const tables = ['exercise_logs', 'food_logs', 'progress', 'workout_plans', 'diet_plans', 'gamification', 'subscriptions'];
   const results = await Promise.all(
     tables.map((table) => supabase.from(table).delete().eq('user_id', userId))
   );

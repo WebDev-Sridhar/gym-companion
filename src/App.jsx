@@ -16,6 +16,7 @@ import KnowledgeHub from './pages/KnowledgeHub';
 import PlanSummary from './pages/PlanSummary';
 import { ToastContainer } from './components/ui/Toast';
 import { CoachPopupContainer } from './components/ui/CoachPopup';
+import { PaymentModalContainer } from './components/ui/PaymentModal';
 
 function LoadingScreen() {
   return (
@@ -84,6 +85,7 @@ export default function App() {
     <Router>
       <ToastContainer />
       <CoachPopupContainer />
+      <PaymentModalContainer />
       <AnimatePresence mode="wait">
         <Routes>
           <Route path="/" element={<PublicRoute><Landing /></PublicRoute>} />

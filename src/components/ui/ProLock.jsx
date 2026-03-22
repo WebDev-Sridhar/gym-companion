@@ -1,4 +1,5 @@
 import { Lock, Sparkles } from 'lucide-react';
+import { showUpgradeModal } from './PaymentModal';
 
 /**
  * ProLock — overlay that blurs locked content and shows upgrade CTA.
@@ -15,7 +16,7 @@ import { Lock, Sparkles } from 'lucide-react';
 export default function ProLock({ children, compact = false, message }) {
   if (compact) {
     return (
-      <div className="relative">
+      <div className="relative cursor-pointer" onClick={() => showUpgradeModal()}>
         <div className="blur-[3px] pointer-events-none select-none opacity-50">
           {children}
         </div>
@@ -30,7 +31,7 @@ export default function ProLock({ children, compact = false, message }) {
   }
 
   return (
-    <div className="relative rounded-xl overflow-hidden">
+    <div className="relative rounded-xl overflow-hidden cursor-pointer" onClick={() => showUpgradeModal()}>
       <div className="blur-[4px] pointer-events-none select-none opacity-40">
         {children}
       </div>
@@ -44,9 +45,9 @@ export default function ProLock({ children, compact = false, message }) {
         <p className="text-xs text-text-muted max-w-[260px] leading-relaxed mb-3">
           Upgrade to access advanced workouts, diet plans & progress tracking
         </p>
-        <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold">
+        <button className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold hover:bg-accent/15 transition-colors">
           <Sparkles size={12} /> Upgrade to Pro
-        </span>
+        </button>
       </div>
     </div>
   );
@@ -80,7 +81,10 @@ export function UpgradeBanner({ className = '' }) {
           <p className="text-xs text-text-muted mt-1 leading-relaxed">
             Unlock advanced workouts, diet plans & progress tracking
           </p>
-          <button className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold hover:bg-accent/15 transition-colors">
+          <button
+            onClick={() => showUpgradeModal()}
+            className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold hover:bg-accent/15 transition-colors"
+          >
             <Sparkles size={12} /> See Pro Features
           </button>
         </div>

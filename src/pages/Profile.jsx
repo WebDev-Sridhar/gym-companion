@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Edit3, Trophy, Flame, Zap, Dumbbell, Scale, RotateCcw, Save, X, Award, LogOut, Mail, Sparkles } from 'lucide-react';
+import { User, Edit3, Trophy, Flame, Zap, Dumbbell, Scale, RotateCcw, Save, X, Award, LogOut, Mail, Sparkles, Crown } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { showCoach } from '../components/ui/CoachPopup';
+import { showUpgradeModal } from '../components/ui/PaymentModal';
 import useUserStore from '../store/useUserStore';
 import useAuthStore from '../store/useAuthStore';
+import { cancelSubscription } from '../lib/supabaseService';
 import { getLevelTitle, getLevelProgress, BADGES } from '../utils/gamification';
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { profile, xp, level, currentStreak, longestStreak, totalWorkouts, earnedBadges, weightLogs, resetAll, updateProfile, plan } = useUserStore();
+  const { profile, xp, level, currentStreak, longestStreak, totalWorkouts, earnedBadges, weightLogs, resetAll, updateProfile, plan, subscription, deactivatePro } = useUserStore();
   const isPro = plan === 'pro';
   const { user, signOut } = useAuthStore();
   const [editing, setEditing] = useState(false);
@@ -136,23 +138,54 @@ export default function Profile() {
       </motion.div>
 
       {/* Subscription */}
-      {!isPro && (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="border border-accent/15 rounded-xl p-5 mb-6 bg-gradient-to-br from-accent/[0.04] to-transparent">
-          <h3 className="font-bold mb-3 flex items-center gap-2 text-sm text-text-secondary">
-            <Sparkles size={16} className="text-accent" /> Subscription
-          </h3>
-          <div className="bg-white/[0.03] rounded-lg p-3 mb-3">
-            <div className="text-[10px] text-text-muted uppercase tracking-wider">Current Plan</div>
-            <div className="text-sm font-bold text-text-primary mt-0.5">Free Plan</div>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className={`border rounded-xl p-5 mb-6 ${isPro ? 'border-accent/20 bg-gradient-to-br from-accent/[0.06] to-transparent' : 'border-accent/15 bg-gradient-to-br from-accent/[0.04] to-transparent'}`}>
+        <h3 className="font-bold mb-3 flex items-center gap-2 text-sm text-text-secondary">
+          {isPro ? <Crown size={16} className="text-accent" /> : <Sparkles size={16} className="text-accent" />} Subscription
+        </h3>
+        <div className="bg-white/[0.03] rounded-lg p-3 mb-3">
+          <div className="text-[10px] text-text-muted uppercase tracking-wider">Current Plan</div>
+          <div className="text-sm font-bold text-text-primary mt-0.5">
+            {isPro ? `Pro ${subscription?.planType === 'yearly' ? 'Yearly' : 'Monthly'}` : 'Free Plan'}
           </div>
-          <p className="text-xs text-text-muted leading-relaxed mb-3">
-            You've completed your basic plan. Unlock advanced workouts, diet plans & progress tracking.
-          </p>
-          <button className="w-full py-2.5 rounded-lg text-sm font-medium bg-accent/10 text-accent border border-accent/20 hover:bg-accent/15 transition-all flex items-center justify-center gap-2">
-            <Sparkles size={14} /> Upgrade to Pro
-          </button>
-        </motion.div>
-      )}
+        </div>
+        {isPro && subscription ? (
+          <>
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              <div className="bg-white/[0.03] rounded-lg p-3">
+                <div className="text-[10px] text-text-muted uppercase tracking-wider">Started</div>
+                <div className="text-xs font-medium text-text-primary mt-0.5">{new Date(subscription.startsAt).toLocaleDateString()}</div>
+              </div>
+              <div className="bg-white/[0.03] rounded-lg p-3">
+                <div className="text-[10px] text-text-muted uppercase tracking-wider">Expires</div>
+                <div className="text-xs font-medium text-text-primary mt-0.5">{new Date(subscription.expiresAt).toLocaleDateString()}</div>
+              </div>
+            </div>
+            <button
+              onClick={async () => {
+                if (confirm('Are you sure you want to cancel your Pro subscription? You will lose access to Pro features.')) {
+                  await cancelSubscription(subscription.id);
+                  deactivatePro();
+                }
+              }}
+              className="w-full py-2.5 rounded-lg text-sm font-medium text-text-muted border border-white/[0.06] hover:border-white/[0.12] hover:text-text-secondary transition-all flex items-center justify-center gap-2"
+            >
+              Cancel Subscription
+            </button>
+          </>
+        ) : (
+          <>
+            <p className="text-xs text-text-muted leading-relaxed mb-3">
+              You've completed your basic plan. Unlock advanced workouts, diet plans & progress tracking.
+            </p>
+            <button
+              onClick={() => showUpgradeModal()}
+              className="w-full py-2.5 rounded-lg text-sm font-medium bg-accent/10 text-accent border border-accent/20 hover:bg-accent/15 transition-all flex items-center justify-center gap-2"
+            >
+              <Sparkles size={14} /> Upgrade to Pro
+            </button>
+          </>
+        )}
+      </motion.div>
 
       {/* Account */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="border border-white/[0.06] rounded-xl p-5">

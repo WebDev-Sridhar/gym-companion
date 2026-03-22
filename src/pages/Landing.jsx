@@ -15,6 +15,31 @@ import {
   Check,
   Lock,
 } from 'lucide-react';
+import useAuthStore from '../store/useAuthStore';
+import { showUpgradeModal } from '../components/ui/PaymentModal';
+
+function ProPricingButton({ planType, accent }) {
+  const session = useAuthStore((s) => s.session);
+  const handleClick = () => {
+    if (session) {
+      showUpgradeModal(planType);
+    } else {
+      window.location.href = `/auth?upgrade=${planType}`;
+    }
+  };
+  return (
+    <button
+      onClick={handleClick}
+      className={`w-full py-3 rounded-full text-sm font-bold flex items-center justify-center gap-2 transition-all ${
+        accent
+          ? 'bg-accent/15 border border-accent/30 text-accent hover:bg-accent/25'
+          : 'border border-white/10 hover:border-white/25 text-text-primary hover:text-white'
+      }`}
+    >
+      <Sparkles size={14} /> Get Pro
+    </button>
+  );
+}
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -348,9 +373,6 @@ export default function Landing() {
 
             {/* Pro Monthly */}
             <motion.div variants={fadeInUp} custom={1} className="border border-white/[0.08] rounded-2xl p-7 sm:p-8 bg-white/[0.02] relative overflow-hidden">
-              <div className="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-white/[0.06] text-text-muted text-[10px] font-bold uppercase tracking-wider">
-                Coming Soon
-              </div>
               <h3 className="text-lg font-bold text-text-primary mb-1">Pro Monthly</h3>
               <p className="text-text-muted text-xs mb-6">Unlock your full potential</p>
               <div className="mb-2">
@@ -376,12 +398,7 @@ export default function Landing() {
                   </li>
                 ))}
               </ul>
-              <button
-                disabled
-                className="w-full py-3 rounded-full text-sm font-bold border border-white/[0.08] text-text-muted cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                <Lock size={14} /> Coming Soon
-              </button>
+              <ProPricingButton planType="monthly" />
             </motion.div>
 
             {/* Pro Yearly */}
@@ -413,12 +430,7 @@ export default function Landing() {
                   </li>
                 ))}
               </ul>
-              <button
-                disabled
-                className="w-full py-3 rounded-full text-sm font-bold bg-accent/10 border border-accent/20 text-accent/50 cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                <Lock size={14} /> Coming Soon
-              </button>
+              <ProPricingButton planType="yearly" accent />
             </motion.div>
           </motion.div>
         </div>

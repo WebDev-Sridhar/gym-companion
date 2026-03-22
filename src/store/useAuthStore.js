@@ -9,6 +9,7 @@ import {
   fetchExerciseLogs,
   fetchProgressLogs,
   fetchFoodLogs,
+  fetchSubscription,
 } from '../lib/supabaseService';
 
 const useAuthStore = create((set, get) => ({
@@ -63,6 +64,7 @@ const useAuthStore = create((set, get) => ({
           { data: exerciseLogs },
           { data: progressLogs },
           { data: foodLogs },
+          { data: subscription },
         ] = await Promise.all([
           fetchWorkoutPlan(userId),
           fetchDietPlan(userId),
@@ -70,6 +72,7 @@ const useAuthStore = create((set, get) => ({
           fetchExerciseLogs(userId),
           fetchProgressLogs(userId),
           fetchFoodLogs(userId),
+          fetchSubscription(userId),
         ]);
 
         useUserStore.getState().hydrateFromSupabase({
@@ -80,6 +83,7 @@ const useAuthStore = create((set, get) => ({
           exerciseLogs: exerciseLogs || [],
           progressLogs: progressLogs || [],
           foodLogs: foodLogs || [],
+          subscription,
         });
       }
     } catch (err) {

@@ -76,12 +76,38 @@ const useUserStore = create(
 
       // Subscription
       plan: 'free', // 'free' | 'pro'
+      subscription: null, // { id, planType, status, startsAt, expiresAt }
 
       // Stats
       totalWorkouts: 0,
       personalRecords: 0,
       weightLogsCount: 0,
       earlyWorkouts: 0,
+
+      // Subscription Actions
+      activatePro: (subscriptionData) => {
+        set({
+          plan: 'pro',
+          subscription: subscriptionData,
+        });
+      },
+
+      deactivatePro: () => {
+        set({
+          plan: 'free',
+          subscription: null,
+        });
+      },
+
+      checkSubscriptionExpiry: () => {
+        const { subscription } = get();
+        if (subscription?.expiresAt) {
+          const expired = new Date(subscription.expiresAt) < new Date();
+          if (expired) {
+            set({ plan: 'free', subscription: { ...subscription, status: 'expired' } });
+          }
+        }
+      },
 
       // Actions
       // Prepare plan data without marking onboarding complete (used by onboarding → plan summary flow)
@@ -381,11 +407,24 @@ const useUserStore = create(
 
       // Hydrate from Supabase (called after login)
       hydrateFromSupabase: (data) => {
-        const { profile, gamification, exerciseLogs, progressLogs, foodLogs } = data;
+        const { profile, gamification, exerciseLogs, progressLogs, foodLogs, subscription } = data;
 
         if (!profile) return;
 
         const nutritionTargets = calculateNutritionTargets(profile);
+
+        // Determine plan status from subscription
+        let plan = 'free';
+        let subData = null;
+        if (subscription && subscription.status === 'active') {
+          const expired = new Date(subscription.expiresAt) < new Date();
+          if (!expired) {
+            plan = 'pro';
+            subData = subscription;
+          } else {
+            subData = { ...subscription, status: 'expired' };
+          }
+        }
 
         set({
           profile,
@@ -404,6 +443,8 @@ const useUserStore = create(
           earnedBadges: gamification?.earnedBadges || [],
           lastLoginDate: gamification?.lastLoginDate || null,
           weightLogsCount: (progressLogs || []).length,
+          plan,
+          subscription: subData,
         });
       },
 
@@ -453,6 +494,8 @@ const useUserStore = create(
           personalRecords: 0,
           weightLogsCount: 0,
           earlyWorkouts: 0,
+          plan: 'free',
+          subscription: null,
         });
 
         // Clear persisted localStorage so refresh doesn't reload stale data
