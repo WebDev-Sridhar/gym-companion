@@ -31,6 +31,7 @@ import { showCoach } from '../components/ui/CoachPopup';
 import { dietPlans } from '../data/dietPlans';
 
 // Build a flat searchable food index from all diet plan meals (cached once)
+// Indexes both meal names AND individual food items within meals
 let _foodIndex = null;
 function getFoodIndex() {
   if (_foodIndex) return _foodIndex;
@@ -41,9 +42,25 @@ function getFoodIndex() {
       for (const slot of Object.values(dietType.meals)) {
         const options = Array.isArray(slot) ? slot : [slot];
         for (const meal of options) {
+          // Index the meal itself
           const key = meal.name.toLowerCase();
           if (!seen.has(key)) {
             seen.set(key, { name: meal.name, calories: meal.calories, protein: meal.protein });
+          }
+          // Index individual items within the meal
+          if (meal.items) {
+            for (const item of meal.items) {
+              const itemKey = item.toLowerCase();
+              if (!seen.has(itemKey)) {
+                // Estimate per-item nutrition proportionally
+                const perItem = meal.items.length;
+                seen.set(itemKey, {
+                  name: item,
+                  calories: Math.round(meal.calories / perItem),
+                  protein: Math.round(meal.protein / perItem),
+                });
+              }
+            }
           }
         }
       }
@@ -53,13 +70,13 @@ function getFoodIndex() {
   return _foodIndex;
 }
 
-// Search food index by partial name match
+// Search food index by partial name match — returns up to 8 results
 function searchFoods(query) {
   if (!query || query.length < 2) return [];
   const q = query.toLowerCase();
   return getFoodIndex()
     .filter((f) => f.name.toLowerCase().includes(q))
-    .slice(0, 5);
+    .slice(0, 8);
 }
 
 // Stable empty object to avoid infinite re-render from Zustand selector
@@ -528,19 +545,27 @@ export default function Diet() {
 
                         {/* Add Custom + Swap Meal — single row */}
                         {!isLogged && (
-                          <div className="flex items-center gap-3 mt-3">
+                          <div className="flex items-center gap-2 mt-3">
                             <button
                               onClick={(e) => { e.stopPropagation(); setCustomMealSlot(customMealSlot === key ? null : key); setShowAlts(null); }}
-                              className={`flex items-center gap-1.5 text-[11px] font-medium transition-colors ${customMealSlot === key ? 'text-accent' : 'text-text-muted hover:text-accent'}`}
+                              className={`flex-1 flex items-center justify-center gap-1.5 text-xs font-medium py-2 rounded-lg border transition-all ${
+                                customMealSlot === key
+                                  ? 'bg-accent/10 text-accent border-accent/20'
+                                  : 'text-text-muted border-white/[0.08] hover:text-text-secondary hover:border-white/15'
+                              }`}
                             >
-                              <PenLine size={11} /> Add Items
+                              <PenLine size={12} /> Add Items
                             </button>
                             {isArray && mealOptions.length > 1 && (
                               <button
                                 onClick={(e) => { e.stopPropagation(); setShowAlts(showAlts === key ? null : key); setCustomMealSlot(null); }}
-                                className={`flex items-center gap-1.5 text-[11px] font-medium transition-colors ${showAlts === key ? 'text-accent' : 'text-text-muted hover:text-accent'}`}
+                                className={`flex-1 flex items-center justify-center gap-1.5 text-xs font-medium py-2 rounded-lg border transition-all ${
+                                  showAlts === key
+                                    ? 'bg-accent/10 text-accent border-accent/20'
+                                    : 'text-text-muted border-white/[0.08] hover:text-text-secondary hover:border-white/15'
+                                }`}
                               >
-                                <RefreshCw size={11} /> Swap Meal
+                                <RefreshCw size={12} /> Swap Meal
                               </button>
                             )}
                           </div>

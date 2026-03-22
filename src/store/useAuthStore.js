@@ -18,6 +18,8 @@ const useAuthStore = create((set, get) => ({
   loading: true,
   error: null,
 
+  _lastRefresh: 0, // timestamp of last Supabase refresh
+
   initialize: async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -52,8 +54,31 @@ const useAuthStore = create((set, get) => ({
           }
         }
       });
+
+      // Refetch from Supabase when tab regains focus (cross-device sync)
+      if (typeof document !== 'undefined') {
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') {
+            get().refreshFromSupabase();
+          }
+        });
+      }
     } catch (error) {
       set({ loading: false, error: error.message });
+    }
+  },
+
+  // Refresh data from Supabase (throttled to once per 30s)
+  refreshFromSupabase: async () => {
+    const state = get();
+    const now = Date.now();
+    if (now - state._lastRefresh < 30000) return; // throttle: 30s
+    if (!state.user?.id) return;
+    set({ _lastRefresh: now });
+    try {
+      await get().hydrateProfile(state.user.id);
+    } catch (e) {
+      console.warn('Background refresh failed:', e.message);
     }
   },
 
