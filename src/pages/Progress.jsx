@@ -74,7 +74,7 @@ export default function Progress() {
 
       {/* Log Weight */}
       {!showInput ? (
-        <button onClick={() => setShowInput(true)} className="btn-primary w-full py-3 rounded-lg text-sm font-bold flex items-center justify-center gap-2 mb-8">
+        <button onClick={() => setShowInput(true)} className="btn-primary px-6 py-3 rounded-lg text-sm font-bold inline-flex items-center gap-2 mb-8">
           <Scale size={16} /> Log Today's Weight
         </button>
       ) : (

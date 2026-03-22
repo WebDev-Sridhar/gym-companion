@@ -167,7 +167,7 @@ export default function Profile() {
                   deactivatePro();
                 }
               }}
-              className="w-full py-2.5 rounded-lg text-sm font-medium text-text-muted border border-white/[0.06] hover:border-white/[0.12] hover:text-text-secondary transition-all flex items-center justify-center gap-2"
+              className="px-5 py-2.5 rounded-lg text-sm font-medium text-text-muted border border-white/[0.06] hover:border-white/[0.12] hover:text-text-secondary transition-all inline-flex items-center gap-2"
             >
               Cancel Subscription
             </button>
@@ -179,7 +179,7 @@ export default function Profile() {
             </p>
             <button
               onClick={() => showUpgradeModal()}
-              className="w-full py-2.5 rounded-lg text-sm font-medium bg-accent/10 text-accent border border-accent/20 hover:bg-accent/15 transition-all flex items-center justify-center gap-2"
+              className="px-5 py-2.5 rounded-lg text-sm font-medium bg-accent/10 text-accent border border-accent/20 hover:bg-accent/15 transition-all inline-flex items-center gap-2"
             >
               <Sparkles size={14} /> Upgrade to Pro
             </button>
@@ -199,10 +199,10 @@ export default function Profile() {
           </div>
         )}
         <div className="space-y-2">
-          <button onClick={handleSignOut} className="w-full py-3 rounded-lg text-sm font-medium text-text-muted border border-white/[0.06] hover:border-white/[0.12] hover:text-text-secondary transition-all flex items-center justify-center gap-2">
+          <button onClick={handleSignOut} className="px-5 py-3 rounded-lg text-sm font-medium text-text-muted border border-white/[0.06] hover:border-white/[0.12] hover:text-text-secondary transition-all inline-flex items-center gap-2">
             <LogOut size={14} /> Sign Out
           </button>
-          <button onClick={handleReset} className="w-full py-3 rounded-lg text-sm font-medium text-accent/50 border border-accent/10 hover:bg-accent/5 hover:text-accent transition-all flex items-center justify-center gap-2">
+          <button onClick={handleReset} className="px-5 py-3 rounded-lg text-sm font-medium text-accent/50 border border-accent/10 hover:bg-accent/5 hover:text-accent transition-all inline-flex items-center gap-2">
             <RotateCcw size={14} /> Reset All Data
           </button>
         </div>

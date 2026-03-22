@@ -1,8 +1,10 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../store/useAuthStore';
 
 export default function Auth() {
+  const navigate = useNavigate();
   const { signInWithGoogle, error: authError, loading, clearError } = useAuthStore();
 
   const handleGoogleSignIn = () => {
@@ -11,7 +13,15 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center px-5">
+    <div className="min-h-screen bg-black flex items-center justify-center px-5 relative">
+      {/* Back to Home */}
+      <button
+        onClick={() => navigate('/')}
+        className="absolute top-6 left-6 inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-text-primary transition-colors"
+      >
+        <ArrowLeft size={16} /> Home
+      </button>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
