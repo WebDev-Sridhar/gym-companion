@@ -42,6 +42,8 @@ export default function Navbar() {
   const level = useUserStore((s) => s.level);
   const signOut = useAuthStore((s) => s.signOut);
 
+  const activeTabIndex = Math.max(0, bottomTabs.findIndex((t) => t.path === location.pathname));
+
   const handleLogout = async () => {
     await signOut();
     navigate('/');
@@ -160,7 +162,15 @@ export default function Navbar() {
       {/* Bottom Tab Bar */}
       <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
         <div className="bg-black/95 backdrop-blur-xl border-t border-white/[0.06]">
-          <div className="flex items-center justify-around px-2 py-1.5 max-w-md mx-auto">
+          <div className="relative flex items-center justify-around px-2 py-1.5 max-w-md mx-auto">
+            {/* CSS-based indicator — no layoutId, immune to scroll offset */}
+            <div
+              className="absolute top-0 h-[2px] w-6 rounded-full bg-accent transition-all duration-300 ease-out"
+              style={{
+                left: `${(activeTabIndex / bottomTabs.length) * 100 + 50 / bottomTabs.length}%`,
+                transform: 'translateX(-50%)',
+              }}
+            />
             {bottomTabs.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
@@ -170,15 +180,6 @@ export default function Navbar() {
                   to={item.path}
                   className="flex flex-col items-center gap-0.5 py-1.5 px-3 min-w-[52px] relative"
                 >
-                  {isActive && (
-                    <motion.div
-                      layoutId="bottomTabIndicator"
-                      className="absolute -top-1.5 w-6 h-[2px] rounded-full bg-accent"
-                      style={{ willChange: 'transform' }}
-                      transition={{ type: 'spring', stiffness: 500, damping: 35, layout: { type: 'spring', stiffness: 500, damping: 35 } }}
-                      layout="position"
-                    />
-                  )}
                   <div className={`p-1 transition-all ${isActive ? 'text-text-primary' : 'text-text-muted'}`}>
                     <Icon size={20} strokeWidth={isActive ? 2.2 : 1.6} />
                   </div>

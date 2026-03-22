@@ -445,12 +445,19 @@ const useUserStore = create(
           }
         }
 
-        // Recompute transformation level from raw data
+        // Recompute stats from actual logs (not gamification table, which may be stale)
         const wLogs = exerciseLogs || [];
         const weLogs = progressLogs || [];
         const fLogs = foodLogs || [];
-        const currentStreak = gamification?.currentStreak || 0;
-        const longestStreak = gamification?.longestStreak || 0;
+
+        // Compute streak and total from actual workout logs
+        const workoutDates = [...new Set(wLogs.map((l) => l.date))];
+        const computedStreak = calculateStreak(workoutDates);
+        const computedTotalWorkouts = wLogs.length;
+        // Use whichever is higher: computed from logs or stored in gamification
+        const currentStreak = Math.max(computedStreak, gamification?.currentStreak || 0);
+        const longestStreak = Math.max(computedStreak, gamification?.longestStreak || 0);
+        const totalWorkouts = Math.max(computedTotalWorkouts, gamification?.totalWorkouts || 0);
 
         const stats = computeTransformationStats(wLogs, weLogs, fLogs, currentStreak, longestStreak, nutritionTargets);
         const transformationLevel = getCurrentTransformationLevel(stats).id;
@@ -469,7 +476,7 @@ const useUserStore = create(
           currentStreak,
           longestStreak,
           xp: gamification?.xp || 0,
-          totalWorkouts: gamification?.totalWorkouts || 0,
+          totalWorkouts,
           lastLoginDate: gamification?.lastLoginDate || null,
           weightLogsCount: weLogs.length,
           plan,

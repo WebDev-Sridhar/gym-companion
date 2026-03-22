@@ -62,6 +62,9 @@ function searchFoods(query) {
     .slice(0, 5);
 }
 
+// Stable empty object to avoid infinite re-render from Zustand selector
+const EMPTY_SWAPS = {};
+
 const mealIcons = {
   breakfast: Sun,
   midMorning: Coffee,
@@ -93,7 +96,7 @@ export default function Diet() {
 
   const today = new Date().toISOString().split('T')[0];
   const dayIndex = new Date().getDay();
-  const swaps = useUserStore((s) => s.mealSwaps[today] || {});
+  const swaps = useUserStore((s) => s.mealSwaps[today] ?? EMPTY_SWAPS);
 
   // Migration guard: regenerate if old single-meal format detected
   useEffect(() => {

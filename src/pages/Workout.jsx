@@ -142,7 +142,7 @@ export default function Workout() {
               <div key={log.id} className="border border-white/[0.06] rounded-xl p-4">
                 <div className="flex items-center justify-between mb-3">
                   <span className="font-bold text-text-primary text-sm">{log.dayName}</span>
-                  <span className="text-xs text-text-muted">{new Date(log.timestamp).toLocaleDateString()}</span>
+                  <span className="text-xs text-text-muted">{new Date(log.timestamp || log.date).toLocaleDateString()}</span>
                 </div>
                 {log.exercises?.map((ex, i) => (
                   <div key={i} className="py-2 border-b border-white/[0.04] last:border-0">
