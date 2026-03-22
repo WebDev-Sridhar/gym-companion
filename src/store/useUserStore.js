@@ -8,6 +8,7 @@ import {
   getCurrentTransformationLevel,
   getNextLevel,
   getLevelProgress,
+  XP_REWARDS,
 } from '../utils/gamification';
 import {
   saveProfile,
@@ -61,6 +62,7 @@ const recomputeLevel = (state) => {
 // Helper: build gamification save object
 const buildGamSaveData = (state) => ({
   transformationLevel: state.transformationLevel,
+  xp: state.xp,
   currentStreak: state.currentStreak,
   longestStreak: state.longestStreak,
   totalWorkouts: state.totalWorkouts,
@@ -91,6 +93,7 @@ const useUserStore = create(
       // Gamification
       transformationLevel: 0,
       level: 0,
+      xp: 0,
       currentStreak: 0,
       longestStreak: 0,
       lastLoginDate: null,
@@ -194,6 +197,13 @@ const useUserStore = create(
         );
         const newLevel = getCurrentTransformationLevel(stats).id;
 
+        // XP: workout reward + streak milestone bonuses
+        let xpGain = XP_REWARDS.workout;
+        if (newStreak === 7) xpGain += XP_REWARDS.streak7;
+        else if (newStreak === 14) xpGain += XP_REWARDS.streak14;
+        else if (newStreak === 30) xpGain += XP_REWARDS.streak30;
+        const newXp = state.xp + xpGain;
+
         set({
           workoutLogs: newLogs,
           totalWorkouts,
@@ -201,6 +211,7 @@ const useUserStore = create(
           longestStreak: newLongestStreak,
           transformationLevel: newLevel,
           level: newLevel,
+          xp: newXp,
         });
 
         syncToSupabase(async (userId) => {
@@ -208,6 +219,7 @@ const useUserStore = create(
             saveExerciseLog(userId, newLog),
             saveGamification(userId, {
               transformationLevel: newLevel,
+              xp: newXp,
               currentStreak: newStreak,
               longestStreak: newLongestStreak,
               totalWorkouts,
@@ -238,17 +250,20 @@ const useUserStore = create(
         );
         const newLevel = getCurrentTransformationLevel(stats).id;
 
+        const newXp = state.xp + XP_REWARDS.weight;
+
         set({
           weightLogs: newWeightLogs,
           weightLogsCount: count,
           transformationLevel: newLevel,
           level: newLevel,
+          xp: newXp,
         });
 
         syncToSupabase(async (userId) => {
           await Promise.all([
             saveProgressLog(userId, newLog),
-            saveGamification(userId, buildGamSaveData({ ...state, weightLogsCount: count, transformationLevel: newLevel })),
+            saveGamification(userId, buildGamSaveData({ ...state, weightLogsCount: count, transformationLevel: newLevel, xp: newXp })),
           ]);
         });
       },
@@ -276,16 +291,19 @@ const useUserStore = create(
         );
         const newLevel = getCurrentTransformationLevel(stats).id;
 
+        const newXp = state.xp + XP_REWARDS.meal;
+
         set({
           foodLogs: newFoodLogs,
           transformationLevel: newLevel,
           level: newLevel,
+          xp: newXp,
         });
 
         syncToSupabase(async (userId) => {
           const [saveResult] = await Promise.all([
             saveFoodLog(userId, newLog),
-            saveGamification(userId, buildGamSaveData({ ...state, transformationLevel: newLevel })),
+            saveGamification(userId, buildGamSaveData({ ...state, transformationLevel: newLevel, xp: newXp })),
           ]);
           if (saveResult?.data?.id) {
             set((s) => ({
@@ -351,16 +369,19 @@ const useUserStore = create(
 
         if (state.lastLoginDate !== today) {
           const newLevel = recomputeLevel({ ...state, lastLoginDate: today });
+          const newXp = state.xp + XP_REWARDS.dailyLogin;
 
           set({
             lastLoginDate: today,
             transformationLevel: newLevel,
             level: newLevel,
+            xp: newXp,
           });
 
           syncToSupabase(async (userId) => {
             await saveGamification(userId, {
               transformationLevel: newLevel,
+              xp: newXp,
               currentStreak: state.currentStreak,
               longestStreak: state.longestStreak,
               totalWorkouts: state.totalWorkouts,
@@ -434,6 +455,7 @@ const useUserStore = create(
           level: transformationLevel,
           currentStreak,
           longestStreak,
+          xp: gamification?.xp || 0,
           totalWorkouts: gamification?.totalWorkouts || 0,
           lastLoginDate: gamification?.lastLoginDate || null,
           weightLogsCount: weLogs.length,
@@ -479,6 +501,7 @@ const useUserStore = create(
           foodLogs: [],
           transformationLevel: 0,
           level: 0,
+          xp: 0,
           currentStreak: 0,
           longestStreak: 0,
           lastLoginDate: null,

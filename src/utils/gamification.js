@@ -366,3 +366,45 @@ export function calculateStreak(workoutDates) {
 
   return streak;
 }
+
+// =====================
+// XP Medal System (separate from Transformation Journey)
+// =====================
+
+export const XP_REWARDS = {
+  workout: 50,
+  meal: 20,
+  weight: 15,
+  dailyLogin: 10,
+  streak7: 100,
+  streak14: 200,
+  streak30: 500,
+};
+
+export const MEDALS = [
+  { id: 'starter', name: 'Starter', xpRequired: 0, color: 'text-text-muted', bg: 'bg-white/[0.06]' },
+  { id: 'bronze', name: 'Bronze', xpRequired: 100, color: 'text-amber-600', bg: 'bg-amber-900/20' },
+  { id: 'silver', name: 'Silver', xpRequired: 500, color: 'text-gray-300', bg: 'bg-gray-500/20' },
+  { id: 'gold', name: 'Gold', xpRequired: 1500, color: 'text-yellow-400', bg: 'bg-yellow-500/20' },
+  { id: 'platinum', name: 'Platinum', xpRequired: 3000, color: 'text-cyan-400', bg: 'bg-cyan-500/20' },
+  { id: 'diamond', name: 'Diamond', xpRequired: 5000, color: 'text-purple-400', bg: 'bg-purple-500/20' },
+  { id: 'master', name: 'Master', xpRequired: 8000, color: 'text-orange-400', bg: 'bg-orange-500/20' },
+  { id: 'champion', name: 'Champion', xpRequired: 12000, color: 'text-accent', bg: 'bg-accent/10' },
+];
+
+/**
+ * Get the highest medal earned at given XP
+ */
+export function getCurrentMedal(xp) {
+  for (let i = MEDALS.length - 1; i >= 0; i--) {
+    if (xp >= MEDALS[i].xpRequired) return MEDALS[i];
+  }
+  return MEDALS[0];
+}
+
+/**
+ * Get the next medal to unlock, or null if at max
+ */
+export function getNextMedal(xp) {
+  return MEDALS.find((m) => m.xpRequired > xp) || null;
+}

@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Edit3, Trophy, Flame, TrendingUp, Dumbbell, RotateCcw, Save, X, LogOut, Mail, Sparkles, Crown, Check, Lock } from 'lucide-react';
+import { User, Edit3, Trophy, Flame, TrendingUp, Dumbbell, RotateCcw, Save, X, LogOut, Mail, Sparkles, Crown, Check, Lock, Medal, Zap } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { showCoach } from '../components/ui/CoachPopup';
 import { showUpgradeModal } from '../components/ui/PaymentModal';
 import useUserStore from '../store/useUserStore';
 import useAuthStore from '../store/useAuthStore';
 import { cancelSubscription } from '../lib/supabaseService';
-import { TRANSFORMATION_LEVELS, computeTransformationStats, getCurrentTransformationLevel, getLevelProgress } from '../utils/gamification';
+import { TRANSFORMATION_LEVELS, computeTransformationStats, getCurrentTransformationLevel, getLevelProgress, MEDALS, getCurrentMedal, getNextMedal } from '../utils/gamification';
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { profile, transformationLevel, currentStreak, longestStreak, totalWorkouts, weightLogs, workoutLogs, foodLogs, nutritionTargets, resetAll, updateProfile, plan, subscription, deactivatePro } = useUserStore();
+  const { profile, transformationLevel, xp, currentStreak, longestStreak, totalWorkouts, weightLogs, workoutLogs, foodLogs, nutritionTargets, resetAll, updateProfile, plan, subscription, deactivatePro } = useUserStore();
   const isPro = plan === 'pro';
   const { user, signOut } = useAuthStore();
   const [editing, setEditing] = useState(false);
@@ -57,7 +57,7 @@ export default function Profile() {
           { icon: Dumbbell, value: totalWorkouts, label: 'Workouts' },
           { icon: Flame, value: currentStreak, label: 'Streak', accent: true },
           { icon: TrendingUp, value: currentLevel.id, label: 'Level' },
-          { icon: Trophy, value: longestStreak, label: 'Best Streak' },
+          { icon: Zap, value: xp, label: 'XP' },
         ].map((s) => (
           <div key={s.label} className="border border-white/[0.06] rounded-xl p-3 sm:p-4 text-center">
             <s.icon size={16} className={`mx-auto mb-2 ${s.accent ? 'text-accent' : 'text-text-muted'}`} />
@@ -138,6 +138,51 @@ export default function Profile() {
           })}
         </div>
       </motion.div>
+
+      {/* XP Medals */}
+      {(() => {
+        const currentMedal = getCurrentMedal(xp);
+        const nextMedal = getNextMedal(xp);
+        const progressPercent = nextMedal
+          ? Math.round(((xp - currentMedal.xpRequired) / (nextMedal.xpRequired - currentMedal.xpRequired)) * 100)
+          : 100;
+
+        return (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="border border-white/[0.06] rounded-xl p-5 mb-6">
+            <h3 className="font-bold mb-4 flex items-center gap-2 text-sm text-text-secondary">
+              <Medal size={16} /> XP Medals
+            </h3>
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className={`text-sm font-bold ${currentMedal.color}`}>{currentMedal.name} Medal</span>
+                <span className="text-xs text-text-muted font-medium">{xp} XP</span>
+              </div>
+              {nextMedal ? (
+                <>
+                  <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden mb-1">
+                    <div className="h-full bg-accent rounded-full transition-all" style={{ width: `${progressPercent}%` }} />
+                  </div>
+                  <p className="text-[11px] text-text-muted">{nextMedal.xpRequired - xp} XP to {nextMedal.name}</p>
+                </>
+              ) : (
+                <p className="text-[11px] text-accent font-medium">All medals unlocked!</p>
+              )}
+            </div>
+            <div className="grid grid-cols-4 gap-2">
+              {MEDALS.map((medal) => {
+                const unlocked = xp >= medal.xpRequired;
+                return (
+                  <div key={medal.id} className={`rounded-lg p-3 text-center transition-all ${unlocked ? medal.bg : 'bg-white/[0.02] opacity-40'}`}>
+                    <Medal size={20} className={`mx-auto mb-1 ${unlocked ? medal.color : 'text-text-muted'}`} />
+                    <div className={`text-[10px] font-bold ${unlocked ? medal.color : 'text-text-muted'}`}>{medal.name}</div>
+                    <div className="text-[9px] text-text-muted">{medal.xpRequired} XP</div>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        );
+      })()}
 
       {/* Personal Info */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="border border-white/[0.06] rounded-xl p-5 mb-6">

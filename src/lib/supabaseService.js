@@ -208,6 +208,7 @@ export async function saveGamification(userId, gamData) {
   const data = {
     user_id: userId,
     transformation_level: gamData.transformationLevel || 0,
+    xp: gamData.xp || 0,
     current_streak: gamData.currentStreak,
     longest_streak: gamData.longestStreak,
     total_workouts: gamData.totalWorkouts,
@@ -243,6 +244,7 @@ export async function fetchGamification(userId) {
   return {
     data: {
       transformationLevel: data.transformation_level || 0,
+      xp: data.xp || 0,
       currentStreak: data.current_streak,
       longestStreak: data.longest_streak,
       totalWorkouts: data.total_workouts,

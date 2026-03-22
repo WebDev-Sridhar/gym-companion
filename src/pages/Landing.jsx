@@ -74,7 +74,7 @@ const features = [
   {
     icon: Trophy,
     title: 'Gamification',
-    description: 'Complete real transformation levels based on your actual progress. No fake XP — just real results.',
+    description: 'Earn XP medals and complete real transformation levels based on your actual progress.',
   },
   {
     icon: BookOpen,

@@ -23,9 +23,21 @@ export default function Progress() {
 
   const workoutFreq = [];
   for (let i = 3; i >= 0; i--) {
-    const ws = new Date(); ws.setDate(ws.getDate() - (i * 7 + ws.getDay()));
-    const we = new Date(ws); we.setDate(we.getDate() + 6);
-    workoutFreq.push({ week: `Week ${4 - i}`, workouts: workoutLogs.filter((l) => { const d = new Date(l.date); return d >= ws && d <= we; }).length });
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const ws = new Date(now);
+    ws.setDate(ws.getDate() - (i * 7 + now.getDay()));
+    const we = new Date(ws);
+    we.setDate(we.getDate() + 6);
+    we.setHours(23, 59, 59, 999);
+    workoutFreq.push({
+      week: `Week ${4 - i}`,
+      workouts: workoutLogs.filter((l) => {
+        const d = new Date(l.date);
+        d.setHours(12, 0, 0, 0);
+        return d >= ws && d <= we;
+      }).length,
+    });
   }
 
   const startW = profile?.weight || 0;

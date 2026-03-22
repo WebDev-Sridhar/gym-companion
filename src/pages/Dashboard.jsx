@@ -12,6 +12,7 @@ import {
   ArrowRight,
   BookOpen,
   RotateCcw,
+  Zap,
 } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { UpgradeBanner } from '../components/ui/ProLock';
@@ -19,7 +20,7 @@ import { showCoach } from '../components/ui/CoachPopup';
 import useUserStore from '../store/useUserStore';
 import { getTodaysWorkout } from '../utils/planGenerator';
 import { getDailyQuote } from '../data/quotes';
-import { computeTransformationStats, getCurrentTransformationLevel, getNextLevel, getLevelProgress } from '../utils/gamification';
+import { computeTransformationStats, getCurrentTransformationLevel, getNextLevel, getLevelProgress, getCurrentMedal } from '../utils/gamification';
 import { analyzeProgress } from '../utils/smartCoach';
 
 export default function Dashboard() {
@@ -29,7 +30,8 @@ export default function Dashboard() {
     workoutPlan,
     nutritionTargets,
     currentStreak,
-    transformationLevel,
+    longestStreak,
+    xp,
     totalWorkouts,
     checkDailyLogin,
     weightLogs,
@@ -87,7 +89,7 @@ export default function Dashboard() {
   const quote = getDailyQuote();
 
   // Transformation level progress
-  const stats = computeTransformationStats(workoutLogs, weightLogs, foodLogs, currentStreak, 0, nutTargets);
+  const stats = computeTransformationStats(workoutLogs, weightLogs, foodLogs, currentStreak, longestStreak, nutTargets);
   const currentLevel = getCurrentTransformationLevel(stats);
   const nextLevel = getNextLevel(currentLevel.id);
   const nextProgress = nextLevel ? getLevelProgress(nextLevel.id, stats) : null;
@@ -178,7 +180,7 @@ export default function Dashboard() {
         {[
           { Icon: Flame, value: currentStreak, label: 'Day Streak', accent: true },
           { Icon: Dumbbell, value: totalWorkouts, label: 'Workouts' },
-          { Icon: TrendingUp, value: transformationLevel, label: 'Level' },
+          { Icon: Zap, value: xp, label: `${getCurrentMedal(xp).name} Medal` },
           { Icon: Target, value: nextProgress ? `${nextProgress.completedTasks}/${nextProgress.totalTasks}` : 'Max', label: 'Tasks' },
         ].map((stat, i) => (
           <motion.div

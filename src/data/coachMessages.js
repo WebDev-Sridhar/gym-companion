@@ -48,7 +48,7 @@ export const coachMessages = {
     'LEGENDARY! You just hit a milestone!',
     "Now THAT'S progress! Keep going!",
     "You're on fire! Nothing can stop you!",
-    'Badge unlocked! You are leveling up!',
+    'Medal unlocked! You are leveling up!',
     "That's what I'm talking about!",
   ],
   streak: [
