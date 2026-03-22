@@ -83,6 +83,12 @@ export function openCheckout({ amount, planType, userEmail, userName, onSuccess,
       name: userName || '',
       email: userEmail || '',
     },
+    method: {
+      upi: true,
+      card: true,
+      netbanking: true,
+      wallet: true,
+    },
     theme: {
       color: '#c8ee44',
       backdrop_color: 'rgba(0, 0, 0, 0.8)',
