@@ -168,7 +168,7 @@ export default function Landing() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8 }}
-            className="mt-20 flex justify-center gap-12 sm:gap-16"
+            className="mt-10 flex justify-center gap-12 sm:gap-16"
           >
             {[
               { value: '30+', label: 'Exercises' },
@@ -187,7 +187,7 @@ export default function Landing() {
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ repeat: Infinity, duration: 2.5 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          className="absolute bottom-2 left-1/2 -translate-x-1/2"
         >
           <ChevronRight size={20} className="text-text-muted rotate-90" />
         </motion.div>
@@ -281,7 +281,7 @@ export default function Landing() {
 
       {/* How It Works */}
       <section className="py-24 sm:py-32 px-5 sm:px-8 relative">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -293,26 +293,105 @@ export default function Landing() {
             </motion.h2>
           </motion.div>
 
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="space-y-0 border-l border-white/10 ml-6 sm:ml-8"
-          >
-            {steps.map((step, i) => (
-              <motion.div
-                key={step.num}
-                variants={fadeInUp}
-                custom={i}
-                className="relative pl-10 sm:pl-14 py-8 sm:py-10"
-              >
-                <div className="absolute left-0 top-8 sm:top-10 -translate-x-1/2 w-3 h-3 rounded-full bg-accent border-4 border-black" />
-                <span className="text-xs text-text-muted font-mono tracking-widest uppercase">{step.num}</span>
-                <h3 className="text-xl sm:text-2xl font-bold text-text-primary mt-1 mb-2">{step.title}</h3>
-                <p className="text-text-muted leading-relaxed max-w-lg">{step.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
+          <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center">
+            {/* Left — Steps */}
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="flex-1 space-y-0 border-l border-white/10 ml-6 sm:ml-8"
+            >
+              {steps.map((step, i) => (
+                <motion.div
+                  key={step.num}
+                  variants={fadeInUp}
+                  custom={i}
+                  className="relative pl-10 sm:pl-14 py-8 sm:py-10"
+                >
+                  <div className="absolute left-0 top-8 sm:top-10 -translate-x-1/2 w-3 h-3 rounded-full bg-accent border-4 border-black" />
+                  <span className="text-xs text-text-muted font-mono tracking-widest uppercase">{step.num}</span>
+                  <h3 className="text-xl sm:text-2xl font-bold text-text-primary mt-1 mb-2">{step.title}</h3>
+                  <p className="text-text-muted leading-relaxed max-w-lg">{step.desc}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {/* Right — Illustration */}
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="flex-1 flex items-center justify-center"
+            >
+              <div className="w-full max-w-sm lg:max-w-md">
+                <svg viewBox="0 0 400 450" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+                  {/* Background glow */}
+                  <circle cx="200" cy="225" r="160" fill="url(#glow)" opacity="0.15" />
+
+                  {/* Step 1: Profile/User icon */}
+                  <g transform="translate(80, 40)">
+                    <rect x="0" y="0" width="80" height="80" rx="16" fill="#c8ee44" fillOpacity="0.08" stroke="#c8ee44" strokeOpacity="0.2" strokeWidth="1.5" />
+                    <circle cx="40" cy="30" r="12" stroke="#c8ee44" strokeWidth="2" fill="none" />
+                    <path d="M20 65 C20 50 60 50 60 65" stroke="#c8ee44" strokeWidth="2" fill="none" strokeLinecap="round" />
+                    <text x="40" y="95" textAnchor="middle" fill="#888" fontSize="11" fontWeight="600">Profile</text>
+                  </g>
+
+                  {/* Connector 1→2 */}
+                  <path d="M160 100 C200 130 180 160 200 180" stroke="#c8ee44" strokeOpacity="0.3" strokeWidth="1.5" strokeDasharray="4 4" />
+                  <circle cx="200" cy="180" r="3" fill="#c8ee44" fillOpacity="0.5" />
+
+                  {/* Step 2: Plan/Dumbbell */}
+                  <g transform="translate(160, 180)">
+                    <rect x="0" y="0" width="80" height="80" rx="16" fill="#c8ee44" fillOpacity="0.08" stroke="#c8ee44" strokeOpacity="0.25" strokeWidth="1.5" />
+                    {/* Dumbbell icon */}
+                    <rect x="22" y="35" width="36" height="6" rx="3" fill="#c8ee44" fillOpacity="0.6" />
+                    <rect x="16" y="28" width="10" height="20" rx="3" fill="#c8ee44" fillOpacity="0.4" />
+                    <rect x="54" y="28" width="10" height="20" rx="3" fill="#c8ee44" fillOpacity="0.4" />
+                    <text x="40" y="95" textAnchor="middle" fill="#888" fontSize="11" fontWeight="600">Your Plan</text>
+                  </g>
+
+                  {/* Connector 2→3 */}
+                  <path d="M240 260 C280 280 260 310 280 330" stroke="#c8ee44" strokeOpacity="0.3" strokeWidth="1.5" strokeDasharray="4 4" />
+                  <circle cx="280" cy="330" r="3" fill="#c8ee44" fillOpacity="0.5" />
+
+                  {/* Step 3: Progress/Chart */}
+                  <g transform="translate(240, 320)">
+                    <rect x="0" y="0" width="80" height="80" rx="16" fill="#c8ee44" fillOpacity="0.12" stroke="#c8ee44" strokeOpacity="0.3" strokeWidth="1.5" />
+                    {/* Chart bars */}
+                    <rect x="20" y="50" width="8" height="15" rx="2" fill="#c8ee44" fillOpacity="0.3" />
+                    <rect x="32" y="40" width="8" height="25" rx="2" fill="#c8ee44" fillOpacity="0.45" />
+                    <rect x="44" y="30" width="8" height="35" rx="2" fill="#c8ee44" fillOpacity="0.6" />
+                    <rect x="56" y="22" width="8" height="43" rx="2" fill="#c8ee44" fillOpacity="0.8" />
+                    {/* Trophy */}
+                    <path d="M38 18 L42 12 L46 18" stroke="#c8ee44" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+                    <text x="40" y="95" textAnchor="middle" fill="#888" fontSize="11" fontWeight="600">Level Up</text>
+                  </g>
+
+                  {/* Floating accent elements */}
+                  <circle cx="320" cy="80" r="4" fill="#c8ee44" fillOpacity="0.15" />
+                  <circle cx="60" cy="300" r="6" fill="#c8ee44" fillOpacity="0.1" />
+                  <circle cx="350" cy="250" r="3" fill="#c8ee44" fillOpacity="0.2" />
+                  <circle cx="100" cy="180" r="2" fill="#c8ee44" fillOpacity="0.15" />
+
+                  {/* XP sparkle */}
+                  <g transform="translate(310, 370)">
+                    <path d="M0 -8 L2 -2 L8 0 L2 2 L0 8 L-2 2 L-8 0 L-2 -2 Z" fill="#c8ee44" fillOpacity="0.4" />
+                  </g>
+                  <g transform="translate(70, 90)">
+                    <path d="M0 -6 L1.5 -1.5 L6 0 L1.5 1.5 L0 6 L-1.5 1.5 L-6 0 L-1.5 -1.5 Z" fill="#c8ee44" fillOpacity="0.25" />
+                  </g>
+
+                  <defs>
+                    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+                      <stop offset="0%" stopColor="#c8ee44" stopOpacity="0.3" />
+                      <stop offset="100%" stopColor="#c8ee44" stopOpacity="0" />
+                    </radialGradient>
+                  </defs>
+                </svg>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 

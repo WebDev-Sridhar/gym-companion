@@ -5,6 +5,8 @@ import {
   Play,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
+  ChevronRight,
   Clock,
   Target,
   Save,
@@ -26,6 +28,7 @@ export default function Workout() {
   const [expandedExercise, setExpandedExercise] = useState(null);
   const [logData, setLogData] = useState({});
   const [showHistory, setShowHistory] = useState(false);
+  const [videoMode, setVideoMode] = useState({}); // { [exerciseId]: 'shorts' | 'full' }
   const workoutLogs = useUserStore((s) => s.workoutLogs);
 
   if (!workoutPlan) {
@@ -292,16 +295,49 @@ export default function Workout() {
                             )}
                           </div>
 
-                          {/* Right — Video */}
+                          {/* Right — Video (Shorts first, toggle to full) */}
                           <div className="lg:w-[45%] shrink-0">
                             {isPro ? (
-                              <div className="video-container rounded-lg overflow-hidden lg:sticky lg:top-4">
-                                <iframe
-                                  src={`https://www.youtube.com/embed/${exercise.videoId}`}
-                                  title={exercise.name}
-                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                  allowFullScreen
-                                />
+                              <div className="lg:sticky lg:top-4">
+                                {(() => {
+                                  const hasShorts = !!exercise.shortsId;
+                                  const mode = videoMode[exercise.id] || (hasShorts ? 'shorts' : 'full');
+                                  const isShorts = mode === 'shorts' && hasShorts;
+                                  const currentVideoId = isShorts ? exercise.shortsId : exercise.videoId;
+
+                                  return (
+                                    <>
+                                      <div className={`${isShorts ? 'shorts-container' : 'video-container'} rounded-lg overflow-hidden`}>
+                                        <iframe
+                                          src={`https://www.youtube.com/embed/${currentVideoId}`}
+                                          title={exercise.name}
+                                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                          allowFullScreen
+                                        />
+                                      </div>
+                                      {hasShorts && (
+                                        <div className="flex items-center justify-between mt-2">
+                                          <span className="text-[10px] text-text-muted uppercase tracking-wider">
+                                            {isShorts ? 'Quick Form Guide' : 'Full Tutorial'}
+                                          </span>
+                                          <button
+                                            onClick={() => setVideoMode((prev) => ({
+                                              ...prev,
+                                              [exercise.id]: isShorts ? 'full' : 'shorts',
+                                            }))}
+                                            className="flex items-center gap-1 text-xs font-medium text-accent hover:text-accent/80 transition-colors"
+                                          >
+                                            {isShorts ? (
+                                              <>Full Video <ChevronRight size={14} /></>
+                                            ) : (
+                                              <><ChevronLeft size={14} /> Quick Guide</>
+                                            )}
+                                          </button>
+                                        </div>
+                                      )}
+                                    </>
+                                  );
+                                })()}
                               </div>
                             ) : (
                               <div className="aspect-video bg-white/[0.03] rounded-lg flex items-center justify-center border border-white/[0.06]">

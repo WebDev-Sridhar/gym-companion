@@ -1,4 +1,5 @@
 // Comprehensive exercise database with YouTube video links
+// shortsId = Demic (@officialdemic) Shorts, videoId = full tutorial
 export const exercises = {
   // CHEST
   benchPress: {
@@ -11,6 +12,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Dumbbell Bench Press', 'Push-ups', 'Machine Chest Press'],
     videoId: 'rT7DgCr-3pg',
+    shortsId: 'sRuKSZLcmWM',
     instructions: 'Lie flat on the bench with feet firmly on the floor. Grip the barbell slightly wider than shoulder-width. Unrack and lower the bar slowly to your mid-chest, keeping elbows at about 45 degrees. Press up explosively to full lockout while squeezing your chest at the top.',
     donts: [
       'Don\'t bounce the bar off your chest',
@@ -29,6 +31,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Incline Barbell Press', 'Low-to-High Cable Fly'],
     videoId: '8iPEnn-ltC8',
+    shortsId: 'd5hmgyUPYUg',
     instructions: 'Set the bench to 30-45 degrees. Hold dumbbells at shoulder level with palms facing forward. Press the weights up and slightly inward until arms are extended. Lower under control until you feel a stretch in your upper chest.',
     donts: [
       'Don\'t set the bench too steep (above 45 degrees) — it shifts work to shoulders',
@@ -46,6 +49,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Dumbbell Fly', 'Pec Deck Machine'],
     videoId: 'Iwe6AmxVf7o',
+    shortsId: '4h1AtDNFk2Q',
     instructions: 'Stand in the center of a cable station with a slight forward lean. With a slight bend in your elbows, pull the handles together in a wide hugging motion. Squeeze your chest hard at the bottom, then slowly return to the stretched position.',
     donts: [
       'Don\'t bend your elbows too much — keep them slightly bent throughout',
@@ -63,6 +67,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Knee Push-ups', 'Wall Push-ups'],
     videoId: 'IODxDxX7oi4',
+    shortsId: '1AugTfDd3Yk',
     instructions: 'Place hands slightly wider than shoulder-width on the floor. Keep your body in a perfectly straight line from head to heels. Lower yourself until your chest nearly touches the ground, then push back up by fully extending your arms.',
     donts: [
       'Don\'t let your hips sag or pike up',
@@ -82,6 +87,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Pull-ups', 'Assisted Pull-ups'],
     videoId: 'CAwf7n6Luuc',
+    shortsId: 'Mtpf7dI8_jE',
     instructions: 'Sit with thighs secured under the pad. Grip the bar wider than shoulder-width. Pull the bar down to your upper chest while leaning back slightly, focusing on driving your elbows down and squeezing your shoulder blades together. Control the weight on the way up.',
     donts: [
       'Don\'t lean too far back or use momentum',
@@ -99,6 +105,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Dumbbell Row', 'T-Bar Row', 'Cable Row'],
     videoId: 'FWJR5Ve8bnQ',
+    shortsId: 'FZ_ObAdQPEo',
     instructions: 'Hinge at the hips until your torso is roughly 45 degrees to the floor. Grip the bar just outside your knees. Pull the barbell to your lower chest or upper abdomen, driving elbows back and squeezing your lats. Lower with control.',
     donts: [
       'Don\'t round your lower back',
@@ -116,6 +123,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Dumbbell Row', 'Machine Row'],
     videoId: 'GZbfZ033f74',
+    shortsId: 'dpgKOu2eqIo',
     instructions: 'Sit upright with feet on the platform and a slight bend in your knees. Pull the handle to your lower torso, squeezing your shoulder blades together at the end. Extend arms forward with control, letting your shoulders stretch slightly.',
     donts: [
       'Don\'t round your back as you reach forward',
@@ -133,6 +141,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Reverse Fly', 'Band Pull-aparts'],
     videoId: 'rep-qVOkqgk',
+    shortsId: 'zi7waeqXpzw',
     instructions: 'Set the cable at upper chest or face height with a rope attachment. Pull the rope toward your face, separating the ends as you pull. Externally rotate your shoulders so your hands end up beside your ears. Squeeze your rear delts and upper back.',
     donts: [
       'Don\'t use too heavy a weight — this is a control exercise',
@@ -152,6 +161,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Dumbbell Shoulder Press', 'Machine Shoulder Press'],
     videoId: '_RlRDWO2jfg',
+    shortsId: 'NQ-JJYay1TM',
     instructions: 'Stand with feet shoulder-width apart. Hold the barbell at shoulder level with a grip just outside your shoulders. Brace your core and press the bar straight overhead, moving your head slightly back to clear the bar path. Lock out at the top with the bar directly over your midfoot.',
     donts: [
       'Don\'t arch your lower back excessively',
@@ -169,6 +179,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Cable Lateral Raise', 'Machine Lateral Raise'],
     videoId: '3VcKaXpzqRo',
+    shortsId: '-_XE4qbV7Yw',
     instructions: 'Stand with dumbbells at your sides, slight bend in elbows. Raise the weights out to your sides until your arms are parallel to the floor. Lead with your elbows, not your hands. Lower slowly under control.',
     donts: [
       'Don\'t swing the weights up with momentum',
@@ -186,6 +197,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Face Pull', 'Reverse Pec Deck'],
     videoId: 'EA7u4Q_8HQ0',
+    shortsId: 'UO2ADpDnYUE',
     instructions: 'Bend forward at the hips until your torso is nearly parallel to the floor. With a slight bend in your elbows, raise the dumbbells out to your sides. Focus on squeezing your shoulder blades together at the top. Lower slowly.',
     donts: [
       'Don\'t use too heavy a weight — focus on the contraction',
@@ -205,6 +217,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['EZ-Bar Curl', 'Dumbbell Curl'],
     videoId: 'kwG2ipFRgFo',
+    shortsId: 'EbaRjcixdPc',
     instructions: 'Stand with feet hip-width apart, holding the barbell with an underhand grip at arm\'s length. Keeping your elbows pinned to your sides, curl the bar up to shoulder level. Squeeze your biceps at the top, then lower under control.',
     donts: [
       'Don\'t swing your body or use momentum',
@@ -239,6 +252,7 @@ export const exercises = {
     difficulty: 'intermediate',
     alternatives: ['Preacher Curl', 'Concentration Curl'],
     videoId: 'soxrZlIl35U',
+    shortsId: 's9hfCnWWhC8',
     instructions: 'Set a bench to about 45 degrees. Sit back and let your arms hang straight down with dumbbells. Curl the weights up while keeping your upper arms stationary. The incline position provides a deeper stretch on the biceps for better activation.',
     donts: [
       'Don\'t bring your elbows forward as you curl',
@@ -258,6 +272,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Rope Pushdown', 'Overhead Extension'],
     videoId: '2-LAMcpzODU',
+    shortsId: 'NhV457cRuvE',
     instructions: 'Stand at a cable station with a straight bar or V-bar attachment. Keep your elbows pinned to your sides and push the bar down until your arms are fully extended. Squeeze your triceps hard at the bottom, then let the bar come up slowly to about chest level.',
     donts: [
       'Don\'t let your elbows flare away from your body',
@@ -275,6 +290,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Skull Crushers', 'Dips'],
     videoId: '_gsUck-7M74',
+    shortsId: 'rFNQv9eae6I',
     instructions: 'Hold a dumbbell with both hands overhead, arms fully extended. Keeping your upper arms close to your ears, lower the weight behind your head by bending at the elbows. Extend back up to the starting position and squeeze your triceps.',
     donts: [
       'Don\'t let your elbows flare out wide',
@@ -292,6 +308,7 @@ export const exercises = {
     difficulty: 'intermediate',
     alternatives: ['Bench Dips', 'Tricep Pushdown'],
     videoId: 'sM6XUdt1rm4',
+    shortsId: '1fa6wKSlSY8',
     instructions: 'Grip parallel bars with arms straight. Lean slightly forward for more chest emphasis, or stay upright for triceps focus. Lower yourself by bending your elbows until your upper arms are roughly parallel to the floor. Push back up to full lockout.',
     donts: [
       'Don\'t go too deep — it can strain your shoulders',
@@ -311,6 +328,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Goblet Squat', 'Leg Press', 'Smith Machine Squat'],
     videoId: 'ultWZbUMPL8',
+    shortsId: 'mqIQA1u72Jk',
     instructions: 'Position the bar on your upper back (traps area). Stand with feet shoulder-width apart, toes slightly out. Brace your core, push your hips back, and squat down until your thighs are at least parallel to the floor. Drive through your whole foot to stand back up.',
     donts: [
       'Don\'t let your knees cave inward',
@@ -329,6 +347,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Squat', 'Hack Squat'],
     videoId: 'IZxyjW7MPJQ',
+    shortsId: '8fSPQzY7cpY',
     instructions: 'Sit in the machine with your back flat against the pad. Place feet shoulder-width apart on the platform. Release the safety locks and lower the platform by bending your knees to about 90 degrees. Push back up without locking your knees completely.',
     donts: [
       'Don\'t let your lower back round off the pad',
@@ -346,6 +365,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Leg Curl', 'Stiff-Leg Deadlift'],
     videoId: '7j-2w4-P14I',
+    shortsId: 'U1XmhaOyNFQ',
     instructions: 'Hold the barbell at hip level with a shoulder-width grip. Keep a slight bend in your knees. Push your hips back and lower the bar along your legs until you feel a deep stretch in your hamstrings (usually mid-shin level). Drive your hips forward to return to standing.',
     donts: [
       'Don\'t round your back at any point',
@@ -380,6 +400,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Bulgarian Split Squat', 'Lunges'],
     videoId: 'YyvSfVjQeL0',
+    shortsId: 'Adi90VeEG5M',
     instructions: 'Sit in the machine with the pad on your shins just above the ankles. Extend your legs until they are straight, squeezing your quads hard at the top. Lower under control — don\'t just drop the weight. Focus on the mind-muscle connection.',
     donts: [
       'Don\'t use excessive weight that causes you to jerk',
@@ -397,6 +418,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Seated Calf Raise', 'Smith Machine Calf Raise'],
     videoId: 'gwLzBJYoWlI',
+    shortsId: 'QZ9TMPDnAzs',
     instructions: 'Stand on the edge of a raised platform or step with the balls of your feet. Lower your heels below the platform for a full stretch, then push up onto your toes as high as possible. Squeeze your calves at the top and hold for a moment before lowering.',
     donts: [
       'Don\'t bounce at the bottom — control the stretch',
@@ -416,6 +438,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Side Plank', 'Dead Bug'],
     videoId: 'ASdvN_XEl_c',
+    shortsId: 'N31wPfeQbNs',
     instructions: 'Get into a forearm plank position with elbows directly under your shoulders. Keep your body in a perfectly straight line from head to heels. Engage your core by pulling your belly button toward your spine. Breathe steadily and hold the position for the prescribed time.',
     donts: [
       'Don\'t let your hips sag toward the floor',
@@ -433,6 +456,7 @@ export const exercises = {
     difficulty: 'beginner',
     alternatives: ['Crunches', 'Ab Wheel'],
     videoId: 'AV5PmrFDEMo',
+    shortsId: 'PLJyK26Grlo',
     instructions: 'Kneel below a high cable pulley with a rope attachment. Hold the rope beside your head. Crunch down by flexing your spine, bringing your elbows toward your knees. Focus on contracting your abs, not just bending at the hips. Return to the starting position with control.',
     donts: [
       'Don\'t sit back on your heels — keep hips stationary',
@@ -469,6 +493,7 @@ export const exercises = {
     difficulty: 'intermediate',
     alternatives: ['Trap Bar Deadlift', 'Romanian Deadlift'],
     videoId: 'op9kVnSso6Q',
+    shortsId: 'GIbBiT_0TnM',
     instructions: 'Stand with feet hip-width apart, bar over mid-foot. Hinge at the hips and grip the bar just outside your knees. Brace your core, flatten your back, and drive through the floor to stand up. The bar should travel in a straight line close to your body. Lock out at the top by squeezing your glutes.',
     donts: [
       'Don\'t round your lower back — this is the number one injury risk',
