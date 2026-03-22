@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Dumbbell,
@@ -47,17 +47,19 @@ export default function Workout() {
   const schedule = workoutPlan.schedule;
   const currentDay = schedule[activeDay];
 
-  const initSetsForExercise = (exerciseId, numSets) => {
+  // Initialize set data for all exercises when logging starts or day changes
+  useEffect(() => {
+    if (!isLogging || !currentDay) return;
     setLogData((prev) => {
-      if (prev[exerciseId]?.sets?.length) return prev;
-      return {
-        ...prev,
-        [exerciseId]: {
-          sets: Array.from({ length: numSets }, () => ({ reps: '', weight: '' })),
-        },
-      };
+      const updated = { ...prev };
+      currentDay.exercises.forEach((ex) => {
+        if (!updated[ex.id]?.sets?.length) {
+          updated[ex.id] = { sets: Array.from({ length: ex.sets }, () => ({ reps: '', weight: '' })) };
+        }
+      });
+      return updated;
     });
-  };
+  }, [isLogging, currentDay]);
 
   const handleSetEntry = (exerciseId, setIndex, field, value) => {
     setLogData((prev) => {
@@ -462,7 +464,6 @@ export default function Workout() {
 
                         {/* Logging Inputs — Per-Set Tracking */}
                         {isLogging && (() => {
-                          initSetsForExercise(exercise.id, exercise.sets);
                           const setsData = logData[exercise.id]?.sets || [];
                           return (
                             <div className="bg-white/[0.03] rounded-lg p-4 mt-4">
