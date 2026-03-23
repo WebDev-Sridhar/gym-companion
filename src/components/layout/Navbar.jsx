@@ -13,6 +13,7 @@ import {
   Flame,
   Zap,
   LogOut,
+  HelpCircle,
 } from 'lucide-react';
 import useUserStore from '../../store/useUserStore';
 import useAuthStore from '../../store/useAuthStore';
@@ -144,6 +145,18 @@ export default function Navbar() {
                 >
                   <BookOpen size={18} />
                   Knowledge Hub
+                </Link>
+                <Link
+                  to="/faq"
+                  onClick={() => setIsOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+                    location.pathname === '/faq'
+                      ? 'bg-white/10 text-text-primary'
+                      : 'text-text-secondary hover:text-text-primary hover:bg-white/[0.04]'
+                  }`}
+                >
+                  <HelpCircle size={18} />
+                  FAQ & Help
                 </Link>
                 <div className="border-t border-white/[0.06] my-1" />
                 <button

@@ -13,6 +13,7 @@ import Diet from './pages/Diet';
 import Progress from './pages/Progress';
 import Profile from './pages/Profile';
 import KnowledgeHub from './pages/KnowledgeHub';
+import FAQ from './pages/FAQ';
 import PlanSummary from './pages/PlanSummary';
 import { ToastContainer } from './components/ui/Toast';
 import { CoachPopupContainer } from './components/ui/CoachPopup';
@@ -98,6 +99,7 @@ export default function App() {
           <Route path="/progress" element={<ProtectedRoute><Progress /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/knowledge" element={<ProtectedRoute><KnowledgeHub /></ProtectedRoute>} />
+          <Route path="/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AnimatePresence>
