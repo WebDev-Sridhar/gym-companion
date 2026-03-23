@@ -291,7 +291,7 @@ export default function Diet() {
         className="border border-white/[0.06] rounded-xl p-5 sm:p-6 mb-5"
       >
         <h3 className="font-bold mb-4 text-xs text-text-muted uppercase tracking-wider flex items-center gap-2">
-          Daily Targets
+          Daily Targets {dietPlan.supplements && <span className="normal-case font-normal text-text-muted/60">(incl. supplements)</span>}
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
@@ -386,10 +386,16 @@ export default function Diet() {
             </div>
           </motion.div>
 
-          {/* Tip */}
-          <div className="flex items-start gap-2.5 bg-accent/5 border border-accent/10 rounded-lg px-4 py-3 mb-5">
-            <Info size={14} className="text-accent shrink-0 mt-0.5" />
-            <p className="text-xs text-text-muted">Select what you ate, skip what you didn't. Add custom foods if yours isn't listed. Tap <strong>Swap</strong> to pick a different meal.</p>
+          {/* Tips */}
+          <div className="space-y-2 mb-5">
+            <div className="flex items-start gap-2.5 bg-accent/5 border border-accent/10 rounded-lg px-4 py-3">
+              <Info size={14} className="text-accent shrink-0 mt-0.5" />
+              <p className="text-xs text-text-muted">Select what you ate, skip what you didn't. Add custom foods if yours isn't listed. Tap <strong>Swap</strong> to pick a different meal.</p>
+            </div>
+            <div className="flex items-start gap-2.5 bg-blue-500/5 border border-blue-500/10 rounded-lg px-4 py-3">
+              <Droplets size={14} className="text-blue-400 shrink-0 mt-0.5" />
+              <p className="text-xs text-text-muted"><span className="text-blue-400 font-medium">Stay hydrated!</span> Drink at least 3-4 litres of water daily. Carry a bottle everywhere — hydration boosts metabolism, recovery, and focus.</p>
+            </div>
           </div>
 
           {/* Meal Cards */}
@@ -413,7 +419,7 @@ export default function Diet() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.03 }}
-                  className={`border rounded-xl overflow-hidden ${isLogged ? 'border-accent/20' : 'border-white/[0.06]'}`}
+                  className={`border rounded-xl ${isLogged ? 'border-accent/20' : 'border-white/[0.06]'}`}
                 >
                   <div
                     className="p-4 flex items-center justify-between cursor-pointer hover:bg-white/[0.02] transition-colors"
@@ -447,7 +453,7 @@ export default function Diet() {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        className="px-4 pb-4"
+                        className="px-4 pb-4 overflow-visible"
                       >
                         {/* Food Items with Checkboxes */}
                         <div className="bg-white/[0.03] rounded-lg p-3 mb-3">
@@ -576,7 +582,7 @@ export default function Diet() {
                           <motion.div
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
-                            className="bg-[#1a1a1a] rounded-lg p-3 space-y-2 mt-2"
+                            className="bg-[#1a1a1a] rounded-lg p-3 space-y-2 mt-2 relative z-30"
                             onClick={(e) => e.stopPropagation()}
                           >
                             {/* Food name with search */}
@@ -601,7 +607,7 @@ export default function Diet() {
 
                               {/* Search suggestions dropdown */}
                               {foodSuggestions.length > 0 && (
-                                <div className="absolute left-0 right-0 top-full mt-1 bg-[#222] border border-white/[0.12] rounded-lg z-20 shadow-xl max-h-48 overflow-y-auto">
+                                <div className="absolute left-0 right-0 top-full mt-1 bg-[#1a1a1a] border border-white/[0.15] rounded-lg z-50 shadow-2xl max-h-64 overflow-y-auto">
                                   {foodSuggestions.map((food, fi) => (
                                     <button
                                       key={fi}

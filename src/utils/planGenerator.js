@@ -1,6 +1,6 @@
 import { exercises, workoutSplits } from '../data/exercises';
 import { dietPlans, supplementPlans } from '../data/dietPlans';
-import { calculateNutritionTargets } from './tdee';
+import { calculateNutritionTargets, calculateMacros } from './tdee';
 
 /**
  * Generate a personalized workout plan based on user profile
@@ -94,13 +94,40 @@ export function generateDietPlan(profile, calorieOverride) {
 
   const selectedPlan = mealPlan[dietType === 'veg' ? 'veg' : 'nonVeg'];
 
+  // Calculate supplement totals if applicable
+  let suppCalories = 0;
+  let suppProtein = 0;
+  const supplements = useSupplements ? supplementPlans.withSupplements : null;
+  if (supplements) {
+    for (const supp of Object.values(supplements)) {
+      suppCalories += supp.calories || 0;
+      suppProtein += supp.protein || 0;
+    }
+  }
+
+  // Use actual tier calories (meals + supplements) as the real target
+  // so displayed targets match what the meals actually provide
+  const actualCalories = selectedPlan.totalCalories + suppCalories;
+  const actualProtein = selectedPlan.totalProtein + suppProtein;
+
+  // Recalculate macros based on actual tier calories for consistency
+  const adjustedMacros = calculateMacros(actualCalories, profile.goal, profile.weight);
+  // Override protein with actual meal+supplement protein since that's what the food provides
+  adjustedMacros.protein = actualProtein;
+  // Recalculate carbs with the real protein value
+  const proteinCals = adjustedMacros.protein * 4;
+  const fatCals = adjustedMacros.fat * 9;
+  adjustedMacros.carbs = Math.round(Math.max(0, actualCalories - proteinCals - fatCals) / 4);
+
   return {
     ...nutritionTargets,
+    targetCalories: actualCalories,
+    macros: adjustedMacros,
     calorieTier: closestTier,
     meals: selectedPlan.meals,
     totalCalories: selectedPlan.totalCalories,
     totalProtein: selectedPlan.totalProtein,
-    supplements: useSupplements ? supplementPlans.withSupplements : null,
+    supplements,
   };
 }
 

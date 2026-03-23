@@ -286,17 +286,25 @@ export default function Workout() {
             >
               <Info size={14} className="text-accent shrink-0 mt-0.5" />
               <p className="text-xs text-text-muted">
-                Remember to save your workout after completing all exercises. Your progress and XP will be recorded.
+                Log your sets honestly — track what you actually lifted, not what you wish you did. Consistent progress beats ego numbers.
               </p>
             </motion.div>
           )}
 
           {/* Progressive Overload Note */}
-          <div className="mb-6 flex items-start gap-2.5 border border-white/[0.06] rounded-lg px-4 py-3">
-            <Dumbbell size={14} className="text-accent shrink-0 mt-0.5" />
-            <p className="text-xs text-text-muted">
-              <span className="text-text-secondary font-medium">How to progress:</span> Pick a weight you can do for 8 reps with good form. Stick with that weight until you can do 12 reps easily, then increase the weight and go back to 8 reps. Push to failure on your last set.
-            </p>
+          <div className="space-y-2 mb-6">
+            <div className="flex items-start gap-2.5 border border-white/[0.06] rounded-lg px-4 py-3">
+              <Dumbbell size={14} className="text-accent shrink-0 mt-0.5" />
+              <p className="text-xs text-text-muted">
+                <span className="text-text-secondary font-medium">How to progress:</span> Pick a weight you can do for 8 reps with good form. Stick with that weight until you can do 12 reps easily, then increase the weight and go back to 8 reps. Push to failure on your last set.
+              </p>
+            </div>
+            <div className="flex items-start gap-2.5 bg-red-500/5 border border-red-500/10 rounded-lg px-4 py-3">
+              <AlertTriangle size={14} className="text-red-400 shrink-0 mt-0.5" />
+              <p className="text-xs text-text-muted">
+                <span className="text-red-400 font-medium">No ego lifting!</span> Lifting too heavy with bad form leads to injuries, not gains. Control the weight, feel the muscle, and leave your ego at the door. Slow reps with proper form beat heavy sloppy reps every time.
+              </p>
+            </div>
           </div>
 
           {/* Exercise List */}
