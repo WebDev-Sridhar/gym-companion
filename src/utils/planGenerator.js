@@ -46,6 +46,7 @@ export function generateWorkoutPlan(profile) {
 
       return {
         ...ex,
+        exerciseKey: exKey,
         sets,
         reps,
       };

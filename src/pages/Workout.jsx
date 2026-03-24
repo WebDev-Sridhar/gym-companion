@@ -5,8 +5,6 @@ import {
   Play,
   ChevronDown,
   ChevronUp,
-  ChevronLeft,
-  ChevronRight,
   Clock,
   Target,
   Save,
@@ -15,29 +13,35 @@ import {
   AlertTriangle,
   Info,
   Trash2,
+  RefreshCw,
+  Undo2,
+  Image,
+  Video,
 } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import ProLock from '../components/ui/ProLock';
 import { showCoach } from '../components/ui/CoachPopup';
 import useUserStore from '../store/useUserStore';
+import { exercises as exerciseDB, getAlternatives } from '../data/exercises';
 
 export default function Workout() {
-  const { workoutPlan, logWorkout, deleteWorkoutLog, plan } = useUserStore();
+  const { workoutPlan, logWorkout, deleteWorkoutLog, plan, swapExercise, resetExerciseSwap } = useUserStore();
+  const exerciseSwaps = useUserStore((s) => s.exerciseSwaps);
   const isPro = plan === 'pro';
   const [activeDay, setActiveDay] = useState(0);
   const [isLogging, setIsLogging] = useState(false);
   const [expandedExercise, setExpandedExercise] = useState(null);
   const [logData, setLogData] = useState({});
   const [showHistory, setShowHistory] = useState(false);
-  const [videoMode, setVideoMode] = useState({}); // { [exerciseId]: 'shorts' | 'full' }
-  const [mobileVideo, setMobileVideo] = useState({}); // { [exerciseId]: true/false }
+  const [mediaMode, setMediaMode] = useState({}); // { [exerciseId]: 'gif' | 'video' }
+  const [showMedia, setShowMedia] = useState({}); // mobile toggle { [exerciseId]: true/false }
+  const [swapOpen, setSwapOpen] = useState({}); // { [exerciseId]: true/false }
   const [saveError, setSaveError] = useState('');
   const workoutLogs = useUserStore((s) => s.workoutLogs);
 
   const today = new Date().toISOString().split('T')[0];
   const todaysLogs = workoutLogs.filter((l) => l.date === today);
   const hasLoggedToday = todaysLogs.length > 0;
-  // Get all dayNames logged today to prevent logging multiple different days on the same day
   const todaysLoggedDays = new Set(todaysLogs.map((l) => l.dayName));
 
   if (!workoutPlan) {
@@ -55,19 +59,39 @@ export default function Workout() {
   const schedule = workoutPlan.schedule;
   const currentDay = schedule[activeDay];
 
+  // Resolve exercise swaps for today
+  const daySwaps = exerciseSwaps[today]?.[currentDay.day] || {};
+
+  const resolveExercise = (originalExercise, index) => {
+    const swappedKey = daySwaps[index];
+    if (!swappedKey) return originalExercise;
+    const swappedEx = exerciseDB[swappedKey];
+    if (!swappedEx) return originalExercise;
+    // Preserve sets/reps from original but use swapped exercise's details
+    return {
+      ...swappedEx,
+      exerciseKey: swappedKey,
+      sets: originalExercise.sets,
+      reps: originalExercise.reps,
+      _swapped: true,
+      _originalName: originalExercise.name,
+    };
+  };
+
   // Initialize set data for all exercises when logging starts or day changes
   useEffect(() => {
     if (!isLogging || !currentDay) return;
     setLogData((prev) => {
       const updated = { ...prev };
-      currentDay.exercises.forEach((ex) => {
-        if (!updated[ex.id]?.sets?.length) {
-          updated[ex.id] = { sets: Array.from({ length: ex.sets }, () => ({ reps: '', weight: '' })) };
+      currentDay.exercises.forEach((ex, i) => {
+        const resolved = resolveExercise(ex, i);
+        if (!updated[resolved.id]?.sets?.length) {
+          updated[resolved.id] = { sets: Array.from({ length: resolved.sets }, () => ({ reps: '', weight: '' })) };
         }
       });
       return updated;
     });
-  }, [isLogging, currentDay]);
+  }, [isLogging, currentDay, daySwaps]);
 
   const handleSetEntry = (exerciseId, setIndex, field, value) => {
     setLogData((prev) => {
@@ -102,13 +126,11 @@ export default function Workout() {
   const handleSaveWorkout = () => {
     setSaveError('');
 
-    // Prevent logging more than one workout per day
     if (hasLoggedToday) {
       setSaveError('You\'ve already logged a workout today. Only one workout per day is allowed.');
       return;
     }
 
-    // Prevent logging a different day's workout if one was already logged today
     if (todaysLoggedDays.size > 0 && !todaysLoggedDays.has(currentDay.day)) {
       setSaveError('You\'ve already logged a different workout today.');
       return;
@@ -116,7 +138,8 @@ export default function Workout() {
 
     // Validate: at least 2 sets with reps filled across all exercises
     let totalFilledSets = 0;
-    for (const ex of currentDay.exercises) {
+    for (let idx = 0; idx < currentDay.exercises.length; idx++) {
+      const ex = resolveExercise(currentDay.exercises[idx], idx);
       const logged = logData[ex.id];
       if (logged?.sets) {
         for (const s of logged.sets) {
@@ -129,7 +152,8 @@ export default function Workout() {
       return;
     }
 
-    const exercises = currentDay.exercises.map((ex) => {
+    const exercises = currentDay.exercises.map((origEx, idx) => {
+      const ex = resolveExercise(origEx, idx);
       const logged = logData[ex.id];
       return {
         name: ex.name,
@@ -144,6 +168,15 @@ export default function Workout() {
     setIsLogging(false);
     setLogData({});
     showCoach('workoutComplete');
+  };
+
+  const handleSwap = (exerciseIndex, newKey) => {
+    swapExercise(currentDay.day, exerciseIndex, newKey);
+    setSwapOpen({});
+  };
+
+  const handleResetSwap = (exerciseIndex) => {
+    resetExerciseSwap(currentDay.day, exerciseIndex);
   };
 
   return (
@@ -309,283 +342,311 @@ export default function Workout() {
 
           {/* Exercise List */}
           <div className="space-y-2">
-            {currentDay.exercises.map((exercise, i) => (
-              <motion.div
-                key={exercise.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.03 }}
-                className="border border-white/[0.06] rounded-xl overflow-hidden"
-              >
-                <div
-                  className="p-4 flex items-center justify-between cursor-pointer hover:bg-white/[0.02] transition-colors"
-                  onClick={() => {
-                    const closing = expandedExercise === exercise.id;
-                    setExpandedExercise(closing ? null : exercise.id);
-                    if (closing) setMobileVideo((prev) => ({ ...prev, [exercise.id]: false }));
-                  }}
+            {currentDay.exercises.map((originalExercise, i) => {
+              const exercise = resolveExercise(originalExercise, i);
+              const isSwapped = !!exercise._swapped;
+              const alternatives = getAlternatives(originalExercise.exerciseKey || '');
+              const mode = mediaMode[exercise.id] || 'gif';
+
+              return (
+                <motion.div
+                  key={`${exercise.id}-${i}`}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.03 }}
+                  className={`border rounded-xl overflow-hidden ${isSwapped ? 'border-accent/20' : 'border-white/[0.06]'}`}
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-white/[0.04] flex items-center justify-center shrink-0">
-                      <Dumbbell size={16} className="text-text-muted" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-text-primary text-sm">{exercise.name}</h3>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-[11px] text-accent font-medium">{exercise.muscle}</span>
-                        <span className="text-[11px] text-text-muted">{exercise.sets} × {exercise.reps} · Rest {exercise.rest}</span>
+                  <div
+                    className="p-4 flex items-center justify-between cursor-pointer hover:bg-white/[0.02] transition-colors"
+                    onClick={() => {
+                      const closing = expandedExercise === exercise.id;
+                      setExpandedExercise(closing ? null : exercise.id);
+                      if (closing) setShowMedia((prev) => ({ ...prev, [exercise.id]: false }));
+                    }}
+                  >
+                    <div className="flex items-center gap-3">
+                      {/* GIF Thumbnail */}
+                      <div className="w-9 h-9 rounded-lg bg-white/[0.04] flex items-center justify-center shrink-0 overflow-hidden">
+                        {exercise.gifUrl ? (
+                          <img
+                            src={exercise.gifUrl}
+                            alt={exercise.name}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <Dumbbell size={16} className="text-text-muted" />
+                        )}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-semibold text-text-primary text-sm">{exercise.name}</h3>
+                          {isSwapped && (
+                            <span className="text-[9px] bg-accent/10 text-accent px-1.5 py-0.5 rounded font-medium">SWAPPED</span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-[11px] text-accent font-medium">{exercise.muscle}</span>
+                          <span className="text-[11px] text-text-muted">{exercise.sets} × {exercise.reps} · Rest {exercise.rest}</span>
+                        </div>
                       </div>
                     </div>
+                    {expandedExercise === exercise.id ? (
+                      <ChevronUp size={16} className="text-text-muted shrink-0" />
+                    ) : (
+                      <ChevronDown size={16} className="text-text-muted shrink-0" />
+                    )}
                   </div>
-                  {expandedExercise === exercise.id ? (
-                    <ChevronUp size={16} className="text-text-muted shrink-0" />
-                  ) : (
-                    <ChevronDown size={16} className="text-text-muted shrink-0" />
-                  )}
-                </div>
 
-                <AnimatePresence>
-                  {expandedExercise === exercise.id && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="px-4 pb-4">
-                        {/* Split Layout: Details Left, Video Right */}
-                        <div className="flex flex-col lg:flex-row gap-4">
-                          {/* Left — Exercise Details */}
-                          <div className="flex-1 space-y-4">
-                            {/* Sets / Reps / Rest Boxes */}
-                            <div className="flex gap-3">
-                              {[
-                                { value: exercise.sets, label: 'Sets' },
-                                { value: exercise.reps, label: 'Reps' },
-                                { value: exercise.rest, label: 'Rest' },
-                              ].map((stat) => (
-                                <div key={stat.label} className="bg-white/[0.04] rounded-lg px-4 py-2.5 text-center flex-1">
-                                  <div className="text-base font-black text-text-primary">{stat.value}</div>
-                                  <div className="text-[10px] text-text-muted uppercase tracking-wider">{stat.label}</div>
-                                </div>
-                              ))}
+                  <AnimatePresence>
+                    {expandedExercise === exercise.id && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-4 pb-4">
+                          {/* Swapped indicator with reset */}
+                          {isSwapped && (
+                            <div className="flex items-center justify-between bg-accent/5 border border-accent/10 rounded-lg px-3 py-2 mb-4">
+                              <span className="text-xs text-text-muted">
+                                Swapped from <span className="text-text-secondary font-medium">{exercise._originalName}</span>
+                              </span>
+                              <button
+                                onClick={() => handleResetSwap(i)}
+                                className="flex items-center gap-1 text-xs font-medium text-accent hover:text-accent/80 transition-colors"
+                              >
+                                <Undo2 size={12} /> Reset
+                              </button>
                             </div>
+                          )}
 
-                            {/* How to do it */}
-                            <div className="bg-white/[0.03] rounded-lg p-3">
-                              <h4 className="text-xs font-bold text-text-secondary mb-2 uppercase tracking-wider">How to do it</h4>
-                              <p className="text-sm text-text-muted leading-relaxed">{exercise.instructions}</p>
-                            </div>
-
-                            {/* Common Mistakes, Alternatives, Video — Pro Only */}
-                            {isPro ? (
-                              <>
-                                {exercise.donts?.length > 0 && (
-                                  <div className="bg-red-500/5 border border-red-500/10 rounded-lg p-3">
-                                    <h4 className="text-xs font-bold text-red-400 mb-2 uppercase tracking-wider flex items-center gap-1.5">
-                                      <AlertTriangle size={12} /> Common Mistakes
-                                    </h4>
-                                    <ul className="space-y-1.5">
-                                      {exercise.donts.map((dont, j) => (
-                                        <li key={j} className="text-sm text-text-muted flex items-start gap-2">
-                                          <span className="text-red-400 mt-0.5 text-xs shrink-0">✕</span>
-                                          {dont}
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                )}
-                                {exercise.alternatives?.length > 0 && (
-                                  <div>
-                                    <span className="text-[11px] text-text-muted font-medium mb-1.5 block uppercase tracking-wider">Alternatives</span>
-                                    <div className="flex flex-wrap gap-1.5">
-                                      {exercise.alternatives.map((alt, j) => (
-                                        <span key={j} className="text-xs bg-white/[0.04] px-2.5 py-1 rounded-md text-text-muted">{alt}</span>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-                              </>
-                            ) : (
-                              <div className="my-3">
-                                <ProLock message="Common mistakes, alternatives & video tutorials">
-                                  <div className="space-y-3 py-4">
-                                    <div className="bg-red-500/5 rounded-lg p-3 h-20" />
-                                    <div className="bg-white/[0.03] rounded-lg p-3 h-14" />
-                                  </div>
-                                </ProLock>
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Right — Video (Shorts first, toggle to full) */}
-                          <div className="lg:w-[45%] shrink-0">
-                            {isPro ? (
-                              <>
-                                {/* Mobile: Show Video button */}
-                                <div className="lg:hidden">
-                                  {!mobileVideo[exercise.id] ? (
-                                    <button
-                                      onClick={() => setMobileVideo((prev) => ({ ...prev, [exercise.id]: true }))}
-                                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-white/[0.08] text-text-muted hover:text-text-secondary hover:border-white/15 transition-colors text-sm font-medium"
-                                    >
-                                      <Play size={14} /> Show Video
-                                    </button>
-                                  ) : (
-                                    <>
-                                      {(() => {
-                                        const hasShorts = !!exercise.shortsId;
-                                        const mode = videoMode[exercise.id] || (hasShorts ? 'shorts' : 'full');
-                                        const isShorts = mode === 'shorts' && hasShorts;
-                                        const currentVideoId = isShorts ? exercise.shortsId : exercise.videoId;
-                                        return (
-                                          <>
-                                            <div className={`${isShorts ? 'shorts-container' : 'video-container'} rounded-lg overflow-hidden`}>
-                                              <iframe
-                                                src={`https://www.youtube.com/embed/${currentVideoId}`}
-                                                title={exercise.name}
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                allowFullScreen
-                                              />
-                                            </div>
-                                            <div className="flex items-center justify-between mt-2">
-                                              <span className="text-[10px] text-text-muted uppercase tracking-wider">
-                                                {isShorts ? 'Quick Form Guide' : 'Full Tutorial'}
-                                              </span>
-                                              <div className="flex items-center gap-2">
-                                                {hasShorts && (
-                                                  <button
-                                                    onClick={() => setVideoMode((prev) => ({ ...prev, [exercise.id]: isShorts ? 'full' : 'shorts' }))}
-                                                    className="flex items-center gap-1 text-xs font-medium text-accent hover:text-accent/80 transition-colors"
-                                                  >
-                                                    {isShorts ? <>Full Video <ChevronRight size={14} /></> : <><ChevronLeft size={14} /> Quick Guide</>}
-                                                  </button>
-                                                )}
-                                                <button
-                                                  onClick={() => setMobileVideo((prev) => ({ ...prev, [exercise.id]: false }))}
-                                                  className="text-xs text-text-muted hover:text-text-secondary transition-colors"
-                                                >
-                                                  Hide
-                                                </button>
-                                              </div>
-                                            </div>
-                                          </>
-                                        );
-                                      })()}
-                                    </>
-                                  )}
-                                </div>
-                                {/* Desktop: always visible */}
-                                <div className="hidden lg:block">
-                                  <div className="lg:sticky lg:top-4">
-                                    {(() => {
-                                      const hasShorts = !!exercise.shortsId;
-                                      const mode = videoMode[exercise.id] || (hasShorts ? 'shorts' : 'full');
-                                      const isShorts = mode === 'shorts' && hasShorts;
-                                      const currentVideoId = isShorts ? exercise.shortsId : exercise.videoId;
-                                      return (
-                                        <>
-                                          <div className={`${isShorts ? 'shorts-container' : 'video-container'} rounded-lg overflow-hidden`}>
-                                            <iframe
-                                              src={`https://www.youtube.com/embed/${currentVideoId}`}
-                                              title={exercise.name}
-                                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                              allowFullScreen
-                                            />
-                                          </div>
-                                          {hasShorts && (
-                                            <div className="flex items-center justify-between mt-2">
-                                              <span className="text-[10px] text-text-muted uppercase tracking-wider">
-                                                {isShorts ? 'Quick Form Guide' : 'Full Tutorial'}
-                                              </span>
-                                              <button
-                                                onClick={() => setVideoMode((prev) => ({ ...prev, [exercise.id]: isShorts ? 'full' : 'shorts' }))}
-                                                className="flex items-center gap-1 text-xs font-medium text-accent hover:text-accent/80 transition-colors"
-                                              >
-                                                {isShorts ? <>Full Video <ChevronRight size={14} /></> : <><ChevronLeft size={14} /> Quick Guide</>}
-                                              </button>
-                                            </div>
-                                          )}
-                                        </>
-                                      );
-                                    })()}
-                                  </div>
-                                </div>
-                              </>
-                            ) : (
-                              <div className="aspect-video bg-white/[0.03] rounded-lg flex items-center justify-center border border-white/[0.06]">
-                                <div className="text-center">
-                                  <Play size={32} className="text-text-muted mx-auto mb-1" />
-                                  <span className="text-[10px] text-text-muted uppercase tracking-wider">Pro</span>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Logging Inputs — Per-Set Tracking */}
-                        {isLogging && (() => {
-                          const setsData = logData[exercise.id]?.sets || [];
-                          return (
-                            <div className="bg-white/[0.03] rounded-lg p-4 mt-4">
-                              <div className="flex items-center justify-between mb-3">
-                                <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider">Log this exercise</h4>
-                                <div className="flex items-center gap-1">
-                                  <button
-                                    onClick={() => handleRemoveSet(exercise.id)}
-                                    className="p-1 rounded bg-white/[0.04] text-text-muted hover:text-text-secondary disabled:opacity-30"
-                                    disabled={setsData.length <= 1}
-                                  >
-                                    <Minus size={12} />
-                                  </button>
-                                  <span className="text-xs text-text-muted px-1">{setsData.length} sets</span>
-                                  <button
-                                    onClick={() => handleAddSet(exercise.id)}
-                                    className="p-1 rounded bg-white/[0.04] text-text-muted hover:text-text-secondary"
-                                  >
-                                    <Plus size={12} />
-                                  </button>
-                                </div>
-                              </div>
-                              <div className="space-y-2">
-                                {setsData.map((setData, si) => (
-                                  <div key={si} className="flex items-center gap-3">
-                                    <span className="text-xs font-bold text-accent w-12 shrink-0">Set {si + 1}</span>
-                                    <div className="flex-1 flex gap-2">
-                                      <div className="flex-1">
-                                        {si === 0 && <label className="text-[10px] text-text-muted block mb-1">Reps</label>}
-                                        <input
-                                          type="number"
-                                          value={setData.reps}
-                                          onChange={(e) => handleSetEntry(exercise.id, si, 'reps', e.target.value)}
-                                          placeholder={String(exercise.reps)}
-                                          className="w-full px-2 py-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-center text-text-primary text-sm font-bold focus:outline-none focus:border-accent/30"
-                                        />
-                                      </div>
-                                      <div className="flex-1">
-                                        {si === 0 && <label className="text-[10px] text-text-muted block mb-1">Weight (kg)</label>}
-                                        <input
-                                          type="number"
-                                          value={setData.weight}
-                                          onChange={(e) => handleSetEntry(exercise.id, si, 'weight', e.target.value)}
-                                          placeholder="0"
-                                          className="w-full px-2 py-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-center text-text-primary text-sm font-bold focus:outline-none focus:border-accent/30"
-                                        />
-                                      </div>
-                                    </div>
+                          {/* Split Layout: Details Left, Media Right */}
+                          <div className="flex flex-col lg:flex-row gap-4">
+                            {/* Left — Exercise Details */}
+                            <div className="flex-1 space-y-4">
+                              {/* Sets / Reps / Rest Boxes */}
+                              <div className="flex gap-3">
+                                {[
+                                  { value: exercise.sets, label: 'Sets' },
+                                  { value: exercise.reps, label: 'Reps' },
+                                  { value: exercise.rest, label: 'Rest' },
+                                ].map((stat) => (
+                                  <div key={stat.label} className="bg-white/[0.04] rounded-lg px-4 py-2.5 text-center flex-1">
+                                    <div className="text-base font-black text-text-primary">{stat.value}</div>
+                                    <div className="text-[10px] text-text-muted uppercase tracking-wider">{stat.label}</div>
                                   </div>
                                 ))}
                               </div>
+
+                              {/* How to do it */}
+                              <div className="bg-white/[0.03] rounded-lg p-3">
+                                <h4 className="text-xs font-bold text-text-secondary mb-2 uppercase tracking-wider">How to do it</h4>
+                                <p className="text-sm text-text-muted leading-relaxed">{exercise.instructions}</p>
+                              </div>
+
+                              {/* Common Mistakes, Alternatives + Swap — Pro Only */}
+                              {isPro ? (
+                                <>
+                                  {exercise.donts?.length > 0 && (
+                                    <div className="bg-red-500/5 border border-red-500/10 rounded-lg p-3">
+                                      <h4 className="text-xs font-bold text-red-400 mb-2 uppercase tracking-wider flex items-center gap-1.5">
+                                        <AlertTriangle size={12} /> Common Mistakes
+                                      </h4>
+                                      <ul className="space-y-1.5">
+                                        {exercise.donts.map((dont, j) => (
+                                          <li key={j} className="text-sm text-text-muted flex items-start gap-2">
+                                            <span className="text-red-400 mt-0.5 text-xs shrink-0">✕</span>
+                                            {dont}
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  )}
+
+                                  {/* Alternatives with Swap */}
+                                  {alternatives.length > 0 && (
+                                    <div>
+                                      <div className="flex items-center justify-between mb-2">
+                                        <span className="text-[11px] text-text-muted font-medium uppercase tracking-wider">Alternatives</span>
+                                        <button
+                                          onClick={() => setSwapOpen((prev) => ({ ...prev, [exercise.id]: !prev[exercise.id] }))}
+                                          className="flex items-center gap-1 text-xs font-medium text-accent hover:text-accent/80 transition-colors"
+                                        >
+                                          <RefreshCw size={11} /> {swapOpen[exercise.id] ? 'Close' : 'Swap Exercise'}
+                                        </button>
+                                      </div>
+
+                                      <AnimatePresence>
+                                        {swapOpen[exercise.id] ? (
+                                          <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: 'auto', opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            className="space-y-2 overflow-hidden"
+                                          >
+                                            {alternatives.map((alt) => (
+                                              <div
+                                                key={alt.key}
+                                                className="flex items-center gap-3 bg-white/[0.03] border border-white/[0.06] rounded-lg p-2.5 hover:border-accent/20 transition-colors group"
+                                              >
+                                                {/* Alt GIF thumbnail */}
+                                                <div className="w-12 h-12 rounded-lg bg-white/[0.04] shrink-0 overflow-hidden">
+                                                  {alt.gifUrl ? (
+                                                    <img src={alt.gifUrl} alt={alt.name} className="w-full h-full object-cover" loading="lazy" />
+                                                  ) : (
+                                                    <div className="w-full h-full flex items-center justify-center">
+                                                      <Dumbbell size={14} className="text-text-muted" />
+                                                    </div>
+                                                  )}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                  <p className="text-sm font-medium text-text-primary truncate">{alt.name}</p>
+                                                  <p className="text-[11px] text-text-muted">{alt.muscle} · {alt.difficulty}</p>
+                                                </div>
+                                                <button
+                                                  onClick={() => handleSwap(i, alt.key)}
+                                                  className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
+                                                >
+                                                  Swap
+                                                </button>
+                                              </div>
+                                            ))}
+                                            <p className="text-[10px] text-text-muted italic">Swaps reset daily at midnight.</p>
+                                          </motion.div>
+                                        ) : (
+                                          <div className="flex flex-wrap gap-1.5">
+                                            {alternatives.map((alt) => (
+                                              <span key={alt.key} className="text-xs bg-white/[0.04] px-2.5 py-1 rounded-md text-text-muted">{alt.name}</span>
+                                            ))}
+                                          </div>
+                                        )}
+                                      </AnimatePresence>
+                                    </div>
+                                  )}
+                                </>
+                              ) : (
+                                <div className="my-3">
+                                  <ProLock message="Common mistakes, alternatives & exercise swap">
+                                    <div className="space-y-3 py-4">
+                                      <div className="bg-red-500/5 rounded-lg p-3 h-20" />
+                                      <div className="bg-white/[0.03] rounded-lg p-3 h-14" />
+                                    </div>
+                                  </ProLock>
+                                </div>
+                              )}
                             </div>
-                          );
-                        })()}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            ))}
+
+                            {/* Right — GIF Preview / YouTube Video */}
+                            <div className="lg:w-[45%] shrink-0">
+                              {isPro ? (
+                                <>
+                                  {/* Mobile: Show Media button */}
+                                  <div className="lg:hidden">
+                                    {!showMedia[exercise.id] ? (
+                                      <button
+                                        onClick={() => setShowMedia((prev) => ({ ...prev, [exercise.id]: true }))}
+                                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-white/[0.08] text-text-muted hover:text-text-secondary hover:border-white/15 transition-colors text-sm font-medium"
+                                      >
+                                        <Image size={14} /> Show Form Guide
+                                      </button>
+                                    ) : (
+                                      <ExerciseMedia
+                                        exercise={exercise}
+                                        mode={mode}
+                                        onToggle={() => setMediaMode((prev) => ({ ...prev, [exercise.id]: mode === 'gif' ? 'video' : 'gif' }))}
+                                        onHide={() => setShowMedia((prev) => ({ ...prev, [exercise.id]: false }))}
+                                        showHide
+                                      />
+                                    )}
+                                  </div>
+                                  {/* Desktop: always visible */}
+                                  <div className="hidden lg:block">
+                                    <div className="lg:sticky lg:top-4">
+                                      <ExerciseMedia
+                                        exercise={exercise}
+                                        mode={mode}
+                                        onToggle={() => setMediaMode((prev) => ({ ...prev, [exercise.id]: mode === 'gif' ? 'video' : 'gif' }))}
+                                      />
+                                    </div>
+                                  </div>
+                                </>
+                              ) : (
+                                <div className="aspect-video bg-white/[0.03] rounded-lg flex items-center justify-center border border-white/[0.06]">
+                                  <div className="text-center">
+                                    <Play size={32} className="text-text-muted mx-auto mb-1" />
+                                    <span className="text-[10px] text-text-muted uppercase tracking-wider">Pro</span>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Logging Inputs — Per-Set Tracking */}
+                          {isLogging && (() => {
+                            const setsData = logData[exercise.id]?.sets || [];
+                            return (
+                              <div className="bg-white/[0.03] rounded-lg p-4 mt-4">
+                                <div className="flex items-center justify-between mb-3">
+                                  <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider">Log this exercise</h4>
+                                  <div className="flex items-center gap-1">
+                                    <button
+                                      onClick={() => handleRemoveSet(exercise.id)}
+                                      className="p-1 rounded bg-white/[0.04] text-text-muted hover:text-text-secondary disabled:opacity-30"
+                                      disabled={setsData.length <= 1}
+                                    >
+                                      <Minus size={12} />
+                                    </button>
+                                    <span className="text-xs text-text-muted px-1">{setsData.length} sets</span>
+                                    <button
+                                      onClick={() => handleAddSet(exercise.id)}
+                                      className="p-1 rounded bg-white/[0.04] text-text-muted hover:text-text-secondary"
+                                    >
+                                      <Plus size={12} />
+                                    </button>
+                                  </div>
+                                </div>
+                                <div className="space-y-2">
+                                  {setsData.map((setData, si) => (
+                                    <div key={si} className="flex items-center gap-3">
+                                      <span className="text-xs font-bold text-accent w-12 shrink-0">Set {si + 1}</span>
+                                      <div className="flex-1 flex gap-2">
+                                        <div className="flex-1">
+                                          {si === 0 && <label className="text-[10px] text-text-muted block mb-1">Reps</label>}
+                                          <input
+                                            type="number"
+                                            value={setData.reps}
+                                            onChange={(e) => handleSetEntry(exercise.id, si, 'reps', e.target.value)}
+                                            placeholder={String(exercise.reps)}
+                                            className="w-full px-2 py-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-center text-text-primary text-sm font-bold focus:outline-none focus:border-accent/30"
+                                          />
+                                        </div>
+                                        <div className="flex-1">
+                                          {si === 0 && <label className="text-[10px] text-text-muted block mb-1">Weight (kg)</label>}
+                                          <input
+                                            type="number"
+                                            value={setData.weight}
+                                            onChange={(e) => handleSetEntry(exercise.id, si, 'weight', e.target.value)}
+                                            placeholder="0"
+                                            className="w-full px-2 py-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-center text-text-primary text-sm font-bold focus:outline-none focus:border-accent/30"
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            );
+                          })()}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
           </div>
 
           {/* Tips */}
@@ -607,5 +668,63 @@ export default function Workout() {
         </>
       )}
     </PageWrapper>
+  );
+}
+
+// Sub-component for GIF / YouTube video toggle
+function ExerciseMedia({ exercise, mode, onToggle, onHide, showHide }) {
+  const hasGif = !!exercise.gifUrl;
+  const hasVideo = !!exercise.videoId;
+
+  return (
+    <div>
+      {mode === 'gif' && hasGif ? (
+        <div className="rounded-lg overflow-hidden bg-white/[0.03] border border-white/[0.06]">
+          <img
+            src={exercise.gifUrl}
+            alt={`${exercise.name} form guide`}
+            className="w-full"
+            loading="lazy"
+          />
+        </div>
+      ) : hasVideo ? (
+        <div className="video-container rounded-lg overflow-hidden">
+          <iframe
+            src={`https://www.youtube.com/embed/${exercise.videoId}`}
+            title={exercise.name}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+      ) : hasGif ? (
+        <div className="rounded-lg overflow-hidden bg-white/[0.03] border border-white/[0.06]">
+          <img src={exercise.gifUrl} alt={`${exercise.name} form guide`} className="w-full" loading="lazy" />
+        </div>
+      ) : null}
+
+      <div className="flex items-center justify-between mt-2">
+        <span className="text-[10px] text-text-muted uppercase tracking-wider">
+          {mode === 'gif' ? 'Form Guide (GIF)' : 'Full Tutorial'}
+        </span>
+        <div className="flex items-center gap-2">
+          {hasGif && hasVideo && (
+            <button
+              onClick={onToggle}
+              className="flex items-center gap-1 text-xs font-medium text-accent hover:text-accent/80 transition-colors"
+            >
+              {mode === 'gif' ? <><Video size={12} /> Full Video</> : <><Image size={12} /> GIF Guide</>}
+            </button>
+          )}
+          {showHide && onHide && (
+            <button
+              onClick={onHide}
+              className="text-xs text-text-muted hover:text-text-secondary transition-colors"
+            >
+              Hide
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

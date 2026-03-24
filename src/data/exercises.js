@@ -1,7 +1,11 @@
-// Comprehensive exercise database with YouTube video links
-// shortsId = Demic (@officialdemic) Shorts, videoId = full tutorial
+// Comprehensive exercise database with ExerciseDB GIFs + YouTube full videos
+// gifUrl = ExerciseDB CDN animated GIF (form demo loop)
+// videoId = YouTube full tutorial video
+
 export const exercises = {
+  // ═══════════════════════════════════════════
   // CHEST
+  // ═══════════════════════════════════════════
   benchPress: {
     id: 'bench-press',
     name: 'Barbell Bench Press',
@@ -10,9 +14,9 @@ export const exercises = {
     reps: '8-12',
     rest: '90s',
     difficulty: 'beginner',
-    alternatives: ['Dumbbell Bench Press', 'Push-ups', 'Machine Chest Press'],
+    alternatives: ['dumbbellBenchPress', 'pushUps', 'machineChestPress'],
     videoId: 'rT7DgCr-3pg',
-    shortsId: 'sRuKSZLcmWM',
+    gifUrl: 'https://v2.exercisedb.io/image/jnMi2HB0P2Smkl',
     instructions: 'Lie flat on the bench with feet firmly on the floor. Grip the barbell slightly wider than shoulder-width. Unrack and lower the bar slowly to your mid-chest, keeping elbows at about 45 degrees. Press up explosively to full lockout while squeezing your chest at the top.',
     donts: [
       'Don\'t bounce the bar off your chest',
@@ -29,8 +33,9 @@ export const exercises = {
     reps: '10-12',
     rest: '60s',
     difficulty: 'beginner',
-    alternatives: ['Incline Barbell Press', 'Low-to-High Cable Fly'],
+    alternatives: ['inclineBarbellPress', 'lowToHighCableFly'],
     videoId: '8iPEnn-ltC8',
+    gifUrl: 'https://v2.exercisedb.io/image/UfhKFhDMNcqmwC',
     instructions: 'Set the bench to 30-45 degrees. Hold dumbbells at shoulder level with palms facing forward. Press the weights up and slightly inward until arms are extended. Lower under control until you feel a stretch in your upper chest.',
     donts: [
       'Don\'t set the bench too steep (above 45 degrees) — it shifts work to shoulders',
@@ -46,9 +51,9 @@ export const exercises = {
     reps: '12-15',
     rest: '60s',
     difficulty: 'beginner',
-    alternatives: ['Dumbbell Fly', 'Pec Deck Machine'],
+    alternatives: ['dumbbellFly', 'pecDeck'],
     videoId: 'Iwe6AmxVf7o',
-    shortsId: '4h1AtDNFk2Q',
+    gifUrl: 'https://v2.exercisedb.io/image/FMSKfHYqUC-DZI',
     instructions: 'Stand in the center of a cable station with a slight forward lean. With a slight bend in your elbows, pull the handles together in a wide hugging motion. Squeeze your chest hard at the bottom, then slowly return to the stretched position.',
     donts: [
       'Don\'t bend your elbows too much — keep them slightly bent throughout',
@@ -64,9 +69,9 @@ export const exercises = {
     reps: '15-20',
     rest: '45s',
     difficulty: 'beginner',
-    alternatives: ['Knee Push-ups', 'Wall Push-ups'],
-    videoId: 'IODxDxX7oi4',
-    shortsId: '1AugTfDd3Yk',
+    alternatives: ['dumbbellBenchPress', 'machineChestPress'],
+    videoId: 'vh72hbUqqfs',
+    gifUrl: 'https://v2.exercisedb.io/image/RHpaPem2sTvUXk',
     instructions: 'Place hands slightly wider than shoulder-width on the floor. Keep your body in a perfectly straight line from head to heels. Lower yourself until your chest nearly touches the ground, then push back up by fully extending your arms.',
     donts: [
       'Don\'t let your hips sag or pike up',
@@ -74,8 +79,100 @@ export const exercises = {
       'Don\'t do half reps — go through full range of motion',
     ],
   },
+  dumbbellBenchPress: {
+    id: 'dumbbell-bench-press',
+    name: 'Dumbbell Bench Press',
+    muscle: 'Chest',
+    sets: 4,
+    reps: '8-12',
+    rest: '90s',
+    difficulty: 'beginner',
+    alternatives: ['benchPress', 'machineChestPress', 'pushUps'],
+    videoId: 'VmB1G1K7v94',
+    gifUrl: 'https://v2.exercisedb.io/image/z6-Of7cOCpYBHE',
+    instructions: 'Lie flat on a bench holding dumbbells at chest level with palms facing forward. Press the dumbbells up until arms are fully extended, bringing them slightly together at the top. Lower slowly to chest level with elbows at about 45 degrees.',
+    donts: [
+      'Don\'t let the dumbbells drift too wide at the bottom',
+      'Don\'t bang them together at the top',
+      'Don\'t arch your back excessively',
+    ],
+  },
+  machineChestPress: {
+    id: 'machine-chest-press',
+    name: 'Machine Chest Press',
+    muscle: 'Chest',
+    sets: 3,
+    reps: '10-12',
+    rest: '60s',
+    difficulty: 'beginner',
+    alternatives: ['benchPress', 'dumbbellBenchPress'],
+    videoId: 'xUm0BiZCWlQ',
+    gifUrl: 'https://v2.exercisedb.io/image/wU42YaANr5DAxn',
+    instructions: 'Sit with your back flat against the pad. Grip the handles at chest height. Press forward until arms are extended but not locked. Return slowly to the starting position, feeling a stretch in your chest.',
+    donts: [
+      'Don\'t lock your elbows at full extension',
+      'Don\'t let your shoulders roll forward',
+      'Don\'t lift your back off the pad',
+    ],
+  },
+  dumbbellFly: {
+    id: 'dumbbell-fly',
+    name: 'Dumbbell Fly',
+    muscle: 'Chest',
+    sets: 3,
+    reps: '12-15',
+    rest: '60s',
+    difficulty: 'beginner',
+    alternatives: ['cableFly', 'pecDeck'],
+    videoId: 'eozdVDA78K0',
+    gifUrl: 'https://v2.exercisedb.io/image/7JDQL4MRY0pLX2',
+    instructions: 'Lie flat on a bench with dumbbells held above your chest, arms slightly bent. Open your arms wide in an arc until you feel a stretch in your chest. Squeeze your chest to bring the dumbbells back together above you.',
+    donts: [
+      'Don\'t straighten your arms completely — keep a slight bend',
+      'Don\'t go too deep if you feel shoulder strain',
+      'Don\'t use heavy weight — this is an isolation exercise',
+    ],
+  },
+  pecDeck: {
+    id: 'pec-deck',
+    name: 'Pec Deck Machine',
+    muscle: 'Chest',
+    sets: 3,
+    reps: '12-15',
+    rest: '60s',
+    difficulty: 'beginner',
+    alternatives: ['cableFly', 'dumbbellFly'],
+    videoId: 'Z57CtFmRMxA',
+    gifUrl: 'https://v2.exercisedb.io/image/IVzwm4E1qOtPcQ',
+    instructions: 'Sit with your back against the pad. Place forearms on the pads or grip the handles. Squeeze the pads together in front of your chest. Hold briefly, then return slowly to the start.',
+    donts: [
+      'Don\'t let your shoulders roll forward',
+      'Don\'t use momentum — slow and controlled',
+      'Don\'t go too far back if it strains your shoulders',
+    ],
+  },
+  lowToHighCableFly: {
+    id: 'low-to-high-cable-fly',
+    name: 'Low-to-High Cable Fly',
+    muscle: 'Upper Chest',
+    sets: 3,
+    reps: '12-15',
+    rest: '60s',
+    difficulty: 'beginner',
+    alternatives: ['inclineDumbbellPress', 'inclineBarbellPress'],
+    videoId: 'eQ_NBB6OBH4',
+    gifUrl: 'https://v2.exercisedb.io/image/oIyVN6MxKrHm3v',
+    instructions: 'Set cables to the lowest position. Stand in the center with a slight forward lean. With arms slightly bent, bring handles up and together in front of your upper chest. Squeeze at the top and lower slowly.',
+    donts: [
+      'Don\'t use too much weight — focus on the squeeze',
+      'Don\'t bend your elbows too much',
+      'Don\'t swing your body for momentum',
+    ],
+  },
 
+  // ═══════════════════════════════════════════
   // BACK
+  // ═══════════════════════════════════════════
   latPulldown: {
     id: 'lat-pulldown',
     name: 'Lat Pulldown',
@@ -84,9 +181,9 @@ export const exercises = {
     reps: '10-12',
     rest: '60s',
     difficulty: 'beginner',
-    alternatives: ['Pull-ups', 'Assisted Pull-ups'],
+    alternatives: ['pullUps', 'assistedPullUps'],
     videoId: 'CAwf7n6Luuc',
-    shortsId: 'Mtpf7dI8_jE',
+    gifUrl: 'https://v2.exercisedb.io/image/z7caRJGfaAFVdy',
     instructions: 'Sit with thighs secured under the pad. Grip the bar wider than shoulder-width. Pull the bar down to your upper chest while leaning back slightly, focusing on driving your elbows down and squeezing your shoulder blades together. Control the weight on the way up.',
     donts: [
       'Don\'t lean too far back or use momentum',
@@ -102,9 +199,9 @@ export const exercises = {
     reps: '8-12',
     rest: '90s',
     difficulty: 'beginner',
-    alternatives: ['Dumbbell Row', 'T-Bar Row', 'Cable Row'],
-    videoId: 'FWJR5Ve8bnQ',
-    shortsId: 'FZ_ObAdQPEo',
+    alternatives: ['dumbbellRow', 'tBarRow', 'cableRow'],
+    videoId: '9efgcAjQe7E',
+    gifUrl: 'https://v2.exercisedb.io/image/lv6sPbKC5zrWon',
     instructions: 'Hinge at the hips until your torso is roughly 45 degrees to the floor. Grip the bar just outside your knees. Pull the barbell to your lower chest or upper abdomen, driving elbows back and squeezing your lats. Lower with control.',
     donts: [
       'Don\'t round your lower back',
@@ -120,9 +217,9 @@ export const exercises = {
     reps: '10-12',
     rest: '60s',
     difficulty: 'beginner',
-    alternatives: ['Dumbbell Row', 'Machine Row'],
+    alternatives: ['dumbbellRow', 'machineRow'],
     videoId: 'GZbfZ033f74',
-    shortsId: 'dpgKOu2eqIo',
+    gifUrl: 'https://v2.exercisedb.io/image/XFUMbBBKWnWAhf',
     instructions: 'Sit upright with feet on the platform and a slight bend in your knees. Pull the handle to your lower torso, squeezing your shoulder blades together at the end. Extend arms forward with control, letting your shoulders stretch slightly.',
     donts: [
       'Don\'t round your back as you reach forward',
@@ -138,9 +235,9 @@ export const exercises = {
     reps: '15-20',
     rest: '45s',
     difficulty: 'beginner',
-    alternatives: ['Reverse Fly', 'Band Pull-aparts'],
+    alternatives: ['reverseFly', 'bandPullApart'],
     videoId: 'rep-qVOkqgk',
-    shortsId: 'zi7waeqXpzw',
+    gifUrl: 'https://v2.exercisedb.io/image/v6kZ7oy2XD14SA',
     instructions: 'Set the cable at upper chest or face height with a rope attachment. Pull the rope toward your face, separating the ends as you pull. Externally rotate your shoulders so your hands end up beside your ears. Squeeze your rear delts and upper back.',
     donts: [
       'Don\'t use too heavy a weight — this is a control exercise',
@@ -148,8 +245,154 @@ export const exercises = {
       'Don\'t lean back excessively',
     ],
   },
+  pullUps: {
+    id: 'pull-ups',
+    name: 'Pull-ups',
+    muscle: 'Back',
+    sets: 3,
+    reps: '6-10',
+    rest: '90s',
+    difficulty: 'intermediate',
+    alternatives: ['latPulldown', 'assistedPullUps'],
+    videoId: '8XrB3eV3_ZE',
+    gifUrl: 'https://v2.exercisedb.io/image/sZNkRBqCTa4rmt',
+    instructions: 'Hang from a pull-up bar with an overhand grip, slightly wider than shoulder-width. Pull yourself up until your chin clears the bar, driving your elbows down and back. Lower under control to full arm extension.',
+    donts: [
+      'Don\'t kip or swing — strict form builds muscle',
+      'Don\'t shrug your shoulders at the bottom',
+      'Don\'t do half reps — full range of motion',
+    ],
+  },
+  assistedPullUps: {
+    id: 'assisted-pull-ups',
+    name: 'Assisted Pull-ups',
+    muscle: 'Back',
+    sets: 3,
+    reps: '8-12',
+    rest: '60s',
+    difficulty: 'beginner',
+    alternatives: ['latPulldown', 'pullUps'],
+    videoId: 'VHt8ulfWtzY',
+    gifUrl: 'https://v2.exercisedb.io/image/sZNkRBqCTa4rmt',
+    instructions: 'Use an assisted pull-up machine or a resistance band looped around the bar and under your knees. Perform pull-ups with the assistance reducing your body weight. Focus on the same form as regular pull-ups.',
+    donts: [
+      'Don\'t rely too heavily on the assistance — challenge yourself',
+      'Don\'t rush the movement',
+      'Don\'t skip the negative (lowering) phase',
+    ],
+  },
+  dumbbellRow: {
+    id: 'dumbbell-row',
+    name: 'Dumbbell Row',
+    muscle: 'Back',
+    sets: 3,
+    reps: '10-12',
+    rest: '60s',
+    difficulty: 'beginner',
+    alternatives: ['barbellRow', 'cableRow', 'machineRow'],
+    videoId: 'pYcpY20QaE8',
+    gifUrl: 'https://v2.exercisedb.io/image/A5f-4j7bhc2q2C',
+    instructions: 'Place one knee and hand on a bench for support. Hold a dumbbell in the other hand, arm hanging straight. Pull the dumbbell to your hip, driving your elbow back and squeezing your lat. Lower slowly.',
+    donts: [
+      'Don\'t rotate your torso as you pull',
+      'Don\'t round your back',
+      'Don\'t use momentum — slow and controlled',
+    ],
+  },
+  tBarRow: {
+    id: 't-bar-row',
+    name: 'T-Bar Row',
+    muscle: 'Back',
+    sets: 3,
+    reps: '8-12',
+    rest: '90s',
+    difficulty: 'intermediate',
+    alternatives: ['barbellRow', 'dumbbellRow'],
+    videoId: 'j3Igk5nyZE4',
+    gifUrl: 'https://v2.exercisedb.io/image/Bvx6qS1DXN38J6',
+    instructions: 'Straddle the T-bar with feet wider than shoulder-width. Grip the handles, hinge at the hips, and pull the weight to your chest. Squeeze your back at the top and lower with control.',
+    donts: [
+      'Don\'t round your lower back',
+      'Don\'t jerk the weight',
+      'Don\'t stand too upright',
+    ],
+  },
+  cableRow: {
+    id: 'cable-row',
+    name: 'Cable Row',
+    muscle: 'Back',
+    sets: 3,
+    reps: '10-12',
+    rest: '60s',
+    difficulty: 'beginner',
+    alternatives: ['seatedCableRow', 'dumbbellRow'],
+    videoId: 'GZbfZ033f74',
+    gifUrl: 'https://v2.exercisedb.io/image/XFUMbBBKWnWAhf',
+    instructions: 'Stand or sit at a cable station. Pull the handle to your torso, squeezing your shoulder blades together. Return to the start under control.',
+    donts: [
+      'Don\'t lean too far back',
+      'Don\'t shrug your shoulders',
+      'Don\'t use momentum',
+    ],
+  },
+  machineRow: {
+    id: 'machine-row',
+    name: 'Machine Row',
+    muscle: 'Back',
+    sets: 3,
+    reps: '10-12',
+    rest: '60s',
+    difficulty: 'beginner',
+    alternatives: ['seatedCableRow', 'dumbbellRow'],
+    videoId: null,
+    gifUrl: 'https://v2.exercisedb.io/image/XFUMbBBKWnWAhf',
+    instructions: 'Sit with your chest against the pad. Grip the handles and pull toward your torso, squeezing your back muscles. Return slowly to the start.',
+    donts: [
+      'Don\'t pull with your arms only — use your back',
+      'Don\'t lift your chest off the pad',
+      'Don\'t use momentum',
+    ],
+  },
+  reverseFly: {
+    id: 'reverse-fly',
+    name: 'Reverse Fly',
+    muscle: 'Rear Delts/Upper Back',
+    sets: 3,
+    reps: '12-15',
+    rest: '45s',
+    difficulty: 'beginner',
+    alternatives: ['facePull', 'bandPullApart', 'reversePecDeck'],
+    videoId: 'ttvfGg9d76c',
+    gifUrl: 'https://v2.exercisedb.io/image/Ll35l2lAzuKE6c',
+    instructions: 'Bend forward at the hips. With a slight bend in your elbows, raise dumbbells out to your sides. Squeeze your shoulder blades together at the top. Lower slowly.',
+    donts: [
+      'Don\'t use too heavy a weight',
+      'Don\'t round your back',
+      'Don\'t jerk the weights up',
+    ],
+  },
+  bandPullApart: {
+    id: 'band-pull-apart',
+    name: 'Band Pull-apart',
+    muscle: 'Rear Delts/Upper Back',
+    sets: 3,
+    reps: '15-20',
+    rest: '30s',
+    difficulty: 'beginner',
+    alternatives: ['facePull', 'reverseFly'],
+    videoId: null,
+    gifUrl: null,
+    instructions: 'Hold a resistance band at shoulder width with arms extended in front. Pull the band apart by squeezing your shoulder blades together until it touches your chest. Return slowly.',
+    donts: [
+      'Don\'t shrug your shoulders',
+      'Don\'t use momentum',
+      'Don\'t bend your elbows too much',
+    ],
+  },
 
+  // ═══════════════════════════════════════════
   // SHOULDERS
+  // ═══════════════════════════════════════════
   overheadPress: {
     id: 'overhead-press',
     name: 'Overhead Press',
@@ -158,8 +401,9 @@ export const exercises = {
     reps: '8-10',
     rest: '90s',
     difficulty: 'beginner',
-    alternatives: ['Dumbbell Shoulder Press', 'Machine Shoulder Press'],
-    videoId: '_RlRDWO2jfg',
+    alternatives: ['dumbbellShoulderPress', 'machineShoulderPress'],
+    videoId: '2yjwXTZQDDI',
+    gifUrl: 'https://v2.exercisedb.io/image/eN2cPnfxahf9TQ',
     instructions: 'Stand with feet shoulder-width apart. Hold the barbell at shoulder level with a grip just outside your shoulders. Brace your core and press the bar straight overhead, moving your head slightly back to clear the bar path. Lock out at the top with the bar directly over your midfoot.',
     donts: [
       'Don\'t arch your lower back excessively',
@@ -175,9 +419,9 @@ export const exercises = {
     reps: '12-15',
     rest: '45s',
     difficulty: 'beginner',
-    alternatives: ['Cable Lateral Raise', 'Machine Lateral Raise'],
+    alternatives: ['cableLateralRaise', 'machineLateralRaise'],
     videoId: '3VcKaXpzqRo',
-    shortsId: '-_XE4qbV7Yw',
+    gifUrl: 'https://v2.exercisedb.io/image/6r7MKZAz5e9Gf-',
     instructions: 'Stand with dumbbells at your sides, slight bend in elbows. Raise the weights out to your sides until your arms are parallel to the floor. Lead with your elbows, not your hands. Lower slowly under control.',
     donts: [
       'Don\'t swing the weights up with momentum',
@@ -193,9 +437,9 @@ export const exercises = {
     reps: '12-15',
     rest: '45s',
     difficulty: 'beginner',
-    alternatives: ['Face Pull', 'Reverse Pec Deck'],
-    videoId: 'EA7u4Q_8HQ0',
-    shortsId: 'UO2ADpDnYUE',
+    alternatives: ['facePull', 'reversePecDeck'],
+    videoId: 'ttvfGg9d76c',
+    gifUrl: 'https://v2.exercisedb.io/image/Ll35l2lAzuKE6c',
     instructions: 'Bend forward at the hips until your torso is nearly parallel to the floor. With a slight bend in your elbows, raise the dumbbells out to your sides. Focus on squeezing your shoulder blades together at the top. Lower slowly.',
     donts: [
       'Don\'t use too heavy a weight — focus on the contraction',
@@ -203,8 +447,118 @@ export const exercises = {
       'Don\'t jerk the weights up',
     ],
   },
+  dumbbellShoulderPress: {
+    id: 'dumbbell-shoulder-press',
+    name: 'Dumbbell Shoulder Press',
+    muscle: 'Shoulders',
+    sets: 4,
+    reps: '8-12',
+    rest: '90s',
+    difficulty: 'beginner',
+    alternatives: ['overheadPress', 'machineShoulderPress', 'arnoldPress'],
+    videoId: 'qEwKCR5JCog',
+    gifUrl: 'https://v2.exercisedb.io/image/4Tkdoy0fRH3P-B',
+    instructions: 'Sit on a bench with back support, holding a dumbbell in each hand at shoulder height with palms facing forward. Press the dumbbells overhead until your arms are fully extended, bringing them slightly together at the top. Lower under control back to shoulder level.',
+    donts: [
+      'Don\'t arch your lower back — keep it pressed against the bench',
+      'Don\'t let the dumbbells drift too far forward or backward',
+      'Don\'t bang the dumbbells together at the top',
+    ],
+  },
+  machineShoulderPress: {
+    id: 'machine-shoulder-press',
+    name: 'Machine Shoulder Press',
+    muscle: 'Shoulders',
+    sets: 3,
+    reps: '10-12',
+    rest: '60s',
+    difficulty: 'beginner',
+    alternatives: ['overheadPress', 'dumbbellShoulderPress'],
+    videoId: 'Wqq43dKW1TU',
+    gifUrl: 'https://v2.exercisedb.io/image/4Tkdoy0fRH3P-B',
+    instructions: 'Sit with back against the pad. Grip the handles at shoulder height. Press up until arms are extended but not locked. Lower slowly under control.',
+    donts: [
+      'Don\'t arch your back off the pad',
+      'Don\'t lock your elbows at the top',
+      'Don\'t use too much weight at the expense of form',
+    ],
+  },
+  arnoldPress: {
+    id: 'arnold-press',
+    name: 'Arnold Press',
+    muscle: 'Shoulders',
+    sets: 3,
+    reps: '10-12',
+    rest: '60s',
+    difficulty: 'intermediate',
+    alternatives: ['dumbbellShoulderPress', 'overheadPress'],
+    videoId: '6Z15_WdXmVw',
+    gifUrl: 'https://v2.exercisedb.io/image/4Tkdoy0fRH3P-B',
+    instructions: 'Start with dumbbells at shoulder height, palms facing you. As you press up, rotate your palms to face forward at the top. Reverse the motion as you lower. This hits all three delt heads.',
+    donts: [
+      'Don\'t rush the rotation — smooth and controlled',
+      'Don\'t arch your back',
+      'Don\'t use too heavy a weight',
+    ],
+  },
+  cableLateralRaise: {
+    id: 'cable-lateral-raise',
+    name: 'Cable Lateral Raise',
+    muscle: 'Side Delts',
+    sets: 3,
+    reps: '12-15',
+    rest: '45s',
+    difficulty: 'beginner',
+    alternatives: ['lateralRaise', 'machineLateralRaise'],
+    videoId: null,
+    gifUrl: 'https://v2.exercisedb.io/image/6r7MKZAz5e9Gf-',
+    instructions: 'Stand beside a low cable pulley. Grab the handle with the far hand. Raise your arm out to the side until parallel with the floor. Lower slowly. The constant cable tension is great for side delts.',
+    donts: [
+      'Don\'t lean away from the cable too much',
+      'Don\'t shrug your traps',
+      'Don\'t swing the weight',
+    ],
+  },
+  machineLateralRaise: {
+    id: 'machine-lateral-raise',
+    name: 'Machine Lateral Raise',
+    muscle: 'Side Delts',
+    sets: 3,
+    reps: '12-15',
+    rest: '45s',
+    difficulty: 'beginner',
+    alternatives: ['lateralRaise', 'cableLateralRaise'],
+    videoId: null,
+    gifUrl: 'https://v2.exercisedb.io/image/6r7MKZAz5e9Gf-',
+    instructions: 'Sit in the machine with pads against your outer arms. Raise your arms out to the side until parallel with the floor. Lower slowly under control.',
+    donts: [
+      'Don\'t shrug your shoulders',
+      'Don\'t use momentum',
+      'Don\'t raise higher than shoulder level',
+    ],
+  },
+  reversePecDeck: {
+    id: 'reverse-pec-deck',
+    name: 'Reverse Pec Deck',
+    muscle: 'Rear Delts',
+    sets: 3,
+    reps: '12-15',
+    rest: '45s',
+    difficulty: 'beginner',
+    alternatives: ['rearDeltFly', 'facePull'],
+    videoId: 'JQsEq37gJbY',
+    gifUrl: 'https://v2.exercisedb.io/image/Ll35l2lAzuKE6c',
+    instructions: 'Sit facing the pec deck machine. Grip the handles with arms extended in front. Pull the handles back by squeezing your rear delts and upper back. Return slowly.',
+    donts: [
+      'Don\'t use too much weight',
+      'Don\'t shrug your shoulders',
+      'Don\'t lean forward excessively',
+    ],
+  },
 
+  // ═══════════════════════════════════════════
   // BICEPS
+  // ═══════════════════════════════════════════
   barbellCurl: {
     id: 'barbell-curl',
     name: 'Barbell Curl',
@@ -213,9 +567,9 @@ export const exercises = {
     reps: '10-12',
     rest: '60s',
     difficulty: 'beginner',
-    alternatives: ['EZ-Bar Curl', 'Dumbbell Curl'],
-    videoId: 'kwG2ipFRgFo',
-    shortsId: 'EbaRjcixdPc',
+    alternatives: ['ezBarCurl', 'dumbbellCurl'],
+    videoId: 'QZEqB6wUPxQ',
+    gifUrl: 'https://v2.exercisedb.io/image/2JkRGiNW7pxuua',
     instructions: 'Stand with feet hip-width apart, holding the barbell with an underhand grip at arm\'s length. Keeping your elbows pinned to your sides, curl the bar up to shoulder level. Squeeze your biceps at the top, then lower under control.',
     donts: [
       'Don\'t swing your body or use momentum',
@@ -231,8 +585,9 @@ export const exercises = {
     reps: '10-12',
     rest: '60s',
     difficulty: 'beginner',
-    alternatives: ['Cross-body Hammer Curl', 'Rope Curl'],
+    alternatives: ['crossBodyHammerCurl', 'ropeCurl'],
     videoId: 'zC3nLlEvin4',
+    gifUrl: 'https://v2.exercisedb.io/image/EqNqwGODCuFI5p',
     instructions: 'Hold dumbbells at your sides with a neutral grip (palms facing each other). Keeping elbows stationary at your sides, curl both dumbbells up toward your shoulders. Squeeze at the top and lower slowly. This targets the brachialis and forearms more than regular curls.',
     donts: [
       'Don\'t let your elbows flare out',
@@ -248,9 +603,9 @@ export const exercises = {
     reps: '10-12',
     rest: '60s',
     difficulty: 'intermediate',
-    alternatives: ['Preacher Curl', 'Concentration Curl'],
+    alternatives: ['preacherCurl', 'concentrationCurl'],
     videoId: 'soxrZlIl35U',
-    shortsId: 's9hfCnWWhC8',
+    gifUrl: 'https://v2.exercisedb.io/image/H9H8-qx1bBFsGR',
     instructions: 'Set a bench to about 45 degrees. Sit back and let your arms hang straight down with dumbbells. Curl the weights up while keeping your upper arms stationary. The incline position provides a deeper stretch on the biceps for better activation.',
     donts: [
       'Don\'t bring your elbows forward as you curl',
@@ -258,8 +613,118 @@ export const exercises = {
       'Don\'t rush — the stretch at the bottom is the key benefit',
     ],
   },
+  ezBarCurl: {
+    id: 'ez-bar-curl',
+    name: 'EZ-Bar Curl',
+    muscle: 'Biceps',
+    sets: 3,
+    reps: '10-12',
+    rest: '60s',
+    difficulty: 'beginner',
+    alternatives: ['barbellCurl', 'dumbbellCurl'],
+    videoId: 'zG2xJ0Q5QtI',
+    gifUrl: 'https://v2.exercisedb.io/image/2JkRGiNW7pxuua',
+    instructions: 'Hold the EZ-bar on the angled grips with an underhand grip. Curl the bar up to shoulder level keeping elbows pinned. The angled grip reduces wrist strain compared to a straight bar.',
+    donts: [
+      'Don\'t swing your body',
+      'Don\'t let elbows drift forward',
+      'Don\'t rush the negative',
+    ],
+  },
+  dumbbellCurl: {
+    id: 'dumbbell-curl',
+    name: 'Dumbbell Curl',
+    muscle: 'Biceps',
+    sets: 3,
+    reps: '10-12',
+    rest: '60s',
+    difficulty: 'beginner',
+    alternatives: ['barbellCurl', 'ezBarCurl'],
+    videoId: 'sAq_ocpRh_I',
+    gifUrl: 'https://v2.exercisedb.io/image/EqNqwGODCuFI5p',
+    instructions: 'Stand with dumbbells at your sides, palms facing forward. Curl both dumbbells up to shoulder level, squeezing your biceps at the top. Lower slowly under control.',
+    donts: [
+      'Don\'t swing your body',
+      'Don\'t alternate arms if the goal is max tension',
+      'Don\'t rush the eccentric',
+    ],
+  },
+  crossBodyHammerCurl: {
+    id: 'cross-body-hammer-curl',
+    name: 'Cross-body Hammer Curl',
+    muscle: 'Biceps/Forearms',
+    sets: 3,
+    reps: '10-12',
+    rest: '60s',
+    difficulty: 'beginner',
+    alternatives: ['hammerCurl', 'ropeCurl'],
+    videoId: null,
+    gifUrl: 'https://v2.exercisedb.io/image/EqNqwGODCuFI5p',
+    instructions: 'Hold dumbbells at your sides with a neutral grip. Curl one dumbbell across your body toward the opposite shoulder. Squeeze and lower, then repeat on the other side.',
+    donts: [
+      'Don\'t swing the weight',
+      'Don\'t rotate your torso',
+      'Don\'t use momentum',
+    ],
+  },
+  ropeCurl: {
+    id: 'rope-curl',
+    name: 'Rope Curl',
+    muscle: 'Biceps',
+    sets: 3,
+    reps: '12-15',
+    rest: '60s',
+    difficulty: 'beginner',
+    alternatives: ['hammerCurl', 'barbellCurl'],
+    videoId: '1Quc_tOv97I',
+    gifUrl: 'https://v2.exercisedb.io/image/2JkRGiNW7pxuua',
+    instructions: 'Attach a rope to a low cable pulley. Curl the rope up with a neutral grip, splitting the ends apart at the top for peak contraction. Lower slowly.',
+    donts: [
+      'Don\'t let elbows drift forward',
+      'Don\'t swing your body',
+      'Don\'t use too much weight',
+    ],
+  },
+  preacherCurl: {
+    id: 'preacher-curl',
+    name: 'Preacher Curl',
+    muscle: 'Biceps',
+    sets: 3,
+    reps: '10-12',
+    rest: '60s',
+    difficulty: 'beginner',
+    alternatives: ['inclineCurl', 'concentrationCurl'],
+    videoId: 'fIWP-FRFNU0',
+    gifUrl: 'https://v2.exercisedb.io/image/H9H8-qx1bBFsGR',
+    instructions: 'Sit at a preacher bench with your upper arms flat on the pad. Curl the bar/dumbbells up, squeezing your biceps at the top. Lower slowly — the preacher bench eliminates cheating.',
+    donts: [
+      'Don\'t extend your arms fully at the bottom — keep slight tension',
+      'Don\'t lean back to lift the weight',
+      'Don\'t rush the negative',
+    ],
+  },
+  concentrationCurl: {
+    id: 'concentration-curl',
+    name: 'Concentration Curl',
+    muscle: 'Biceps',
+    sets: 3,
+    reps: '10-12',
+    rest: '60s',
+    difficulty: 'beginner',
+    alternatives: ['inclineCurl', 'preacherCurl'],
+    videoId: 'Jvj2wV0vOYU',
+    gifUrl: 'https://v2.exercisedb.io/image/H9H8-qx1bBFsGR',
+    instructions: 'Sit on a bench, brace your elbow against your inner thigh. Curl the dumbbell up with full focus on the bicep. Squeeze at the top and lower slowly. Great for mind-muscle connection.',
+    donts: [
+      'Don\'t swing the weight',
+      'Don\'t use your shoulder to lift',
+      'Don\'t rush',
+    ],
+  },
 
+  // ═══════════════════════════════════════════
   // TRICEPS
+  // ═══════════════════════════════════════════
   tricepPushdown: {
     id: 'tricep-pushdown',
     name: 'Tricep Pushdown',
@@ -268,9 +733,9 @@ export const exercises = {
     reps: '10-12',
     rest: '60s',
     difficulty: 'beginner',
-    alternatives: ['Rope Pushdown', 'Overhead Extension'],
+    alternatives: ['ropePushdown', 'overheadTricepExtension'],
     videoId: '2-LAMcpzODU',
-    shortsId: 'NhV457cRuvE',
+    gifUrl: 'https://v2.exercisedb.io/image/QHMR7SQXkLwDJN',
     instructions: 'Stand at a cable station with a straight bar or V-bar attachment. Keep your elbows pinned to your sides and push the bar down until your arms are fully extended. Squeeze your triceps hard at the bottom, then let the bar come up slowly to about chest level.',
     donts: [
       'Don\'t let your elbows flare away from your body',
@@ -286,9 +751,9 @@ export const exercises = {
     reps: '10-12',
     rest: '60s',
     difficulty: 'beginner',
-    alternatives: ['Skull Crushers', 'Dips'],
-    videoId: '_gsUck-7M74',
-    shortsId: 'rFNQv9eae6I',
+    alternatives: ['skullCrusher', 'dips'],
+    videoId: '-Vyt2QdsR7E',
+    gifUrl: 'https://v2.exercisedb.io/image/LLSy3g5vbqBP4M',
     instructions: 'Hold a dumbbell with both hands overhead, arms fully extended. Keeping your upper arms close to your ears, lower the weight behind your head by bending at the elbows. Extend back up to the starting position and squeeze your triceps.',
     donts: [
       'Don\'t let your elbows flare out wide',
@@ -304,9 +769,9 @@ export const exercises = {
     reps: '8-12',
     rest: '60s',
     difficulty: 'intermediate',
-    alternatives: ['Bench Dips', 'Tricep Pushdown'],
+    alternatives: ['benchDip', 'tricepPushdown'],
     videoId: 'sM6XUdt1rm4',
-    shortsId: '1fa6wKSlSY8',
+    gifUrl: 'https://v2.exercisedb.io/image/4JXAI-hVlETYiw',
     instructions: 'Grip parallel bars with arms straight. Lean slightly forward for more chest emphasis, or stay upright for triceps focus. Lower yourself by bending your elbows until your upper arms are roughly parallel to the floor. Push back up to full lockout.',
     donts: [
       'Don\'t go too deep — it can strain your shoulders',
@@ -314,8 +779,64 @@ export const exercises = {
       'Don\'t shrug your shoulders — keep them depressed',
     ],
   },
+  ropePushdown: {
+    id: 'rope-pushdown',
+    name: 'Rope Pushdown',
+    muscle: 'Triceps',
+    sets: 3,
+    reps: '12-15',
+    rest: '60s',
+    difficulty: 'beginner',
+    alternatives: ['tricepPushdown', 'overheadTricepExtension'],
+    videoId: 'vB5OHsJ3EME',
+    gifUrl: 'https://v2.exercisedb.io/image/QHMR7SQXkLwDJN',
+    instructions: 'Attach a rope to a high cable pulley. Push the rope down while splitting the ends apart at the bottom for peak tricep contraction. Return slowly to chest level.',
+    donts: [
+      'Don\'t let elbows flare',
+      'Don\'t lean over the cable',
+      'Don\'t use momentum',
+    ],
+  },
+  skullCrusher: {
+    id: 'skull-crusher',
+    name: 'Skull Crusher',
+    muscle: 'Triceps',
+    sets: 3,
+    reps: '10-12',
+    rest: '60s',
+    difficulty: 'intermediate',
+    alternatives: ['overheadTricepExtension', 'tricepPushdown'],
+    videoId: 'd_KZxkY_0cM',
+    gifUrl: 'https://v2.exercisedb.io/image/LLSy3g5vbqBP4M',
+    instructions: 'Lie flat on a bench holding an EZ-bar or dumbbells above your chest with arms extended. Bend at the elbows to lower the weight toward your forehead. Extend back up by squeezing your triceps.',
+    donts: [
+      'Don\'t flare your elbows out',
+      'Don\'t drop the weight too fast',
+      'Don\'t let the bar drift too far back over your head',
+    ],
+  },
+  benchDip: {
+    id: 'bench-dip',
+    name: 'Bench Dip',
+    muscle: 'Triceps',
+    sets: 3,
+    reps: '12-15',
+    rest: '45s',
+    difficulty: 'beginner',
+    alternatives: ['dips', 'tricepPushdown'],
+    videoId: 'c3ZGl4pAwZ4',
+    gifUrl: 'https://v2.exercisedb.io/image/4JXAI-hVlETYiw',
+    instructions: 'Place your hands on a bench behind you, fingers facing forward. Extend your legs out. Lower your body by bending your elbows to about 90 degrees. Push back up by straightening your arms.',
+    donts: [
+      'Don\'t go too deep — it strains the shoulders',
+      'Don\'t flare your elbows out',
+      'Don\'t shrug your shoulders',
+    ],
+  },
 
+  // ═══════════════════════════════════════════
   // LEGS
+  // ═══════════════════════════════════════════
   squat: {
     id: 'squat',
     name: 'Barbell Squat',
@@ -324,9 +845,9 @@ export const exercises = {
     reps: '8-10',
     rest: '120s',
     difficulty: 'beginner',
-    alternatives: ['Goblet Squat', 'Leg Press', 'Smith Machine Squat'],
-    videoId: 'ultWZbUMPL8',
-    shortsId: 'mqIQA1u72Jk',
+    alternatives: ['gobletSquat', 'legPress', 'smithMachineSquat'],
+    videoId: 'SW_C1A-rejs',
+    gifUrl: 'https://v2.exercisedb.io/image/y0gfAZXPruyYIz',
     instructions: 'Position the bar on your upper back (traps area). Stand with feet shoulder-width apart, toes slightly out. Brace your core, push your hips back, and squat down until your thighs are at least parallel to the floor. Drive through your whole foot to stand back up.',
     donts: [
       'Don\'t let your knees cave inward',
@@ -343,9 +864,9 @@ export const exercises = {
     reps: '10-12',
     rest: '90s',
     difficulty: 'beginner',
-    alternatives: ['Squat', 'Hack Squat'],
+    alternatives: ['squat', 'hackSquat'],
     videoId: 'IZxyjW7MPJQ',
-    shortsId: '8fSPQzY7cpY',
+    gifUrl: 'https://v2.exercisedb.io/image/6K2a1wrh0-DqCH',
     instructions: 'Sit in the machine with your back flat against the pad. Place feet shoulder-width apart on the platform. Release the safety locks and lower the platform by bending your knees to about 90 degrees. Push back up without locking your knees completely.',
     donts: [
       'Don\'t let your lower back round off the pad',
@@ -361,9 +882,9 @@ export const exercises = {
     reps: '10-12',
     rest: '90s',
     difficulty: 'beginner',
-    alternatives: ['Leg Curl', 'Stiff-Leg Deadlift'],
-    videoId: '7j-2w4-P14I',
-    shortsId: 'U1XmhaOyNFQ',
+    alternatives: ['legCurl', 'stiffLegDeadlift'],
+    videoId: 'JCXUYuzwNrM',
+    gifUrl: 'https://v2.exercisedb.io/image/DGt-Z-oN-CcX8P',
     instructions: 'Hold the barbell at hip level with a shoulder-width grip. Keep a slight bend in your knees. Push your hips back and lower the bar along your legs until you feel a deep stretch in your hamstrings (usually mid-shin level). Drive your hips forward to return to standing.',
     donts: [
       'Don\'t round your back at any point',
@@ -379,9 +900,10 @@ export const exercises = {
     reps: '10-12',
     rest: '60s',
     difficulty: 'beginner',
-    alternatives: ['Romanian Deadlift', 'Lying Leg Curl', 'Nordic Curl'],
-    videoId: 'GFsPuMEVMjc',
-    instructions: 'Sit in the seated leg curl machine with your back against the pad and the ankle pad resting on the back of your lower legs. Adjust the thigh pad to sit snugly on your quads. Curl your legs down and back by contracting your hamstrings. Squeeze at the bottom, then return slowly to the starting position.',
+    alternatives: ['romanianDeadlift', 'lyingLegCurl', 'nordicCurl'],
+    videoId: 'ELOCsoDSmrg',
+    gifUrl: 'https://v2.exercisedb.io/image/gqWZyYJQYcEMj-',
+    instructions: 'Sit in the seated leg curl machine with your back against the pad and the ankle pad resting on the back of your lower legs. Curl your legs down and back by contracting your hamstrings. Squeeze at the bottom, then return slowly to the starting position.',
     donts: [
       'Don\'t let your hips lift off the seat',
       'Don\'t use momentum — control the movement',
@@ -396,9 +918,9 @@ export const exercises = {
     reps: '12-15',
     rest: '60s',
     difficulty: 'beginner',
-    alternatives: ['Bulgarian Split Squat', 'Lunges'],
+    alternatives: ['bulgarianSplitSquat', 'lunges'],
     videoId: 'YyvSfVjQeL0',
-    shortsId: 'Adi90VeEG5M',
+    gifUrl: 'https://v2.exercisedb.io/image/AecClh2Eg1yWcQ',
     instructions: 'Sit in the machine with the pad on your shins just above the ankles. Extend your legs until they are straight, squeezing your quads hard at the top. Lower under control — don\'t just drop the weight. Focus on the mind-muscle connection.',
     donts: [
       'Don\'t use excessive weight that causes you to jerk',
@@ -414,9 +936,9 @@ export const exercises = {
     reps: '15-20',
     rest: '45s',
     difficulty: 'beginner',
-    alternatives: ['Seated Calf Raise', 'Smith Machine Calf Raise'],
-    videoId: 'gwLzBJYoWlI',
-    shortsId: 'QZ9TMPDnAzs',
+    alternatives: ['seatedCalfRaise', 'smithMachineCalfRaise'],
+    videoId: '3UWi44yN-wM',
+    gifUrl: 'https://v2.exercisedb.io/image/A2U0hfJI-wDwUn',
     instructions: 'Stand on the edge of a raised platform or step with the balls of your feet. Lower your heels below the platform for a full stretch, then push up onto your toes as high as possible. Squeeze your calves at the top and hold for a moment before lowering.',
     donts: [
       'Don\'t bounce at the bottom — control the stretch',
@@ -424,8 +946,208 @@ export const exercises = {
       'Don\'t lean forward excessively',
     ],
   },
+  gobletSquat: {
+    id: 'goblet-squat',
+    name: 'Goblet Squat',
+    muscle: 'Quads/Glutes',
+    sets: 3,
+    reps: '10-12',
+    rest: '60s',
+    difficulty: 'beginner',
+    alternatives: ['squat', 'legPress'],
+    videoId: 'MeIiIdhvXT4',
+    gifUrl: 'https://v2.exercisedb.io/image/y0gfAZXPruyYIz',
+    instructions: 'Hold a dumbbell or kettlebell at chest level with both hands. Squat down with feet shoulder-width apart, keeping your chest up and elbows inside your knees. Push through your heels to stand.',
+    donts: [
+      'Don\'t let your knees cave in',
+      'Don\'t round your back',
+      'Don\'t let the weight pull you forward',
+    ],
+  },
+  hackSquat: {
+    id: 'hack-squat',
+    name: 'Hack Squat',
+    muscle: 'Quads/Glutes',
+    sets: 4,
+    reps: '10-12',
+    rest: '90s',
+    difficulty: 'beginner',
+    alternatives: ['legPress', 'squat'],
+    videoId: 'LfEhHboTcow',
+    gifUrl: 'https://v2.exercisedb.io/image/6K2a1wrh0-DqCH',
+    instructions: 'Position yourself in the hack squat machine with shoulders under the pads and feet shoulder-width apart on the platform. Lower yourself by bending your knees to about 90 degrees, then push back up.',
+    donts: [
+      'Don\'t lock your knees at the top',
+      'Don\'t let your heels come off the platform',
+      'Don\'t go too deep if it strains your knees',
+    ],
+  },
+  smithMachineSquat: {
+    id: 'smith-machine-squat',
+    name: 'Smith Machine Squat',
+    muscle: 'Quads/Glutes',
+    sets: 3,
+    reps: '10-12',
+    rest: '90s',
+    difficulty: 'beginner',
+    alternatives: ['squat', 'gobletSquat'],
+    videoId: 'AHnX-aimA4E',
+    gifUrl: 'https://v2.exercisedb.io/image/y0gfAZXPruyYIz',
+    instructions: 'Position the bar on your upper back in the Smith machine. Place feet slightly forward of the bar. Squat down to parallel and push back up. The guided bar path provides stability.',
+    donts: [
+      'Don\'t place your feet directly under the bar — slightly forward is safer',
+      'Don\'t round your lower back',
+      'Don\'t lock your knees at the top',
+    ],
+  },
+  stiffLegDeadlift: {
+    id: 'stiff-leg-deadlift',
+    name: 'Stiff-Leg Deadlift',
+    muscle: 'Hamstrings/Glutes',
+    sets: 3,
+    reps: '10-12',
+    rest: '90s',
+    difficulty: 'intermediate',
+    alternatives: ['romanianDeadlift', 'legCurl'],
+    videoId: '1uDiW5--rAE',
+    gifUrl: 'https://v2.exercisedb.io/image/DGt-Z-oN-CcX8P',
+    instructions: 'Similar to the Romanian deadlift but with straighter legs. Keep only a very slight bend in your knees as you hinge forward. This places more stretch on the hamstrings. Don\'t round your back.',
+    donts: [
+      'Don\'t round your back',
+      'Don\'t lock your knees completely',
+      'Don\'t go heavier than you can control',
+    ],
+  },
+  lyingLegCurl: {
+    id: 'lying-leg-curl',
+    name: 'Lying Leg Curl',
+    muscle: 'Hamstrings',
+    sets: 3,
+    reps: '10-12',
+    rest: '60s',
+    difficulty: 'beginner',
+    alternatives: ['legCurl', 'romanianDeadlift'],
+    videoId: '1Tq3QdYUuHs',
+    gifUrl: 'https://v2.exercisedb.io/image/gqWZyYJQYcEMj-',
+    instructions: 'Lie face down on the leg curl machine with the pad behind your ankles. Curl your legs up toward your glutes by contracting your hamstrings. Squeeze at the top and lower slowly.',
+    donts: [
+      'Don\'t lift your hips off the pad',
+      'Don\'t use momentum',
+      'Don\'t extend too fast on the negative',
+    ],
+  },
+  nordicCurl: {
+    id: 'nordic-curl',
+    name: 'Nordic Curl',
+    muscle: 'Hamstrings',
+    sets: 3,
+    reps: '5-8',
+    rest: '90s',
+    difficulty: 'advanced',
+    alternatives: ['legCurl', 'romanianDeadlift'],
+    videoId: null,
+    gifUrl: null,
+    instructions: 'Kneel on the floor with your feet anchored. Slowly lower yourself forward with control, resisting gravity with your hamstrings. Push off the floor at the bottom if needed to return to the start.',
+    donts: [
+      'Don\'t collapse at the bottom — control the descent',
+      'Don\'t arch your back',
+      'Don\'t skip this exercise — it\'s one of the best for hamstrings',
+    ],
+  },
+  bulgarianSplitSquat: {
+    id: 'bulgarian-split-squat',
+    name: 'Bulgarian Split Squat',
+    muscle: 'Quads/Glutes',
+    sets: 3,
+    reps: '10-12',
+    rest: '60s',
+    difficulty: 'intermediate',
+    alternatives: ['lunges', 'legExtension'],
+    videoId: '2C-uNgKwPLE',
+    gifUrl: 'https://v2.exercisedb.io/image/y0gfAZXPruyYIz',
+    instructions: 'Stand a couple feet in front of a bench. Place one foot behind you on the bench. Lower yourself by bending your front knee until your thigh is parallel to the floor. Push through your front foot to stand.',
+    donts: [
+      'Don\'t let your front knee travel too far past your toes',
+      'Don\'t lean too far forward',
+      'Don\'t rush — balance is key',
+    ],
+  },
+  lunges: {
+    id: 'lunges',
+    name: 'Lunges',
+    muscle: 'Quads/Glutes',
+    sets: 3,
+    reps: '10-12',
+    rest: '60s',
+    difficulty: 'beginner',
+    alternatives: ['bulgarianSplitSquat', 'legExtension'],
+    videoId: 'D7KaRcUTQeE',
+    gifUrl: 'https://v2.exercisedb.io/image/y0gfAZXPruyYIz',
+    instructions: 'Stand upright, step forward with one foot. Lower your body until both knees are at 90 degrees. Push through the front foot to return to standing. Alternate legs.',
+    donts: [
+      'Don\'t let your knee go past your toes',
+      'Don\'t lean forward excessively',
+      'Don\'t rush the movement',
+    ],
+  },
+  seatedCalfRaise: {
+    id: 'seated-calf-raise',
+    name: 'Seated Calf Raise',
+    muscle: 'Calves',
+    sets: 4,
+    reps: '15-20',
+    rest: '45s',
+    difficulty: 'beginner',
+    alternatives: ['calfRaise', 'smithMachineCalfRaise'],
+    videoId: null,
+    gifUrl: 'https://v2.exercisedb.io/image/A2U0hfJI-wDwUn',
+    instructions: 'Sit in the machine with the pad on your thighs and balls of your feet on the platform edge. Lower your heels for a full stretch, then push up as high as possible. This targets the soleus muscle more than standing calf raises.',
+    donts: [
+      'Don\'t bounce at the bottom',
+      'Don\'t do partial reps',
+      'Don\'t use too much weight',
+    ],
+  },
+  smithMachineCalfRaise: {
+    id: 'smith-machine-calf-raise',
+    name: 'Smith Machine Calf Raise',
+    muscle: 'Calves',
+    sets: 4,
+    reps: '15-20',
+    rest: '45s',
+    difficulty: 'beginner',
+    alternatives: ['calfRaise', 'seatedCalfRaise'],
+    videoId: null,
+    gifUrl: 'https://v2.exercisedb.io/image/A2U0hfJI-wDwUn',
+    instructions: 'Position the bar on your upper back in the Smith machine. Stand on a raised platform with balls of your feet. Lower heels for a stretch, then push up onto your toes. The Smith machine adds stability.',
+    donts: [
+      'Don\'t bounce',
+      'Don\'t rush the reps',
+      'Don\'t use too narrow a stance',
+    ],
+  },
+  trapBarDeadlift: {
+    id: 'trap-bar-deadlift',
+    name: 'Trap Bar Deadlift',
+    muscle: 'Full Body',
+    sets: 4,
+    reps: '6-8',
+    rest: '120s',
+    difficulty: 'beginner',
+    alternatives: ['deadlift', 'romanianDeadlift'],
+    videoId: null,
+    gifUrl: 'https://v2.exercisedb.io/image/DGt-Z-oN-CcX8P',
+    instructions: 'Step inside the trap bar. Grip the handles, brace your core, and stand up by driving through the floor. The neutral grip and center of gravity make this easier on the lower back than conventional deadlifts.',
+    donts: [
+      'Don\'t round your back',
+      'Don\'t jerk the weight off the floor',
+      'Don\'t lean forward excessively',
+    ],
+  },
 
+  // ═══════════════════════════════════════════
   // CORE
+  // ═══════════════════════════════════════════
   plank: {
     id: 'plank',
     name: 'Plank',
@@ -434,9 +1156,9 @@ export const exercises = {
     reps: '30-60s',
     rest: '45s',
     difficulty: 'beginner',
-    alternatives: ['Side Plank', 'Dead Bug'],
-    videoId: 'ASdvN_XEl_c',
-    shortsId: 'N31wPfeQbNs',
+    alternatives: ['sidePlank', 'deadBug'],
+    videoId: 'fqzUlmyTpJk',
+    gifUrl: 'https://v2.exercisedb.io/image/TdnQi5b2N4GFTH',
     instructions: 'Get into a forearm plank position with elbows directly under your shoulders. Keep your body in a perfectly straight line from head to heels. Engage your core by pulling your belly button toward your spine. Breathe steadily and hold the position for the prescribed time.',
     donts: [
       'Don\'t let your hips sag toward the floor',
@@ -452,9 +1174,9 @@ export const exercises = {
     reps: '15-20',
     rest: '45s',
     difficulty: 'beginner',
-    alternatives: ['Crunches', 'Ab Wheel'],
-    videoId: 'AV5PmrFDEMo',
-    shortsId: 'PLJyK26Grlo',
+    alternatives: ['crunches', 'abWheel'],
+    videoId: '2fbujeH3F0E',
+    gifUrl: 'https://v2.exercisedb.io/image/KRdyGWwFiXTp-B',
     instructions: 'Kneel below a high cable pulley with a rope attachment. Hold the rope beside your head. Crunch down by flexing your spine, bringing your elbows toward your knees. Focus on contracting your abs, not just bending at the hips. Return to the starting position with control.',
     donts: [
       'Don\'t sit back on your heels — keep hips stationary',
@@ -470,8 +1192,9 @@ export const exercises = {
     reps: '10-15',
     rest: '60s',
     difficulty: 'intermediate',
-    alternatives: ['Lying Leg Raise', 'Knee Raise'],
-    videoId: 'hdng3Nm1x_E',
+    alternatives: ['lyingLegRaise', 'kneeRaise'],
+    videoId: 'X-ACS9vpRyU',
+    gifUrl: 'https://v2.exercisedb.io/image/0vP9pFqvLVaVFy',
     instructions: 'Hang from a pull-up bar with a shoulder-width grip. With legs straight (or slightly bent for beginners), raise them up until they are parallel to the floor or higher. Lower them back down slowly — don\'t just let them swing. Focus on using your abs to lift, not hip flexors.',
     donts: [
       'Don\'t swing or use momentum',
@@ -479,26 +1202,118 @@ export const exercises = {
       'Don\'t shrug your shoulders while hanging',
     ],
   },
-
-  // SHOULDERS (additional)
-  dumbbellShoulderPress: {
-    id: 'dumbbell-shoulder-press',
-    name: 'Dumbbell Shoulder Press',
-    muscle: 'Shoulders',
-    sets: 4,
-    reps: '8-12',
-    rest: '90s',
+  sidePlank: {
+    id: 'side-plank',
+    name: 'Side Plank',
+    muscle: 'Obliques/Core',
+    sets: 3,
+    reps: '20-30s',
+    rest: '30s',
     difficulty: 'beginner',
-    alternatives: ['Overhead Press', 'Machine Shoulder Press', 'Arnold Press'],
-    videoId: 'qEwKCR5JCog',
-    shortsId: 'NQ-JJYay1TM',
-    instructions: 'Sit on a bench with back support, holding a dumbbell in each hand at shoulder height with palms facing forward. Press the dumbbells overhead until your arms are fully extended, bringing them slightly together at the top. Lower under control back to shoulder level.',
+    alternatives: ['plank', 'deadBug'],
+    videoId: null,
+    gifUrl: 'https://v2.exercisedb.io/image/TdnQi5b2N4GFTH',
+    instructions: 'Lie on your side with your forearm on the ground, elbow under your shoulder. Lift your hips off the ground, forming a straight line from head to feet. Hold the position, engaging your obliques. Switch sides.',
     donts: [
-      'Don\'t arch your lower back — keep it pressed against the bench',
-      'Don\'t let the dumbbells drift too far forward or backward',
-      'Don\'t bang the dumbbells together at the top',
+      'Don\'t let your hips sag',
+      'Don\'t hold your breath',
+      'Don\'t place your elbow too far forward',
     ],
   },
+  deadBug: {
+    id: 'dead-bug',
+    name: 'Dead Bug',
+    muscle: 'Core',
+    sets: 3,
+    reps: '10-12',
+    rest: '30s',
+    difficulty: 'beginner',
+    alternatives: ['plank', 'sidePlank'],
+    videoId: null,
+    gifUrl: null,
+    instructions: 'Lie on your back with arms extended toward the ceiling and knees bent at 90 degrees. Slowly extend your opposite arm and leg toward the floor while keeping your lower back pressed flat. Return and alternate sides.',
+    donts: [
+      'Don\'t let your lower back arch off the floor',
+      'Don\'t rush the movement',
+      'Don\'t hold your breath',
+    ],
+  },
+  crunches: {
+    id: 'crunches',
+    name: 'Crunches',
+    muscle: 'Abs',
+    sets: 3,
+    reps: '15-20',
+    rest: '30s',
+    difficulty: 'beginner',
+    alternatives: ['cableCrunch', 'abWheel'],
+    videoId: 'NGRKFMKhF8s',
+    gifUrl: 'https://v2.exercisedb.io/image/KRdyGWwFiXTp-B',
+    instructions: 'Lie on your back with knees bent, feet flat on the floor. Place hands behind your head (don\'t pull on your neck). Curl your upper body up by contracting your abs. Lower slowly.',
+    donts: [
+      'Don\'t pull on your neck',
+      'Don\'t sit all the way up — it\'s a crunch, not a sit-up',
+      'Don\'t use momentum',
+    ],
+  },
+  abWheel: {
+    id: 'ab-wheel',
+    name: 'Ab Wheel Rollout',
+    muscle: 'Core',
+    sets: 3,
+    reps: '8-12',
+    rest: '60s',
+    difficulty: 'intermediate',
+    alternatives: ['cableCrunch', 'plank'],
+    videoId: 'mIYuVpQF3N8',
+    gifUrl: null,
+    instructions: 'Kneel on the floor holding an ab wheel. Roll forward slowly, extending your body as far as you can while keeping your core tight. Pull yourself back to the start using your abs.',
+    donts: [
+      'Don\'t arch your lower back',
+      'Don\'t go too far out if you can\'t control it',
+      'Don\'t let your hips sag',
+    ],
+  },
+  lyingLegRaise: {
+    id: 'lying-leg-raise',
+    name: 'Lying Leg Raise',
+    muscle: 'Lower Abs',
+    sets: 3,
+    reps: '12-15',
+    rest: '45s',
+    difficulty: 'beginner',
+    alternatives: ['hangingLegRaise', 'kneeRaise'],
+    videoId: 'ghwdoXHeiIk',
+    gifUrl: 'https://v2.exercisedb.io/image/0vP9pFqvLVaVFy',
+    instructions: 'Lie flat on your back with legs straight. Place hands under your hips for support. Raise your legs to 90 degrees, then lower them slowly without touching the floor. Keep your lower back pressed down.',
+    donts: [
+      'Don\'t let your lower back arch off the floor',
+      'Don\'t swing your legs',
+      'Don\'t rush',
+    ],
+  },
+  kneeRaise: {
+    id: 'knee-raise',
+    name: 'Knee Raise',
+    muscle: 'Lower Abs',
+    sets: 3,
+    reps: '12-15',
+    rest: '45s',
+    difficulty: 'beginner',
+    alternatives: ['hangingLegRaise', 'lyingLegRaise'],
+    videoId: 'X-ACS9vpRyU',
+    gifUrl: 'https://v2.exercisedb.io/image/0vP9pFqvLVaVFy',
+    instructions: 'Hang from a pull-up bar or use a captain\'s chair. Raise your knees toward your chest by contracting your abs. Lower slowly and repeat. Easier than straight leg raises.',
+    donts: [
+      'Don\'t swing',
+      'Don\'t use hip flexors only — focus on abs',
+      'Don\'t rush the negative',
+    ],
+  },
+
+  // ═══════════════════════════════════════════
+  // COMPOUND
+  // ═══════════════════════════════════════════
   inclineBarbellPress: {
     id: 'incline-barbell-press',
     name: 'Incline Barbell Press',
@@ -507,9 +1322,9 @@ export const exercises = {
     reps: '8-10',
     rest: '90s',
     difficulty: 'beginner',
-    alternatives: ['Incline Dumbbell Press', 'Low-to-High Cable Fly'],
+    alternatives: ['inclineDumbbellPress', 'lowToHighCableFly'],
     videoId: 'SrqOu55lrYU',
-    shortsId: 'd5hmgyUPYUg',
+    gifUrl: 'https://v2.exercisedb.io/image/UfhKFhDMNcqmwC',
     instructions: 'Set the bench to 30-45 degrees. Lie back and grip the barbell slightly wider than shoulder-width. Unrack the bar and lower it to your upper chest with elbows at about 45 degrees. Press up explosively to full lockout while focusing on your upper chest.',
     donts: [
       'Don\'t set the bench too steep (above 45 degrees) — it shifts work to shoulders',
@@ -517,8 +1332,6 @@ export const exercises = {
       'Don\'t flare your elbows out to 90 degrees',
     ],
   },
-
-  // COMPOUND
   deadlift: {
     id: 'deadlift',
     name: 'Deadlift',
@@ -527,9 +1340,9 @@ export const exercises = {
     reps: '5-8',
     rest: '120s',
     difficulty: 'intermediate',
-    alternatives: ['Trap Bar Deadlift', 'Romanian Deadlift'],
+    alternatives: ['trapBarDeadlift', 'romanianDeadlift'],
     videoId: 'op9kVnSso6Q',
-    shortsId: 'GIbBiT_0TnM',
+    gifUrl: 'https://v2.exercisedb.io/image/FKOBhsN3FbFqLo',
     instructions: 'Stand with feet hip-width apart, bar over mid-foot. Hinge at the hips and grip the bar just outside your knees. Brace your core, flatten your back, and drive through the floor to stand up. The bar should travel in a straight line close to your body. Lock out at the top by squeezing your glutes.',
     donts: [
       'Don\'t round your lower back — this is the number one injury risk',
@@ -537,8 +1350,33 @@ export const exercises = {
       'Don\'t let the bar drift away from your body',
       'Don\'t hyperextend at the top by leaning back',
     ],
-  }
+  },
 };
+
+// ═══════════════════════════════════════════
+// HELPER FUNCTIONS
+// ═══════════════════════════════════════════
+
+// Get exercise object by its key name
+export function getExerciseByKey(key) {
+  return exercises[key] || null;
+}
+
+// Get all exercises matching a muscle group (partial match)
+export function getExercisesByMuscle(muscle) {
+  return Object.entries(exercises)
+    .filter(([, ex]) => ex.muscle.toLowerCase().includes(muscle.toLowerCase()))
+    .map(([key, ex]) => ({ key, ...ex }));
+}
+
+// Get full alternative exercise objects for an exercise key
+export function getAlternatives(exerciseKey) {
+  const ex = exercises[exerciseKey];
+  if (!ex?.alternatives) return [];
+  return ex.alternatives
+    .map((altKey) => ({ key: altKey, ...exercises[altKey] }))
+    .filter((alt) => alt.id); // filter out unresolved keys
+}
 
 // Workout split templates
 export const workoutSplits = {
@@ -549,17 +1387,17 @@ export const workoutSplits = {
     schedule: [
       {
         day: 'Day 1 - Full Body A',
-        exercises: ['squat', 'benchPress', 'barbellRow', 'overheadPress', 'barbellCurl', 'plank']
+        exercises: ['squat', 'benchPress', 'barbellRow', 'overheadPress', 'barbellCurl', 'plank'],
       },
       {
         day: 'Day 2 - Full Body B',
-        exercises: ['legPress', 'inclineDumbbellPress', 'latPulldown', 'lateralRaise', 'tricepPushdown', 'cableCrunch']
+        exercises: ['legPress', 'inclineDumbbellPress', 'latPulldown', 'lateralRaise', 'tricepPushdown', 'cableCrunch'],
       },
       {
         day: 'Day 3 - Full Body C',
-        exercises: ['romanianDeadlift', 'cableFly', 'seatedCableRow', 'facePull', 'hammerCurl', 'hangingLegRaise']
-      }
-    ]
+        exercises: ['romanianDeadlift', 'cableFly', 'seatedCableRow', 'facePull', 'hammerCurl', 'hangingLegRaise'],
+      },
+    ],
   },
   upperLower4: {
     name: 'Upper/Lower Split (4 days)',
@@ -568,21 +1406,21 @@ export const workoutSplits = {
     schedule: [
       {
         day: 'Day 1 - Upper Body',
-        exercises: ['benchPress', 'barbellRow', 'overheadPress', 'latPulldown', 'barbellCurl', 'tricepPushdown']
+        exercises: ['benchPress', 'barbellRow', 'overheadPress', 'latPulldown', 'barbellCurl', 'tricepPushdown'],
       },
       {
         day: 'Day 2 - Lower Body',
-        exercises: ['squat', 'romanianDeadlift', 'legPress', 'legCurl', 'calfRaise', 'plank']
+        exercises: ['squat', 'romanianDeadlift', 'legPress', 'legCurl', 'calfRaise', 'plank'],
       },
       {
         day: 'Day 3 - Upper Body',
-        exercises: ['inclineDumbbellPress', 'seatedCableRow', 'lateralRaise', 'cableFly', 'hammerCurl', 'overheadTricepExtension']
+        exercises: ['inclineDumbbellPress', 'seatedCableRow', 'lateralRaise', 'cableFly', 'hammerCurl', 'overheadTricepExtension'],
       },
       {
         day: 'Day 4 - Lower Body',
-        exercises: ['legPress', 'romanianDeadlift', 'legExtension', 'legCurl', 'calfRaise', 'cableCrunch']
-      }
-    ]
+        exercises: ['legPress', 'romanianDeadlift', 'legExtension', 'legCurl', 'calfRaise', 'cableCrunch'],
+      },
+    ],
   },
   ppl5: {
     name: 'Push/Pull/Legs (5 days)',
@@ -591,25 +1429,25 @@ export const workoutSplits = {
     schedule: [
       {
         day: 'Day 1 - Push',
-        exercises: ['benchPress', 'overheadPress', 'inclineDumbbellPress', 'lateralRaise', 'tricepPushdown', 'cableFly']
+        exercises: ['benchPress', 'overheadPress', 'inclineDumbbellPress', 'lateralRaise', 'tricepPushdown', 'cableFly'],
       },
       {
         day: 'Day 2 - Pull',
-        exercises: ['barbellRow', 'latPulldown', 'seatedCableRow', 'facePull', 'barbellCurl', 'hammerCurl']
+        exercises: ['barbellRow', 'latPulldown', 'seatedCableRow', 'facePull', 'barbellCurl', 'hammerCurl'],
       },
       {
         day: 'Day 3 - Legs',
-        exercises: ['squat', 'romanianDeadlift', 'legPress', 'legCurl', 'legExtension', 'calfRaise']
+        exercises: ['squat', 'romanianDeadlift', 'legPress', 'legCurl', 'legExtension', 'calfRaise'],
       },
       {
         day: 'Day 4 - Push',
-        exercises: ['inclineDumbbellPress', 'overheadPress', 'cableFly', 'lateralRaise', 'overheadTricepExtension', 'dips']
+        exercises: ['inclineDumbbellPress', 'overheadPress', 'cableFly', 'lateralRaise', 'overheadTricepExtension', 'dips'],
       },
       {
         day: 'Day 5 - Pull',
-        exercises: ['latPulldown', 'barbellRow', 'facePull', 'seatedCableRow', 'inclineCurl', 'hammerCurl']
-      }
-    ]
+        exercises: ['latPulldown', 'barbellRow', 'facePull', 'seatedCableRow', 'inclineCurl', 'hammerCurl'],
+      },
+    ],
   },
   ppl6: {
     name: 'Push/Pull/Legs (6 days)',
@@ -618,28 +1456,28 @@ export const workoutSplits = {
     schedule: [
       {
         day: 'Day 1 - Push',
-        exercises: ['benchPress', 'overheadPress', 'inclineDumbbellPress', 'lateralRaise', 'tricepPushdown', 'cableFly']
+        exercises: ['benchPress', 'overheadPress', 'inclineDumbbellPress', 'lateralRaise', 'tricepPushdown', 'cableFly'],
       },
       {
         day: 'Day 2 - Pull',
-        exercises: ['deadlift', 'latPulldown', 'seatedCableRow', 'facePull', 'barbellCurl', 'hammerCurl']
+        exercises: ['deadlift', 'latPulldown', 'seatedCableRow', 'facePull', 'barbellCurl', 'hammerCurl'],
       },
       {
         day: 'Day 3 - Legs',
-        exercises: ['squat', 'romanianDeadlift', 'legPress', 'legCurl', 'legExtension', 'calfRaise']
+        exercises: ['squat', 'romanianDeadlift', 'legPress', 'legCurl', 'legExtension', 'calfRaise'],
       },
       {
         day: 'Day 4 - Push',
-        exercises: ['inclineDumbbellPress', 'overheadPress', 'cableFly', 'lateralRaise', 'overheadTricepExtension', 'dips']
+        exercises: ['inclineDumbbellPress', 'overheadPress', 'cableFly', 'lateralRaise', 'overheadTricepExtension', 'dips'],
       },
       {
         day: 'Day 5 - Pull',
-        exercises: ['barbellRow', 'latPulldown', 'facePull', 'seatedCableRow', 'inclineCurl', 'hammerCurl']
+        exercises: ['barbellRow', 'latPulldown', 'facePull', 'seatedCableRow', 'inclineCurl', 'hammerCurl'],
       },
       {
         day: 'Day 6 - Legs',
-        exercises: ['legPress', 'romanianDeadlift', 'legExtension', 'legCurl', 'calfRaise', 'hangingLegRaise']
-      }
-    ]
-  }
+        exercises: ['legPress', 'romanianDeadlift', 'legExtension', 'legCurl', 'calfRaise', 'hangingLegRaise'],
+      },
+    ],
+  },
 };

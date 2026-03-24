@@ -103,6 +103,9 @@ const useUserStore = create(
       // Meal Swaps (per-date slot overrides)
       mealSwaps: {}, // { '2026-03-22': { breakfast: 3, dinner: 5 }, ... }
 
+      // Exercise Swaps (daily reset — keyed by date/day/index)
+      exerciseSwaps: {}, // { '2026-03-22': { 'Push Day': { 0: 'dumbbellBenchPress' } } }
+
       // Subscription
       plan: 'free', // 'free' | 'pro'
       subscription: null, // { id, planType, status, startsAt, expiresAt }
@@ -110,6 +113,40 @@ const useUserStore = create(
       // Stats
       totalWorkouts: 0,
       weightLogsCount: 0,
+
+      // Exercise Swap Actions
+      swapExercise: (dayName, exerciseIndex, newExerciseKey) => {
+        const today = new Date().toISOString().split('T')[0];
+        set((s) => ({
+          exerciseSwaps: {
+            ...s.exerciseSwaps,
+            [today]: {
+              ...(s.exerciseSwaps[today] || {}),
+              [dayName]: {
+                ...(s.exerciseSwaps[today]?.[dayName] || {}),
+                [exerciseIndex]: newExerciseKey,
+              },
+            },
+          },
+        }));
+      },
+
+      resetExerciseSwap: (dayName, exerciseIndex) => {
+        const today = new Date().toISOString().split('T')[0];
+        set((s) => {
+          const daySwaps = { ...(s.exerciseSwaps[today]?.[dayName] || {}) };
+          delete daySwaps[exerciseIndex];
+          return {
+            exerciseSwaps: {
+              ...s.exerciseSwaps,
+              [today]: {
+                ...(s.exerciseSwaps[today] || {}),
+                [dayName]: daySwaps,
+              },
+            },
+          };
+        });
+      },
 
       // Meal Swap Actions
       swapMeal: (date, mealKey, optionIndex) => {
@@ -590,6 +627,7 @@ const useUserStore = create(
           totalWorkouts: 0,
           weightLogsCount: 0,
           mealSwaps: {},
+          exerciseSwaps: {},
           plan: 'free',
           subscription: null,
         });
