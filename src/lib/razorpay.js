@@ -90,7 +90,7 @@ export function openCheckout({ amount, planType, userEmail, userName, onSuccess,
       wallet: true,
     },
     theme: {
-      color: '#c8ee44',
+      color: '#0A798F',
       backdrop_color: 'rgba(0, 0, 0, 0.8)',
     },
     handler: (response) => {
