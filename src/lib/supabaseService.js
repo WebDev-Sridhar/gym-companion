@@ -28,7 +28,7 @@ export async function saveProfile(userId, profileData) {
     .from('profiles')
     .select('id')
     .eq('user_id', userId)
-    .single();
+    .maybeSingle();
 
   if (existing) {
     return supabase
@@ -46,7 +46,7 @@ export async function fetchProfile(userId) {
     .from('profiles')
     .select('*')
     .eq('user_id', userId)
-    .single();
+    .maybeSingle();
   return { data: data ? toCamelCase(data) : null, error };
 }
 
@@ -76,9 +76,9 @@ export async function fetchWorkoutPlan(userId) {
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
-  if (!data) return { data: null, error };
+  if (!data) return { data: null, error: null };
   return {
     data: {
       splitName: data.split_name,
@@ -118,9 +118,9 @@ export async function fetchDietPlan(userId) {
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
-  if (!data) return { data: null, error };
+  if (!data) return { data: null, error: null };
   return {
     data: {
       calorieTarget: data.calorie_target,
@@ -220,7 +220,7 @@ export async function saveGamification(userId, gamData) {
     .from('gamification')
     .select('id')
     .eq('user_id', userId)
-    .single();
+    .maybeSingle();
 
   if (existing) {
     return supabase
@@ -238,9 +238,9 @@ export async function fetchGamification(userId) {
     .from('gamification')
     .select('*')
     .eq('user_id', userId)
-    .single();
+    .maybeSingle();
 
-  if (!data) return { data: null, error };
+  if (!data) return { data: null, error: null };
   return {
     data: {
       transformationLevel: data.transformation_level || 0,

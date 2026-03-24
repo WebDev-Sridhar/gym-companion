@@ -373,10 +373,10 @@ export default function Workout() {
                             alt={exercise.name}
                             className="w-full h-full object-cover"
                             loading="lazy"
+                            onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
                           />
-                        ) : (
-                          <Dumbbell size={16} className="text-text-muted" />
-                        )}
+                        ) : null}
+                        <Dumbbell size={16} className="text-text-muted" style={{ display: exercise.gifUrl ? 'none' : 'block' }} />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
@@ -493,14 +493,19 @@ export default function Workout() {
                                                 className="flex items-center gap-3 bg-white/[0.03] border border-white/[0.06] rounded-lg p-2.5 hover:border-accent/20 transition-colors group"
                                               >
                                                 {/* Alt GIF thumbnail */}
-                                                <div className="w-12 h-12 rounded-lg bg-white/[0.04] shrink-0 overflow-hidden">
+                                                <div className="w-12 h-12 rounded-lg bg-white/[0.04] shrink-0 overflow-hidden flex items-center justify-center">
                                                   {alt.gifUrl ? (
-                                                    <img src={alt.gifUrl} alt={alt.name} className="w-full h-full object-cover" loading="lazy" />
-                                                  ) : (
-                                                    <div className="w-full h-full flex items-center justify-center">
-                                                      <Dumbbell size={14} className="text-text-muted" />
-                                                    </div>
-                                                  )}
+                                                    <img
+                                                      src={alt.gifUrl}
+                                                      alt={alt.name}
+                                                      className="w-full h-full object-cover"
+                                                      loading="lazy"
+                                                      onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                                                    />
+                                                  ) : null}
+                                                  <div className="w-full h-full items-center justify-center" style={{ display: alt.gifUrl ? 'none' : 'flex' }}>
+                                                    <Dumbbell size={14} className="text-text-muted" />
+                                                  </div>
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                   <p className="text-sm font-medium text-text-primary truncate">{alt.name}</p>
@@ -673,18 +678,23 @@ export default function Workout() {
 
 // Sub-component for GIF / YouTube video toggle
 function ExerciseMedia({ exercise, mode, onToggle, onHide, showHide }) {
-  const hasGif = !!exercise.gifUrl;
+  const [gifFailed, setGifFailed] = useState(false);
+  const hasGif = !!exercise.gifUrl && !gifFailed;
   const hasVideo = !!exercise.videoId;
+
+  // If GIF fails, auto-switch to video
+  const effectiveMode = (mode === 'gif' && !hasGif && hasVideo) ? 'video' : mode;
 
   return (
     <div>
-      {mode === 'gif' && hasGif ? (
+      {effectiveMode === 'gif' && hasGif ? (
         <div className="rounded-lg overflow-hidden bg-white/[0.03] border border-white/[0.06]">
           <img
             src={exercise.gifUrl}
             alt={`${exercise.name} form guide`}
             className="w-full"
             loading="lazy"
+            onError={() => setGifFailed(true)}
           />
         </div>
       ) : hasVideo ? (
@@ -696,15 +706,18 @@ function ExerciseMedia({ exercise, mode, onToggle, onHide, showHide }) {
             allowFullScreen
           />
         </div>
-      ) : hasGif ? (
-        <div className="rounded-lg overflow-hidden bg-white/[0.03] border border-white/[0.06]">
-          <img src={exercise.gifUrl} alt={`${exercise.name} form guide`} className="w-full" loading="lazy" />
+      ) : (
+        <div className="aspect-video bg-white/[0.03] rounded-lg flex items-center justify-center border border-white/[0.06]">
+          <div className="text-center">
+            <Dumbbell size={32} className="text-text-muted mx-auto mb-1" />
+            <span className="text-[10px] text-text-muted uppercase tracking-wider">No media available</span>
+          </div>
         </div>
-      ) : null}
+      )}
 
       <div className="flex items-center justify-between mt-2">
         <span className="text-[10px] text-text-muted uppercase tracking-wider">
-          {mode === 'gif' ? 'Form Guide (GIF)' : 'Full Tutorial'}
+          {effectiveMode === 'gif' ? 'Form Guide (GIF)' : 'Full Tutorial'}
         </span>
         <div className="flex items-center gap-2">
           {hasGif && hasVideo && (
@@ -712,7 +725,7 @@ function ExerciseMedia({ exercise, mode, onToggle, onHide, showHide }) {
               onClick={onToggle}
               className="flex items-center gap-1 text-xs font-medium text-accent hover:text-accent/80 transition-colors"
             >
-              {mode === 'gif' ? <><Video size={12} /> Full Video</> : <><Image size={12} /> GIF Guide</>}
+              {effectiveMode === 'gif' ? <><Video size={12} /> Full Video</> : <><Image size={12} /> GIF Guide</>}
             </button>
           )}
           {showHide && onHide && (
