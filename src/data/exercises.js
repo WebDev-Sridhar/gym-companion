@@ -344,7 +344,7 @@ export const exercises = {
     rest: '60s',
     difficulty: 'beginner',
     alternatives: ['seatedCableRow', 'dumbbellRow'],
-    videoId: null,
+    videoId: "hFnZDCbQKsI",
     gifUrl: 'https://v2.exercisedb.io/image/XFUMbBBKWnWAhf',
     instructions: 'Sit with your chest against the pad. Grip the handles and pull toward your torso, squeezing your back muscles. Return slowly to the start.',
     donts: [
@@ -380,7 +380,7 @@ export const exercises = {
     rest: '30s',
     difficulty: 'beginner',
     alternatives: ['facePull', 'reverseFly'],
-    videoId: null,
+    videoId: "eZwnwWMkEL4",
     gifUrl: null,
     instructions: 'Hold a resistance band at shoulder width with arms extended in front. Pull the band apart by squeezing your shoulder blades together until it touches your chest. Return slowly.',
     donts: [
@@ -510,7 +510,7 @@ export const exercises = {
     rest: '45s',
     difficulty: 'beginner',
     alternatives: ['lateralRaise', 'machineLateralRaise'],
-    videoId: null,
+    videoId: "gjXX8g-VPXI",
     gifUrl: 'https://v2.exercisedb.io/image/6r7MKZAz5e9Gf-',
     instructions: 'Stand beside a low cable pulley. Grab the handle with the far hand. Raise your arm out to the side until parallel with the floor. Lower slowly. The constant cable tension is great for side delts.',
     donts: [
@@ -528,7 +528,7 @@ export const exercises = {
     rest: '45s',
     difficulty: 'beginner',
     alternatives: ['lateralRaise', 'cableLateralRaise'],
-    videoId: null,
+    videoId: "NNAs8jx_zJI",
     gifUrl: 'https://v2.exercisedb.io/image/6r7MKZAz5e9Gf-',
     instructions: 'Sit in the machine with pads against your outer arms. Raise your arms out to the side until parallel with the floor. Lower slowly under control.',
     donts: [
@@ -658,7 +658,7 @@ export const exercises = {
     rest: '60s',
     difficulty: 'beginner',
     alternatives: ['hammerCurl', 'ropeCurl'],
-    videoId: null,
+    videoId: "766fXErlNLQ",
     gifUrl: 'https://v2.exercisedb.io/image/EqNqwGODCuFI5p',
     instructions: 'Hold dumbbells at your sides with a neutral grip. Curl one dumbbell across your body toward the opposite shoulder. Squeeze and lower, then repeat on the other side.',
     donts: [
@@ -1045,7 +1045,7 @@ export const exercises = {
     rest: '90s',
     difficulty: 'advanced',
     alternatives: ['legCurl', 'romanianDeadlift'],
-    videoId: null,
+    videoId: "TyKAicsT7Dg",
     gifUrl: null,
     instructions: 'Kneel on the floor with your feet anchored. Slowly lower yourself forward with control, resisting gravity with your hamstrings. Push off the floor at the bottom if needed to return to the start.',
     donts: [
@@ -1099,7 +1099,7 @@ export const exercises = {
     rest: '45s',
     difficulty: 'beginner',
     alternatives: ['calfRaise', 'smithMachineCalfRaise'],
-    videoId: null,
+    videoId: "HSGjUouQZCQ",
     gifUrl: 'https://v2.exercisedb.io/image/A2U0hfJI-wDwUn',
     instructions: 'Sit in the machine with the pad on your thighs and balls of your feet on the platform edge. Lower your heels for a full stretch, then push up as high as possible. This targets the soleus muscle more than standing calf raises.',
     donts: [
@@ -1117,7 +1117,7 @@ export const exercises = {
     rest: '45s',
     difficulty: 'beginner',
     alternatives: ['calfRaise', 'seatedCalfRaise'],
-    videoId: null,
+    videoId: "FNdI5TynYxs",
     gifUrl: 'https://v2.exercisedb.io/image/A2U0hfJI-wDwUn',
     instructions: 'Position the bar on your upper back in the Smith machine. Stand on a raised platform with balls of your feet. Lower heels for a stretch, then push up onto your toes. The Smith machine adds stability.',
     donts: [
@@ -1135,7 +1135,7 @@ export const exercises = {
     rest: '120s',
     difficulty: 'beginner',
     alternatives: ['deadlift', 'romanianDeadlift'],
-    videoId: null,
+    videoId: "FYx76NSijfU",
     gifUrl: 'https://v2.exercisedb.io/image/DGt-Z-oN-CcX8P',
     instructions: 'Step inside the trap bar. Grip the handles, brace your core, and stand up by driving through the floor. The neutral grip and center of gravity make this easier on the lower back than conventional deadlifts.',
     donts: [
@@ -1211,7 +1211,7 @@ export const exercises = {
     rest: '30s',
     difficulty: 'beginner',
     alternatives: ['plank', 'deadBug'],
-    videoId: null,
+    videoId: "N_s9em1xTqU",
     gifUrl: 'https://v2.exercisedb.io/image/TdnQi5b2N4GFTH',
     instructions: 'Lie on your side with your forearm on the ground, elbow under your shoulder. Lift your hips off the ground, forming a straight line from head to feet. Hold the position, engaging your obliques. Switch sides.',
     donts: [
@@ -1229,7 +1229,7 @@ export const exercises = {
     rest: '30s',
     difficulty: 'beginner',
     alternatives: ['plank', 'sidePlank'],
-    videoId: null,
+    videoId: "GbSC02oU3To",
     gifUrl: null,
     instructions: 'Lie on your back with arms extended toward the ceiling and knees bent at 90 degrees. Slowly extend your opposite arm and leg toward the floor while keeping your lower back pressed flat. Return and alternate sides.',
     donts: [
