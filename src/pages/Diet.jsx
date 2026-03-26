@@ -23,6 +23,7 @@ import {
   X,
   Square,
   CheckSquare,
+  Save,
 } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import ProLock from '../components/ui/ProLock';
@@ -107,11 +108,14 @@ export default function Diet() {
   const [customMealSlot, setCustomMealSlot] = useState(null);
   const [customMeal, setCustomMeal] = useState({ name: '', calories: '', protein: '' });
   const [foodSuggestions, setFoodSuggestions] = useState([]);
-  const [manualEntry, setManualEntry] = useState(false); // true when no match found & user must enter values
-  const [showMealHistory, setShowMealHistory] = useState(false);
+  const [manualEntry, setManualEntry] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
 
   // Per-slot item selection: { breakfast: { selected: Set([0,1,2]), customItems: [{name, calories, protein}] } }
   const [itemSelections, setItemSelections] = useState({});
+
+  // Buffered logs: { mealType: { items, calories, protein } } — not yet saved to DB
+  const [pendingLogs, setPendingLogs] = useState({});
 
   const today = new Date().toISOString().split('T')[0];
   const dayIndex = new Date().getDay();
@@ -259,32 +263,103 @@ export default function Diet() {
     setShowAlts(null);
   };
 
-  // Log the selected items
+  // Buffer the meal (don't save to DB yet)
   const handleLog = (mealKey) => {
     const items = getSelectedItemNames(mealKey);
     if (items.length === 0) return;
     const { calories, protein } = getAdjustedNutrition(mealKey);
-    logFood(mealKey, items, calories, protein);
-    // Reset selection state for this slot
-    setItemSelections((prev) => {
-      const copy = { ...prev };
-      delete copy[mealKey];
-      return copy;
+    setPendingLogs((prev) => ({ ...prev, [mealKey]: { items, calories, protein } }));
+  };
+
+  // Remove a meal from the buffer
+  const handleRemovePending = (mealKey) => {
+    setPendingLogs((prev) => { const c = { ...prev }; delete c[mealKey]; return c; });
+  };
+
+  // Commit all buffered logs to DB at once
+  const handleCompleteLogs = () => {
+    const entries = Object.entries(pendingLogs);
+    if (entries.length === 0) return;
+    entries.forEach(([mealType, { items, calories, protein }]) => {
+      logFood(mealType, items, calories, protein);
     });
+    setPendingLogs({});
+    setItemSelections({});
     showCoach('mealLogged', 'left');
   };
 
   return (
     <PageWrapper>
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-black tracking-tight mb-1">
-          <span className="gradient-text-warm">Diet</span> <span className="text-text-primary">Plan</span>
-        </h1>
-        <p className="text-text-muted text-sm">
-          {profile?.dietType === 'veg' ? 'Vegetarian' : 'Non-Vegetarian'} · {dietPlan.calorieTier} cal tier
-        </p>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight mb-1">
+            <span className="gradient-text-warm">Diet</span> <span className="text-text-primary">Plan</span>
+          </h1>
+          <p className="text-text-muted text-sm">
+            {profile?.dietType === 'veg' ? 'Vegetarian' : 'Non-Vegetarian'} · {dietPlan.calorieTier} cal tier
+          </p>
+        </div>
+        <button
+          onClick={() => setShowHistory(!showHistory)}
+          className={`px-4 py-2 rounded-lg text-xs font-medium transition-all ${
+            showHistory ? 'bg-white text-black' : 'border border-white/[0.08] text-text-muted hover:text-text-secondary'
+          }`}
+        >
+          {showHistory ? 'Plan' : 'History'}
+        </button>
       </div>
+
+      {/* History View */}
+      {showHistory && (
+        <div className="space-y-3">
+          <h2 className="text-lg font-bold mb-4 text-text-primary">Meal History</h2>
+          {foodLogs.length === 0 ? (
+            <div className="text-center py-16 border border-white/[0.06] rounded-xl">
+              <UtensilsCrossed size={40} className="text-text-muted mx-auto mb-4" />
+              <p className="text-text-muted text-sm">No meals logged yet.</p>
+            </div>
+          ) : (() => {
+            const byDate = {};
+            [...foodLogs].reverse().forEach((log) => {
+              if (!byDate[log.date]) byDate[log.date] = [];
+              byDate[log.date].push(log);
+            });
+            return Object.entries(byDate).map(([date, logs]) => {
+              const totalCal = logs.reduce((s, l) => s + (l.totalCalories || 0), 0);
+              const totalProt = logs.reduce((s, l) => s + (l.totalProtein || 0), 0);
+              return (
+                <div key={date} className="border border-white/[0.06] rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-bold text-text-primary text-sm">
+                      {new Date(date).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })}
+                    </span>
+                    <span className="text-xs text-text-muted">{totalCal} cal · {totalProt}g P</span>
+                  </div>
+                  {logs.map((log, i) => (
+                    <div key={i} className="py-2 border-b border-white/[0.04] last:border-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-text-muted text-sm capitalize">
+                          {log.mealType.startsWith('supplement_')
+                            ? `Supplement · ${log.mealType.replace('supplement_', '')}`
+                            : (mealLabels[log.mealType] || log.mealType)}
+                        </span>
+                        <span className="text-[11px] text-text-muted">{log.totalCalories} cal · {log.totalProtein}g P</span>
+                      </div>
+                      {log.items?.length > 0 && (
+                        <p className="text-[11px] text-text-muted/50">{log.items.slice(0, 3).join(', ')}{log.items.length > 3 ? ` +${log.items.length - 3} more` : ''}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              );
+            });
+          })()}
+        </div>
+      )}
+
+      {/* Plan View */}
+      {!showHistory && <>
 
       {/* Daily Targets — Free for all */}
       <motion.div
@@ -524,16 +599,8 @@ export default function Diet() {
                           )}
                         </div>
 
-                        {/* Log / Logged / Undo */}
-                        {!isLogged ? (
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleLog(key); }}
-                            disabled={!hasSelection}
-                            className="w-full py-2.5 rounded-lg text-sm font-medium bg-accent/10 text-accent border border-accent/20 hover:bg-accent/15 transition-all flex items-center justify-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed"
-                          >
-                            <Plus size={14} /> Log Selected ({adjusted.calories} cal) +20 XP
-                          </button>
-                        ) : (
+                        {/* Log / Buffered / Logged+Undo */}
+                        {isLogged ? (
                           <div className="flex items-center gap-2">
                             <div className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-accent/5 text-accent/50 text-center flex items-center justify-center gap-2">
                               <Check size={14} /> Logged
@@ -549,6 +616,26 @@ export default function Diet() {
                               <Undo2 size={14} /> Undo
                             </button>
                           </div>
+                        ) : pendingLogs[key] ? (
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-white/[0.05] text-text-secondary text-center flex items-center justify-center gap-2">
+                              <Check size={14} /> Added to log
+                            </div>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleRemovePending(key); }}
+                              className="px-3 py-2.5 rounded-lg text-sm font-medium text-text-muted border border-white/[0.08] hover:text-red-400 hover:border-red-400/20 transition-all flex items-center gap-1"
+                            >
+                              <X size={14} /> Remove
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handleLog(key); }}
+                            disabled={!hasSelection}
+                            className="w-full py-2.5 rounded-lg text-sm font-medium bg-accent/10 text-accent border border-accent/20 hover:bg-accent/15 transition-all flex items-center justify-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed"
+                          >
+                            <Plus size={14} /> Add to Log ({adjusted.calories} cal)
+                          </button>
                         )}
 
                         {/* Add Custom + Swap Meal — single row */}
@@ -727,8 +814,9 @@ export default function Diet() {
                 {Object.entries(dietPlan.supplements).map(([suppKey, supp]) => {
                   const suppMealType = `supplement_${suppKey}`;
                   const suppLog = todaysLogs.find((l) => l.mealType === suppMealType);
+                  const suppPending = !!pendingLogs[suppMealType];
                   return (
-                    <div key={suppKey} className={`rounded-lg p-3 transition-all ${suppLog ? 'bg-accent/5 border border-accent/15' : 'bg-white/[0.03]'}`}>
+                    <div key={suppKey} className={`rounded-lg p-3 transition-all ${suppLog ? 'bg-accent/5 border border-accent/15' : suppPending ? 'bg-white/[0.04] border border-white/[0.1]' : 'bg-white/[0.03]'}`}>
                       <div className="flex items-center justify-between mb-1">
                         <span className="font-medium text-sm text-text-primary">{supp.name}</span>
                         <div className="flex items-center gap-2">
@@ -736,16 +824,23 @@ export default function Diet() {
                           {suppLog ? (
                             <button
                               onClick={() => unlogFood(suppLog.id)}
-                              className="text-[10px] text-accent/70 hover:text-text-muted flex items-center gap-1 transition-colors"
+                              className="text-[10px] text-accent/70 hover:text-red-400 flex items-center gap-1 transition-colors"
                             >
-                              <Check size={11} /> Logged
+                              <Check size={11} /> Logged · Undo
+                            </button>
+                          ) : suppPending ? (
+                            <button
+                              onClick={() => handleRemovePending(suppMealType)}
+                              className="text-[10px] text-text-secondary hover:text-red-400 flex items-center gap-1 transition-colors border border-white/[0.08] px-2 py-0.5 rounded"
+                            >
+                              <Check size={11} /> Added · Remove
                             </button>
                           ) : (
                             <button
-                              onClick={() => logFood(suppMealType, supp.items, supp.calories, supp.protein)}
+                              onClick={() => setPendingLogs((prev) => ({ ...prev, [suppMealType]: { items: supp.items, calories: supp.calories, protein: supp.protein } }))}
                               className="text-[10px] text-text-muted border border-white/[0.08] hover:text-accent hover:border-accent/20 px-2 py-0.5 rounded transition-all"
                             >
-                              + Log
+                              + Add
                             </button>
                           )}
                         </div>
@@ -762,52 +857,28 @@ export default function Diet() {
             </motion.div>
           )}
 
-          {/* Meal History */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="mt-6">
-            <button
-              onClick={() => setShowMealHistory((v) => !v)}
-              className="w-full flex items-center justify-between px-4 py-3 border border-white/[0.06] rounded-xl text-sm font-medium text-text-muted hover:text-text-secondary transition-all"
+          {/* Complete Log Button */}
+          {Object.keys(pendingLogs).length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-6 sticky bottom-20 z-10"
             >
-              <span className="flex items-center gap-2"><UtensilsCrossed size={14} /> Meal History</span>
-              {showMealHistory ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-            </button>
-            {showMealHistory && (() => {
-              // Group foodLogs by date, last 7 days
-              const byDate = {};
-              [...foodLogs].reverse().forEach((log) => {
-                if (!byDate[log.date]) byDate[log.date] = [];
-                byDate[log.date].push(log);
-              });
-              const dates = Object.keys(byDate).slice(0, 7);
-              return dates.length === 0 ? (
-                <p className="text-xs text-text-muted text-center py-6">No meal history yet.</p>
-              ) : (
-                <div className="space-y-3 mt-3">
-                  {dates.map((date) => {
-                    const logs = byDate[date];
-                    const totalCal = logs.reduce((s, l) => s + (l.totalCalories || 0), 0);
-                    const totalProt = logs.reduce((s, l) => s + (l.totalProtein || 0), 0);
-                    return (
-                      <div key={date} className="border border-white/[0.06] rounded-xl p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-medium text-text-primary">{new Date(date).toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
-                          <span className="text-[11px] text-text-muted">{totalCal} cal · {totalProt}g P</span>
-                        </div>
-                        <div className="space-y-1">
-                          {logs.map((log, i) => (
-                            <div key={i} className="flex items-center justify-between text-xs">
-                              <span className="text-text-muted capitalize">{log.mealType.replace('supplement_', 'Supp: ').replace(/([A-Z])/g, ' $1').trim()}</span>
-                              <span className="text-text-muted/60 font-mono">{log.totalCalories} cal</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })()}
-          </motion.div>
+              {(() => {
+                const totalPendingCal = Object.values(pendingLogs).reduce((s, l) => s + (l.calories || 0), 0);
+                const totalPendingProt = Object.values(pendingLogs).reduce((s, l) => s + (l.protein || 0), 0);
+                const count = Object.keys(pendingLogs).length;
+                return (
+                  <button
+                    onClick={handleCompleteLogs}
+                    className="w-full py-3.5 rounded-xl text-sm font-bold btn-primary flex items-center justify-center gap-2 shadow-lg"
+                  >
+                    <Save size={16} /> Complete Log · {count} item{count > 1 ? 's' : ''} · {totalPendingCal} cal · {totalPendingProt}g P
+                  </button>
+                );
+              })()}
+            </motion.div>
+          )}
         </>
       ) : (
         <ProLock message="Meal tracking, logging, swaps & supplements">
@@ -821,6 +892,7 @@ export default function Diet() {
           </div>
         </ProLock>
       )}
+      </>}
     </PageWrapper>
   );
 }

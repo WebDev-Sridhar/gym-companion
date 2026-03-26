@@ -62,8 +62,22 @@ export default function Workout() {
   // Resolve exercise swaps (persistent — no date key)
   const daySwaps = exerciseSwaps[currentDay.day] || {};
 
-  // Most recent log for this day (to show history when not actively logging)
+  // Most recent log for this day — used to show avg/max reps in exercise cards
   const dayPreviousLog = [...workoutLogs].reverse().find((l) => l.dayName === currentDay.day);
+
+  // Build a map: exerciseName → { avgReps, maxReps } from the last logged session
+  const loggedStatsMap = {};
+  if (dayPreviousLog) {
+    dayPreviousLog.exercises?.forEach((ex) => {
+      const sets = Array.isArray(ex.logged?.sets) ? ex.logged.sets : [];
+      const reps = sets.map((s) => Number(s.reps)).filter(Boolean);
+      if (reps.length) {
+        const avg = Math.round(reps.reduce((a, b) => a + b, 0) / reps.length);
+        const max = Math.max(...reps);
+        loggedStatsMap[ex.name] = { avgReps: avg, maxReps: max, sets };
+      }
+    });
+  }
 
   const resolveExercise = (originalExercise, index) => {
     const swappedKey = daySwaps[index];
@@ -175,7 +189,12 @@ export default function Workout() {
 
   const handleSwap = (exerciseIndex, newKey) => {
     swapExercise(currentDay.day, exerciseIndex, newKey);
-    setSwapOpen({});
+    // Keep the dropdown open on the new exercise and keep swap panel open
+    const newExId = exerciseDB[newKey]?.id;
+    if (newExId) {
+      setExpandedExercise(newExId);
+      setSwapOpen((prev) => ({ [newExId]: true }));
+    }
   };
 
   const handleResetSwap = (exerciseIndex) => {
@@ -316,33 +335,6 @@ export default function Workout() {
             )}
           </div>
 
-          {/* Previously Logged Data for This Day */}
-          {!isLogging && dayPreviousLog && (
-            <div className="mb-4 border border-white/[0.06] rounded-xl p-4">
-              <p className="text-[11px] text-text-muted uppercase tracking-wider mb-3 font-medium">
-                Last logged — {new Date(dayPreviousLog.timestamp || dayPreviousLog.date).toLocaleDateString()}
-              </p>
-              <div className="space-y-2">
-                {dayPreviousLog.exercises?.map((ex, i) => {
-                  const sets = Array.isArray(ex.logged?.sets) ? ex.logged.sets : [];
-                  const reps = sets.map((s) => s.reps);
-                  const minReps = reps.length ? Math.min(...reps) : null;
-                  const maxReps = reps.length ? Math.max(...reps) : null;
-                  const repRange = minReps !== null ? (minReps === maxReps ? `${minReps}` : `${minReps}–${maxReps}`) : (ex.logged?.reps || ex.planned?.reps);
-                  return (
-                    <div key={i} className="flex items-center justify-between text-xs">
-                      <span className="text-text-muted">{ex.name}</span>
-                      <span className="font-mono text-text-secondary">
-                        {sets.length || ex.planned?.sets}× {repRange} reps
-                        {sets[0]?.weight > 0 && <span className="text-text-muted ml-1">@ {sets[0].weight}kg</span>}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
           {/* Tip Banner */}
           {isLogging && (
             <motion.div
@@ -420,7 +412,13 @@ export default function Workout() {
                         </div>
                         <div className="flex items-center gap-2 mt-0.5">
                           <span className="text-[11px] text-accent font-medium">{exercise.muscle}</span>
-                          <span className="text-[11px] text-text-muted">{exercise.sets} × {exercise.reps} · Rest {exercise.rest}</span>
+                          {(() => {
+                            const logged = loggedStatsMap[exercise.name];
+                            const repDisplay = logged
+                              ? (logged.avgReps === logged.maxReps ? `${logged.maxReps}` : `${logged.avgReps}–${logged.maxReps}`)
+                              : exercise.reps;
+                            return <span className="text-[11px] text-text-muted">{exercise.sets} × {repDisplay} · Rest {exercise.rest}</span>;
+                          })()}
                         </div>
                       </div>
                     </div>
@@ -461,18 +459,27 @@ export default function Workout() {
                             {/* Left — Exercise Details */}
                             <div className="flex-1 space-y-4">
                               {/* Sets / Reps / Rest Boxes */}
-                              <div className="flex gap-3">
-                                {[
-                                  { value: exercise.sets, label: 'Sets' },
-                                  { value: exercise.reps, label: 'Reps' },
-                                  { value: exercise.rest, label: 'Rest' },
-                                ].map((stat) => (
-                                  <div key={stat.label} className="bg-white/[0.04] rounded-lg px-4 py-2.5 text-center flex-1">
-                                    <div className="text-base font-black text-text-primary">{stat.value}</div>
-                                    <div className="text-[10px] text-text-muted uppercase tracking-wider">{stat.label}</div>
+                              {(() => {
+                                const logged = loggedStatsMap[exercise.name];
+                                const displayReps = logged
+                                  ? (logged.avgReps === logged.maxReps ? `${logged.maxReps}` : `${logged.avgReps}–${logged.maxReps}`)
+                                  : exercise.reps;
+                                const repsLabel = logged ? 'Last Reps' : 'Reps';
+                                return (
+                                  <div className="flex gap-3">
+                                    {[
+                                      { value: exercise.sets, label: 'Sets' },
+                                      { value: displayReps, label: repsLabel },
+                                      { value: exercise.rest, label: 'Rest' },
+                                    ].map((stat) => (
+                                      <div key={stat.label} className="bg-white/[0.04] rounded-lg px-4 py-2.5 text-center flex-1">
+                                        <div className="text-base font-black text-text-primary">{stat.value}</div>
+                                        <div className="text-[10px] text-text-muted uppercase tracking-wider">{stat.label}</div>
+                                      </div>
+                                    ))}
                                   </div>
-                                ))}
-                              </div>
+                                );
+                              })()}
 
                               {/* How to do it */}
                               <div className="bg-white/[0.03] rounded-lg p-3">
@@ -552,7 +559,7 @@ export default function Workout() {
                                                 </button>
                                               </div>
                                             ))}
-                                            <p className="text-[10px] text-text-muted italic">Swaps reset daily at midnight.</p>
+                                            <p className="text-[10px] text-text-muted italic">Swaps persist until you reset them.</p>
                                           </motion.div>
                                         ) : (
                                           <div className="flex flex-wrap gap-1.5">
