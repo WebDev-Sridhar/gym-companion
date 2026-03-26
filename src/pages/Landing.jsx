@@ -136,9 +136,9 @@ export default function Landing() {
             </div>
 
             <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black leading-[0.9] mb-8 tracking-tight">
-              <span className="text-text-primary">Transform</span>
+              <span className="text-text-primary">Train Smart.</span>
               <br />
-              <span className="gradient-text">Your Body</span>
+              <span className="gradient-text">Get Results.</span>
             </h1>
 
             <p className="text-base sm:text-lg text-text-muted max-w-xl mx-auto mb-12 leading-relaxed">

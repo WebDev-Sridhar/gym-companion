@@ -25,10 +25,10 @@ import useUserStore from '../store/useUserStore';
 import { exercises as exerciseDB, getAlternatives } from '../data/exercises';
 
 export default function Workout() {
-  const { workoutPlan, logWorkout, deleteWorkoutLog, plan, swapExercise, resetExerciseSwap } = useUserStore();
+  const { workoutPlan, logWorkout, deleteWorkoutLog, plan, swapExercise, resetExerciseSwap, currentWorkoutDay } = useUserStore();
   const exerciseSwaps = useUserStore((s) => s.exerciseSwaps);
   const isPro = plan === 'pro';
-  const [activeDay, setActiveDay] = useState(0);
+  const [activeDay, setActiveDay] = useState(() => currentWorkoutDay);
   const [isLogging, setIsLogging] = useState(false);
   const [expandedExercise, setExpandedExercise] = useState(null);
   const [logData, setLogData] = useState({});
@@ -59,8 +59,11 @@ export default function Workout() {
   const schedule = workoutPlan.schedule;
   const currentDay = schedule[activeDay];
 
-  // Resolve exercise swaps for today
-  const daySwaps = exerciseSwaps[today]?.[currentDay.day] || {};
+  // Resolve exercise swaps (persistent — no date key)
+  const daySwaps = exerciseSwaps[currentDay.day] || {};
+
+  // Most recent log for this day (to show history when not actively logging)
+  const dayPreviousLog = [...workoutLogs].reverse().find((l) => l.dayName === currentDay.day);
 
   const resolveExercise = (originalExercise, index) => {
     const swappedKey = daySwaps[index];
@@ -263,14 +266,17 @@ export default function Workout() {
             {schedule.map((day, i) => (
               <button
                 key={i}
-                onClick={() => { setActiveDay(i); setExpandedExercise(null); }}
-                className={`shrink-0 px-4 py-2.5 rounded-lg text-xs font-medium transition-all ${
+                onClick={() => { setActiveDay(i); setExpandedExercise(null); setIsLogging(false); setLogData({}); }}
+                className={`shrink-0 px-4 py-2.5 rounded-lg text-xs font-medium transition-all relative ${
                   activeDay === i
                     ? 'bg-white text-black'
                     : 'border border-white/[0.06] text-text-muted hover:text-text-secondary'
                 }`}
               >
                 {day.day}
+                {i === currentWorkoutDay && activeDay !== i && (
+                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-accent rounded-full" />
+                )}
               </button>
             ))}
           </div>
@@ -309,6 +315,33 @@ export default function Workout() {
               </p>
             )}
           </div>
+
+          {/* Previously Logged Data for This Day */}
+          {!isLogging && dayPreviousLog && (
+            <div className="mb-4 border border-white/[0.06] rounded-xl p-4">
+              <p className="text-[11px] text-text-muted uppercase tracking-wider mb-3 font-medium">
+                Last logged — {new Date(dayPreviousLog.timestamp || dayPreviousLog.date).toLocaleDateString()}
+              </p>
+              <div className="space-y-2">
+                {dayPreviousLog.exercises?.map((ex, i) => {
+                  const sets = Array.isArray(ex.logged?.sets) ? ex.logged.sets : [];
+                  const reps = sets.map((s) => s.reps);
+                  const minReps = reps.length ? Math.min(...reps) : null;
+                  const maxReps = reps.length ? Math.max(...reps) : null;
+                  const repRange = minReps !== null ? (minReps === maxReps ? `${minReps}` : `${minReps}–${maxReps}`) : (ex.logged?.reps || ex.planned?.reps);
+                  return (
+                    <div key={i} className="flex items-center justify-between text-xs">
+                      <span className="text-text-muted">{ex.name}</span>
+                      <span className="font-mono text-text-secondary">
+                        {sets.length || ex.planned?.sets}× {repRange} reps
+                        {sets[0]?.weight > 0 && <span className="text-text-muted ml-1">@ {sets[0].weight}kg</span>}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Tip Banner */}
           {isLogging && (

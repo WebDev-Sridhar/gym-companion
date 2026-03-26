@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Edit3, Trophy, Flame, TrendingUp, Dumbbell, RotateCcw, Save, X, LogOut, Mail, Sparkles, Crown, Check, Lock, Medal, Zap } from 'lucide-react';
+import { User, Edit3, Trophy, Flame, TrendingUp, Dumbbell, RotateCcw, Save, X, LogOut, Mail, Sparkles, Crown, Check, Lock, Medal, Zap, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { showCoach } from '../components/ui/CoachPopup';
 import { showUpgradeModal } from '../components/ui/PaymentModal';
@@ -17,6 +17,8 @@ export default function Profile() {
   const { user, signOut } = useAuthStore();
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState({});
+  const [showWeightHistory, setShowWeightHistory] = useState(false);
+  const [showResetModal, setShowResetModal] = useState(false);
 
   if (!profile) {
     return <PageWrapper><div className="text-center py-20"><User size={48} className="text-text-muted mx-auto mb-4" /><p className="text-text-muted">No profile found.</p></div></PageWrapper>;
@@ -27,7 +29,8 @@ export default function Profile() {
 
   const startEdit = () => { setEditData({ name: profile.name, age: profile.age, height: profile.height, weight: profile.weight }); setEditing(true); };
   const saveEdit = () => { updateProfile(editData); setEditing(false); };
-  const handleReset = () => { if (confirm('This will delete ALL your data, you cannot undo this action. Are you sure?')) { resetAll(); showCoach('resetData'); navigate('/dashboard'); } };
+  const handleReset = () => setShowResetModal(true);
+  const confirmReset = () => { setShowResetModal(false); resetAll(); showCoach('resetData'); navigate('/dashboard'); };
   const handleSignOut = async () => { await signOut(); navigate('/'); };
 
   const goalLabel = { weightLoss: 'Weight Loss', muscleGain: 'Muscle Gain', maintenance: 'Maintenance' };
@@ -35,16 +38,26 @@ export default function Profile() {
 
   return (
     <PageWrapper>
-      <h1 className="text-2xl sm:text-3xl font-black tracking-tight mb-8">
-        <span className="gradient-text">Profile</span>
-      </h1>
+      <div className="mb-8">
+        <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+          <span className="gradient-text">Profile</span>
+        </h1>
+        <p className="text-text-muted text-sm mt-1">Track your fitness journey</p>
+      </div>
 
       {/* Avatar + Level */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="border border-white/[0.06] rounded-xl p-6 sm:p-8 mb-6 text-center">
         <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white mx-auto mb-4 flex items-center justify-center text-2xl sm:text-3xl font-black text-black">
           {profile.name?.[0]?.toUpperCase() || '?'}
         </div>
-        <h2 className="text-lg sm:text-xl font-bold text-text-primary">{profile.name}</h2>
+        <div className="flex items-center justify-center gap-2 mb-1">
+          <h2 className="text-lg sm:text-xl font-bold text-text-primary">{profile.name}</h2>
+          {isPro && (
+            <span className="text-[10px] bg-accent/15 text-accent border border-accent/30 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+              <Crown size={9} /> PRO
+            </span>
+          )}
+        </div>
         <p className="text-accent text-sm font-medium">Level {currentLevel.id} — {currentLevel.name}</p>
         {currentLevel.id > 0 && (
           <p className="text-xs text-text-muted italic mt-1">{currentLevel.rewardMessage}</p>
@@ -282,6 +295,29 @@ export default function Profile() {
         )}
       </motion.div>
 
+      {/* Weight History */}
+      {weightLogs.length > 0 && (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28 }} className="border border-white/[0.06] rounded-xl mb-6 overflow-hidden">
+          <button
+            onClick={() => setShowWeightHistory((v) => !v)}
+            className="w-full flex items-center justify-between px-5 py-4 text-sm font-medium text-text-muted hover:text-text-secondary transition-all"
+          >
+            <span className="flex items-center gap-2"><TrendingUp size={14} /> Weight History</span>
+            {showWeightHistory ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+          </button>
+          {showWeightHistory && (
+            <div className="px-5 pb-4 space-y-2">
+              {[...weightLogs].reverse().slice(0, 15).map((log) => (
+                <div key={log.id} className="flex items-center justify-between text-sm">
+                  <span className="text-text-muted">{new Date(log.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                  <span className="font-medium text-text-primary">{log.weight} kg</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </motion.div>
+      )}
+
       {/* Account */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="border border-white/[0.06] rounded-xl p-5">
         <h3 className="font-bold mb-4 flex items-center gap-2 text-sm text-text-secondary">
@@ -302,6 +338,59 @@ export default function Profile() {
           </button>
         </div>
       </motion.div>
+
+      {/* Reset Confirmation Modal */}
+      {showResetModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-[#111] border border-white/[0.08] rounded-2xl p-6 w-full max-w-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center shrink-0">
+                <AlertTriangle size={18} className="text-red-400" />
+              </div>
+              <h3 className="text-lg font-bold text-text-primary">Reset All Data?</h3>
+            </div>
+
+            <div className="mb-5 space-y-3">
+              <div className="bg-red-500/5 border border-red-500/10 rounded-lg p-3">
+                <p className="text-xs font-medium text-red-400 mb-2">Will be permanently deleted:</p>
+                <ul className="space-y-1 text-xs text-text-muted">
+                  {['Workout logs & history', 'Diet & meal logs', 'Progress & streaks', 'Exercise swaps', 'XP & transformation level'].map((item) => (
+                    <li key={item} className="flex items-center gap-2"><X size={10} className="text-red-400/60 shrink-0" />{item}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="bg-white/[0.03] border border-white/[0.06] rounded-lg p-3">
+                <p className="text-xs font-medium text-text-secondary mb-2">Will be preserved:</p>
+                <ul className="space-y-1 text-xs text-text-muted">
+                  {['Subscription & Pro access', 'Account & email'].map((item) => (
+                    <li key={item} className="flex items-center gap-2"><Check size={10} className="text-accent/60 shrink-0" />{item}</li>
+                  ))}
+                </ul>
+              </div>
+              <p className="text-xs text-red-400/80 font-medium text-center">This action cannot be undone.</p>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowResetModal(false)}
+                className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-white/[0.08] text-text-muted hover:text-text-primary transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmReset}
+                className="flex-1 py-2.5 rounded-lg text-sm font-bold bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all"
+              >
+                Delete Everything
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </PageWrapper>
   );
 }

@@ -100,6 +100,7 @@ const mealLabels = {
 
 export default function Diet() {
   const { dietPlan, nutritionTargets, profile, logFood, unlogFood, getTodaysFoodLogs, getTodaysCalories, getTodaysProtein, plan, swapMeal } = useUserStore();
+  const foodLogs = useUserStore((s) => s.foodLogs);
   const isPro = plan === 'pro';
   const [expandedMeal, setExpandedMeal] = useState(null);
   const [showAlts, setShowAlts] = useState(null);
@@ -107,6 +108,7 @@ export default function Diet() {
   const [customMeal, setCustomMeal] = useState({ name: '', calories: '', protein: '' });
   const [foodSuggestions, setFoodSuggestions] = useState([]);
   const [manualEntry, setManualEntry] = useState(false); // true when no match found & user must enter values
+  const [showMealHistory, setShowMealHistory] = useState(false);
 
   // Per-slot item selection: { breakfast: { selected: Set([0,1,2]), customItems: [{name, calories, protein}] } }
   const [itemSelections, setItemSelections] = useState({});
@@ -722,22 +724,90 @@ export default function Diet() {
                 <Pill size={16} /> Supplement Plan
               </h3>
               <div className="space-y-3">
-                {Object.entries(dietPlan.supplements).map(([key, supp]) => (
-                  <div key={key} className="bg-white/[0.03] rounded-lg p-3">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-medium text-sm text-text-primary">{supp.name}</span>
-                      <span className="text-[11px] text-text-muted">{supp.calories} cal · {supp.protein}g P</span>
+                {Object.entries(dietPlan.supplements).map(([suppKey, supp]) => {
+                  const suppMealType = `supplement_${suppKey}`;
+                  const suppLog = todaysLogs.find((l) => l.mealType === suppMealType);
+                  return (
+                    <div key={suppKey} className={`rounded-lg p-3 transition-all ${suppLog ? 'bg-accent/5 border border-accent/15' : 'bg-white/[0.03]'}`}>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-medium text-sm text-text-primary">{supp.name}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] text-text-muted">{supp.calories} cal · {supp.protein}g P</span>
+                          {suppLog ? (
+                            <button
+                              onClick={() => unlogFood(suppLog.id)}
+                              className="text-[10px] text-accent/70 hover:text-text-muted flex items-center gap-1 transition-colors"
+                            >
+                              <Check size={11} /> Logged
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => logFood(suppMealType, supp.items, supp.calories, supp.protein)}
+                              className="text-[10px] text-text-muted border border-white/[0.08] hover:text-accent hover:border-accent/20 px-2 py-0.5 rounded transition-all"
+                            >
+                              + Log
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      <ul className="space-y-0.5">
+                        {supp.items.map((item, j) => (
+                          <li key={j} className="text-xs text-text-muted">· {item}</li>
+                        ))}
+                      </ul>
                     </div>
-                    <ul className="space-y-0.5">
-                      {supp.items.map((item, j) => (
-                        <li key={j} className="text-xs text-text-muted">· {item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </motion.div>
           )}
+
+          {/* Meal History */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="mt-6">
+            <button
+              onClick={() => setShowMealHistory((v) => !v)}
+              className="w-full flex items-center justify-between px-4 py-3 border border-white/[0.06] rounded-xl text-sm font-medium text-text-muted hover:text-text-secondary transition-all"
+            >
+              <span className="flex items-center gap-2"><UtensilsCrossed size={14} /> Meal History</span>
+              {showMealHistory ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            </button>
+            {showMealHistory && (() => {
+              // Group foodLogs by date, last 7 days
+              const byDate = {};
+              [...foodLogs].reverse().forEach((log) => {
+                if (!byDate[log.date]) byDate[log.date] = [];
+                byDate[log.date].push(log);
+              });
+              const dates = Object.keys(byDate).slice(0, 7);
+              return dates.length === 0 ? (
+                <p className="text-xs text-text-muted text-center py-6">No meal history yet.</p>
+              ) : (
+                <div className="space-y-3 mt-3">
+                  {dates.map((date) => {
+                    const logs = byDate[date];
+                    const totalCal = logs.reduce((s, l) => s + (l.totalCalories || 0), 0);
+                    const totalProt = logs.reduce((s, l) => s + (l.totalProtein || 0), 0);
+                    return (
+                      <div key={date} className="border border-white/[0.06] rounded-xl p-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-medium text-text-primary">{new Date(date).toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
+                          <span className="text-[11px] text-text-muted">{totalCal} cal · {totalProt}g P</span>
+                        </div>
+                        <div className="space-y-1">
+                          {logs.map((log, i) => (
+                            <div key={i} className="flex items-center justify-between text-xs">
+                              <span className="text-text-muted capitalize">{log.mealType.replace('supplement_', 'Supp: ').replace(/([A-Z])/g, ' $1').trim()}</span>
+                              <span className="text-text-muted/60 font-mono">{log.totalCalories} cal</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+          </motion.div>
         </>
       ) : (
         <ProLock message="Meal tracking, logging, swaps & supplements">
