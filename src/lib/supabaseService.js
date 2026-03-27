@@ -20,9 +20,22 @@ const toCamelCase = (obj) => mapKeys(obj, toCamel);
 // Profiles
 // =====================
 export async function saveProfile(userId, profileData) {
-  const data = toSnakeCase(profileData);
-  data.user_id = userId;
-  delete data.id;
+  // Explicit field mapping — only include columns that exist in the profiles table.
+  // Fields like gymExperience and bodyFat are app-only and must NOT be sent to Supabase.
+  const data = {
+    user_id: userId,
+    name: profileData.name,
+    age: profileData.age,
+    height: profileData.height,
+    weight: profileData.weight,
+    gender: profileData.gender,
+    activity_level: profileData.activityLevel,
+    goal: profileData.goal,
+    diet_type: profileData.dietType,
+    workout_days: profileData.workoutDays,
+    workout_duration: profileData.workoutDuration,
+    use_supplements: profileData.useSupplements,
+  };
 
   const { data: existing } = await supabase
     .from('profiles')
@@ -207,7 +220,7 @@ export async function fetchProgressLogs(userId) {
 export async function saveGamification(userId, gamData) {
   const data = {
     user_id: userId,
-    transformation_level: gamData.transformationLevel || 0,
+    level: gamData.transformationLevel || 0,
     xp: gamData.xp || 0,
     current_streak: gamData.currentStreak,
     longest_streak: gamData.longestStreak,
