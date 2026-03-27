@@ -26,6 +26,8 @@ import { showCoach } from '../components/ui/CoachPopup';
 import useUserStore from '../store/useUserStore';
 import { exercises as exerciseDB, getAlternatives } from '../data/exercises';
 
+const EMPTY_OBJ = {};
+
 export default function Workout() {
   const { workoutPlan, logWorkout, deleteWorkoutLog, plan, swapExercise, resetExerciseSwap, currentWorkoutDay, setActiveWorkoutLog, clearActiveWorkoutLog } = useUserStore();
   const exerciseSwaps = useUserStore((s) => s.exerciseSwaps);
@@ -67,7 +69,7 @@ export default function Workout() {
   const currentDay = schedule[activeDay];
 
   // Resolve exercise swaps (persistent — no date key)
-  const daySwaps = exerciseSwaps[currentDay.day] || {};
+  const daySwaps = exerciseSwaps[currentDay.day] || EMPTY_OBJ;
 
   // Most recent log for this day — used to show avg/max reps in exercise cards
   const dayPreviousLog = [...workoutLogs].reverse().find((l) => l.dayName === currentDay.day);
@@ -102,6 +104,9 @@ export default function Workout() {
     };
   };
 
+  // Stringify daySwaps for stable dependency comparison (avoids infinite re-render)
+  const daySwapsKey = JSON.stringify(daySwaps);
+
   // Initialize set data for all exercises when logging starts or day changes
   useEffect(() => {
     if (!isLogging || !currentDay) return;
@@ -115,7 +120,7 @@ export default function Workout() {
       });
       return updated;
     });
-  }, [isLogging, currentDay, daySwaps]);
+  }, [isLogging, currentDay, daySwapsKey]);
 
   // Persist in-progress workout to store so it survives navigation
   useEffect(() => {
