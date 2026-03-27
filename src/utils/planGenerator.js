@@ -7,12 +7,20 @@ import { calculateNutritionTargets, calculateMacros } from './tdee';
  * @param {object} profile - User profile from onboarding
  * @returns {object} Complete workout plan
  */
-export function generateWorkoutPlan(profile) {
-  const { workoutDays, goal } = profile;
+// Cardio config per goal — added to every workout day
+const CARDIO_BY_GOAL = {
+  weightLoss: { type: 'treadmill', targetDuration: 30, targetDistance: 3, note: 'Walk/jog at 6–8 km/h' },
+  muscleGain: { type: 'cycling', targetDuration: 15, targetDistance: null, note: 'Low intensity warmup/cooldown' },
+  maintenance: { type: 'treadmill', targetDuration: 20, targetDistance: 2, note: 'Comfortable pace 7–9 km/h' },
+};
 
-  // Select appropriate split based on days available
+export function generateWorkoutPlan(profile) {
+  const { workoutDays, goal, gymExperience } = profile;
+  const isNever = gymExperience === 'never';
+
+  // First-timers always get a full-body 3-day split regardless of workoutDays
   let splitKey;
-  if (workoutDays <= 3) {
+  if (isNever || workoutDays <= 3) {
     splitKey = 'fullBody3';
   } else if (workoutDays === 4) {
     splitKey = 'upperLower4';
@@ -23,20 +31,26 @@ export function generateWorkoutPlan(profile) {
   }
 
   const split = workoutSplits[splitKey];
+  const cardio = CARDIO_BY_GOAL[goal] || CARDIO_BY_GOAL.maintenance;
 
   // Build detailed schedule with full exercise data
   const detailedSchedule = split.schedule.map((day) => ({
     ...day,
+    cardio,
     exercises: day.exercises.map((exKey) => {
       const ex = exercises[exKey];
       if (!ex) return null;
 
-      // Adjust sets/reps based on goal
+      // Adjust sets/reps based on experience and goal
       let sets = ex.sets;
       let reps = ex.reps;
 
-      if (goal === 'weightLoss') {
-        // Higher reps, slightly lower weight focus
+      if (isNever) {
+        // First-timers: 3 sets, higher reps, focus on form
+        sets = Math.min(3, sets);
+        reps = '12-15';
+      } else if (goal === 'weightLoss') {
+        // Weight loss: higher reps for more calorie burn
         sets = Math.max(3, sets);
         reps = ex.reps.includes('-') ? ex.reps.split('-').map(r => {
           const n = parseInt(r);
@@ -54,12 +68,12 @@ export function generateWorkoutPlan(profile) {
   }));
 
   return {
-    splitName: split.name,
+    splitName: isNever ? 'Beginner Foundation (3 days)' : split.name,
     splitKey,
-    level: split.level,
-    daysPerWeek: split.days,
+    level: isNever ? 'starter' : split.level,
+    daysPerWeek: isNever ? 3 : split.days,
     schedule: detailedSchedule,
-    tips: getWorkoutTips(goal),
+    tips: getWorkoutTips(goal, isNever),
   };
 }
 
@@ -146,9 +160,17 @@ export function getMealForDay(mealOptions, dayIndex) {
 }
 
 /**
- * Get workout tips based on goal
+ * Get workout tips based on goal and experience
  */
-function getWorkoutTips(goal) {
+function getWorkoutTips(goal, isNever = false) {
+  if (isNever) {
+    return [
+      'Start light — master form before adding any load',
+      'Focus on feeling the muscle work, not just moving the weight',
+      'Rest 60–90 seconds between sets and drink water throughout',
+      'Show up consistently: 3 days/week for 4 weeks builds the habit',
+    ];
+  }
   const tips = {
     weightLoss: [
       'Focus on compound movements that burn more calories',

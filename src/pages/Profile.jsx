@@ -27,7 +27,7 @@ export default function Profile() {
   const stats = computeTransformationStats(workoutLogs, weightLogs, foodLogs, currentStreak, longestStreak, nutritionTargets);
   const currentLevel = getCurrentTransformationLevel(stats);
 
-  const startEdit = () => { setEditData({ name: profile.name, age: profile.age, height: profile.height, weight: profile.weight }); setEditing(true); };
+  const startEdit = () => { setEditData({ name: profile.name, age: profile.age, height: profile.height, weight: profile.weight, workoutDays: profile.workoutDays }); setEditing(true); };
   const saveEdit = () => { updateProfile(editData); setEditing(false); };
   const handleReset = () => setShowResetModal(true);
   const confirmReset = () => { setShowResetModal(false); resetAll(); showCoach('resetData'); navigate('/dashboard'); };
@@ -223,6 +223,26 @@ export default function Profile() {
                 <input type={f.type} value={editData[f.key] || ''} onChange={(e) => setEditData({ ...editData, [f.key]: f.type === 'number' ? parseFloat(e.target.value) : e.target.value })} className="w-full px-3 py-2.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-text-primary focus:outline-none focus:border-white/20 mt-1 text-sm" />
               </div>
             ))}
+            <div>
+              <label className="text-[11px] text-text-muted uppercase tracking-wider block mb-2">Workout Days / Week</label>
+              <div className="flex gap-2">
+                {[3, 4, 5, 6].map((d) => (
+                  <button
+                    key={d}
+                    type="button"
+                    onClick={() => setEditData({ ...editData, workoutDays: d })}
+                    className={`w-12 h-10 rounded-lg font-bold text-sm transition-all ${
+                      editData.workoutDays === d
+                        ? 'bg-accent text-black'
+                        : 'border border-white/[0.08] text-text-muted hover:border-white/[0.20]'
+                    }`}
+                  >
+                    {d}
+                  </button>
+                ))}
+              </div>
+              <p className="text-[10px] text-text-muted mt-1">Changing days will regenerate your workout split.</p>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-2">

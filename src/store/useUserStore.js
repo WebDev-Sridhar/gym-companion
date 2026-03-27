@@ -191,11 +191,15 @@ const useUserStore = create(
         const workoutPlan = generateWorkoutPlan(profile);
         const dietPlan = generateDietPlan(profile);
 
+        const currentPlan = get().workoutPlan;
+        const planChanged = currentPlan?.daysPerWeek !== workoutPlan.daysPerWeek;
+
         set({
           profile,
           nutritionTargets,
           workoutPlan,
           dietPlan,
+          ...(planChanged ? { currentWorkoutDay: 0 } : {}),
         });
       },
 
@@ -614,8 +618,9 @@ const useUserStore = create(
         });
       },
 
-      // Reset
+      // Reset (preserves subscription/plan)
       resetAll: () => {
+        const { plan, subscription } = get();
         set({
           profile: null,
           isOnboarded: false,
@@ -636,8 +641,8 @@ const useUserStore = create(
           mealSwaps: {},
           exerciseSwaps: {},
           currentWorkoutDay: 0,
-          plan: 'free',
-          subscription: null,
+          plan,
+          subscription,
         });
 
         localStorage.removeItem('gym-companion-storage');

@@ -13,7 +13,7 @@ import useUserStore from '../store/useUserStore';
 import { calculateBMR, calculateTDEE, getTargetCalories } from '../utils/tdee';
 import { showCoach } from '../components/ui/CoachPopup';
 
-const TOTAL_STEPS = 8;
+const TOTAL_STEPS = 10;
 
 const activityLevels = [
   { key: 'sedentary', label: 'Sedentary', desc: 'Little or no exercise' },
@@ -29,6 +29,50 @@ const goals = [
   { key: 'maintenance', label: 'Maintenance', desc: 'Stay fit and healthy' },
 ];
 
+// Body fat ranges per gender
+const bodyFatRanges = {
+  male: [
+    { key: 'lean', label: '8–12%', desc: 'Very lean / Athletic', level: 0 },
+    { key: 'fit', label: '13–17%', desc: 'Fit / Visible definition', level: 1 },
+    { key: 'average', label: '18–22%', desc: 'Average / Healthy', level: 2 },
+    { key: 'aboveAvg', label: '23–27%', desc: 'Above average', level: 3 },
+    { key: 'high', label: '28%+', desc: 'High body fat', level: 4 },
+  ],
+  female: [
+    { key: 'lean', label: '16–19%', desc: 'Athletic / Very lean', level: 0 },
+    { key: 'fit', label: '20–24%', desc: 'Fit / Toned', level: 1 },
+    { key: 'average', label: '25–29%', desc: 'Average / Healthy', level: 2 },
+    { key: 'aboveAvg', label: '30–34%', desc: 'Above average', level: 3 },
+    { key: 'high', label: '35%+', desc: 'High body fat', level: 4 },
+  ],
+};
+
+// Simple inline SVG body silhouette — torso width scales with fat level
+function BodySilhouette({ fatLevel = 2, selected = false }) {
+  const color = selected ? '#c8ee44' : '#4a4a4a';
+  const torsoRx = [8, 9.5, 11, 13, 15][fatLevel];
+  const cx = 28;
+
+  return (
+    <svg viewBox="0 0 56 110" xmlns="http://www.w3.org/2000/svg" className="w-10 h-16 mx-auto">
+      {/* Head */}
+      <circle cx={cx} cy="9" r="7" fill={color} />
+      {/* Neck */}
+      <rect x={cx - 2.5} y="16" width="5" height="5" rx="1" fill={color} />
+      {/* Torso */}
+      <ellipse cx={cx} cy="43" rx={torsoRx} ry="19" fill={color} />
+      {/* Left arm */}
+      <ellipse cx={cx - torsoRx - 3} cy="41" rx="3" ry="13" fill={color} />
+      {/* Right arm */}
+      <ellipse cx={cx + torsoRx + 3} cy="41" rx="3" ry="13" fill={color} />
+      {/* Left leg */}
+      <ellipse cx={cx - 7} cy="82" rx="5" ry="17" fill={color} />
+      {/* Right leg */}
+      <ellipse cx={cx + 7} cy="82" rx="5" ry="17" fill={color} />
+    </svg>
+  );
+}
+
 export default function Onboarding() {
   const navigate = useNavigate();
   const preparePlan = useUserStore((s) => s.preparePlan);
@@ -36,11 +80,13 @@ export default function Onboarding() {
   const [saving, setSaving] = useState(false);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
+    gymExperience: '',   // 'never' | 'beginner'
     name: '',
     gender: '',
     age: 25,
     height: 170,
     weight: 70,
+    bodyFat: 'average',  // default average
     activityLevel: '',
     goal: '',
     workoutDays: 4,
@@ -53,14 +99,16 @@ export default function Onboarding() {
 
   const canProceed = () => {
     switch (step) {
-      case 1: return formData.gender !== '';
-      case 2: return formData.name.trim() !== '';
-      case 3: return formData.age > 0;
-      case 4: return formData.height > 0 && formData.weight > 0;
-      case 5: return formData.activityLevel !== '';
-      case 6: return formData.goal !== '';
-      case 7: return formData.workoutDays > 0;
-      case 8: return true;
+      case 1: return formData.gymExperience !== '';
+      case 2: return formData.gender !== '';
+      case 3: return formData.name.trim() !== '';
+      case 4: return formData.age > 0;
+      case 5: return formData.height > 0 && formData.weight > 0;
+      case 6: return formData.bodyFat !== '';
+      case 7: return formData.activityLevel !== '';
+      case 8: return formData.goal !== '';
+      case 9: return formData.workoutDays > 0;
+      case 10: return true;
       default: return true;
     }
   };
@@ -99,6 +147,8 @@ export default function Onboarding() {
     setTimeout(() => showCoach('onboarding'), 600);
   }, []);
 
+  const bfRanges = bodyFatRanges[formData.gender || 'male'];
+
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center px-5 py-8">
       {/* Background */}
@@ -136,7 +186,57 @@ export default function Onboarding() {
               transition={{ duration: 0.3 }}
               className="flex-1"
             >
+              {/* STEP 1 — Gym Experience */}
               {step === 1 && (
+                <div>
+                  <h2 className="text-2xl font-bold mb-2 text-text-primary">Your gym experience?</h2>
+                  <p className="text-text-muted text-sm mb-6">We'll build the right program for where you are right now.</p>
+                  <div className="space-y-4">
+                    {[
+                      {
+                        key: 'never',
+                        label: 'First time at the gym',
+                        desc: "I've never trained before or just starting out. I need a beginner-friendly starter program.",
+                        icon: '🌱',
+                      },
+                      {
+                        key: 'beginner',
+                        label: 'Some experience',
+                        desc: "I've trained before or know the basics. Ready for a structured split program.",
+                        icon: '💪',
+                      },
+                    ].map((opt) => (
+                      <button
+                        key={opt.key}
+                        onClick={() => update('gymExperience', opt.key)}
+                        className={`w-full p-5 rounded-xl border-2 transition-all text-left ${
+                          formData.gymExperience === opt.key
+                            ? 'border-accent bg-accent/5'
+                            : 'border-white/[0.08] hover:border-white/[0.15]'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3 mb-1">
+                          <span className="text-2xl">{opt.icon}</span>
+                          <span className={`font-bold text-sm ${formData.gymExperience === opt.key ? 'text-accent' : 'text-text-primary'}`}>
+                            {opt.label}
+                          </span>
+                        </div>
+                        <p className="text-xs text-text-muted ml-9">{opt.desc}</p>
+                      </button>
+                    ))}
+                  </div>
+                  {formData.gymExperience === 'never' && (
+                    <div className="mt-4 bg-accent/5 border border-accent/10 rounded-lg px-4 py-3">
+                      <p className="text-xs text-accent font-medium">
+                        You'll start with a 3-day Full Body program — designed to build solid habits and safe movement patterns before advancing.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* STEP 2 — Gender */}
+              {step === 2 && (
                 <div>
                   <h2 className="text-2xl font-bold mb-2 text-text-primary">What's your gender?</h2>
                   <p className="text-text-muted text-sm mb-6">Helps calculate your calorie needs accurately.</p>
@@ -159,7 +259,8 @@ export default function Onboarding() {
                 </div>
               )}
 
-              {step === 2 && (
+              {/* STEP 3 — Name */}
+              {step === 3 && (
                 <div>
                   <h2 className="text-2xl font-bold mb-2 text-text-primary">What's your name?</h2>
                   <p className="text-text-muted text-sm mb-6">So we can personalize your experience.</p>
@@ -174,7 +275,8 @@ export default function Onboarding() {
                 </div>
               )}
 
-              {step === 3 && (
+              {/* STEP 4 — Age */}
+              {step === 4 && (
                 <div>
                   <h2 className="text-2xl font-bold mb-2 text-text-primary">How old are you?</h2>
                   <p className="text-text-muted text-sm mb-6">Age affects your metabolic rate.</p>
@@ -192,7 +294,8 @@ export default function Onboarding() {
                 </div>
               )}
 
-              {step === 4 && (
+              {/* STEP 5 — Height & Weight */}
+              {step === 5 && (
                 <div>
                   <h2 className="text-2xl font-bold mb-2 text-text-primary">Height & Weight</h2>
                   <p className="text-text-muted text-sm mb-6">Used to calculate your BMR and calorie needs.</p>
@@ -215,7 +318,35 @@ export default function Onboarding() {
                 </div>
               )}
 
-              {step === 5 && (
+              {/* STEP 6 — Body Fat % */}
+              {step === 6 && (
+                <div>
+                  <h2 className="text-2xl font-bold mb-2 text-text-primary">Body fat estimate</h2>
+                  <p className="text-text-muted text-sm mb-5">Pick the range that closest describes you. Used to personalise your plan.</p>
+                  <div className="grid grid-cols-5 gap-2">
+                    {bfRanges.map((range) => (
+                      <button
+                        key={range.key}
+                        onClick={() => update('bodyFat', range.key)}
+                        className={`flex flex-col items-center p-2 rounded-xl border-2 transition-all ${
+                          formData.bodyFat === range.key
+                            ? 'border-accent bg-accent/5'
+                            : 'border-white/[0.06] hover:border-white/[0.12]'
+                        }`}
+                      >
+                        <BodySilhouette fatLevel={range.level} selected={formData.bodyFat === range.key} />
+                        <span className={`text-[11px] font-bold mt-1 ${formData.bodyFat === range.key ? 'text-accent' : 'text-text-primary'}`}>
+                          {range.label}
+                        </span>
+                        <span className="text-[9px] text-text-muted text-center leading-tight mt-0.5">{range.desc}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 7 — Activity Level */}
+              {step === 7 && (
                 <div>
                   <h2 className="text-2xl font-bold mb-2 text-text-primary">Activity Level</h2>
                   <p className="text-text-muted text-sm mb-4">How active are you in your daily life?</p>
@@ -238,7 +369,8 @@ export default function Onboarding() {
                 </div>
               )}
 
-              {step === 6 && (
+              {/* STEP 8 — Goal */}
+              {step === 8 && (
                 <div>
                   <h2 className="text-2xl font-bold mb-2 text-text-primary">What's your goal?</h2>
                   <p className="text-text-muted text-sm mb-6">Determines your calorie target and workout style.</p>
@@ -261,55 +393,64 @@ export default function Onboarding() {
                 </div>
               )}
 
-              {step === 7 && (
+              {/* STEP 9 — Workout Schedule */}
+              {step === 9 && (
                 <div>
                   <h2 className="text-2xl font-bold mb-2 text-text-primary">Workout Schedule</h2>
                   <p className="text-text-muted text-sm mb-6">How many days per week can you train?</p>
-                  <div className="space-y-6">
-                    <div>
-                      <label className="text-xs text-text-muted mb-3 block uppercase tracking-wider">Days per week</label>
-                      <div className="flex gap-2 flex-wrap">
-                        {[3, 4, 5, 6].map((d) => (
-                          <button
-                            key={d}
-                            onClick={() => update('workoutDays', d)}
-                            className={`w-14 h-14 rounded-xl font-bold text-lg transition-all ${
-                              formData.workoutDays === d
-                                ? 'bg-white text-black'
-                                : 'border border-white/[0.08] text-text-muted hover:border-white/[0.15]'
-                            }`}
-                          >
-                            {d}
-                          </button>
-                        ))}
-                      </div>
-                      <p className="text-xs text-text-muted mt-2">
-                        {formData.workoutDays <= 3 ? 'Full Body Split' : formData.workoutDays === 4 ? 'Upper/Lower Split' : 'Push/Pull/Legs Split'}
-                      </p>
+                  {formData.gymExperience === 'never' ? (
+                    <div className="bg-accent/5 border border-accent/10 rounded-xl p-5">
+                      <p className="text-sm font-semibold text-accent mb-1">Starting with 3 days/week</p>
+                      <p className="text-xs text-text-muted">As a first-timer, we'll run a full-body program 3 days a week. After building a strong foundation you can increase frequency.</p>
                     </div>
-                    <div>
-                      <label className="text-xs text-text-muted mb-3 block uppercase tracking-wider">Duration per session</label>
-                      <div className="flex gap-2 flex-wrap">
-                        {[30, 45, 60, 75, 90].map((d) => (
-                          <button
-                            key={d}
-                            onClick={() => update('workoutDuration', d)}
-                            className={`px-4 py-3 rounded-xl font-medium text-sm transition-all ${
-                              formData.workoutDuration === d
-                                ? 'bg-accent text-white'
-                                : 'border border-white/[0.08] text-text-muted hover:border-white/[0.15]'
-                            }`}
-                          >
-                            {d} min
-                          </button>
-                        ))}
+                  ) : (
+                    <div className="space-y-6">
+                      <div>
+                        <label className="text-xs text-text-muted mb-3 block uppercase tracking-wider">Days per week</label>
+                        <div className="flex gap-2 flex-wrap">
+                          {[3, 4, 5, 6].map((d) => (
+                            <button
+                              key={d}
+                              onClick={() => update('workoutDays', d)}
+                              className={`w-14 h-14 rounded-xl font-bold text-lg transition-all ${
+                                formData.workoutDays === d
+                                  ? 'bg-white text-black'
+                                  : 'border border-white/[0.08] text-text-muted hover:border-white/[0.15]'
+                              }`}
+                            >
+                              {d}
+                            </button>
+                          ))}
+                        </div>
+                        <p className="text-xs text-text-muted mt-2">
+                          {formData.workoutDays <= 3 ? 'Full Body Split' : formData.workoutDays === 4 ? 'Upper/Lower Split' : 'Push/Pull/Legs Split'}
+                        </p>
+                      </div>
+                      <div>
+                        <label className="text-xs text-text-muted mb-3 block uppercase tracking-wider">Duration per session</label>
+                        <div className="flex gap-2 flex-wrap">
+                          {[30, 45, 60, 75, 90].map((d) => (
+                            <button
+                              key={d}
+                              onClick={() => update('workoutDuration', d)}
+                              className={`px-4 py-3 rounded-xl font-medium text-sm transition-all ${
+                                formData.workoutDuration === d
+                                  ? 'bg-accent text-white'
+                                  : 'border border-white/[0.08] text-text-muted hover:border-white/[0.15]'
+                              }`}
+                            >
+                              {d} min
+                            </button>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
 
-              {step === 8 && (
+              {/* STEP 10 — Diet Type & Supplements */}
+              {step === 10 && (
                 <div>
                   <h2 className="text-2xl font-bold mb-2 text-text-primary">Almost done!</h2>
                   <p className="text-text-muted text-sm mb-4">Diet preference & your results</p>

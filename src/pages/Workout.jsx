@@ -17,6 +17,8 @@ import {
   Undo2,
   Image,
   Video,
+  Timer,
+  Zap,
 } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import ProLock from '../components/ui/ProLock';
@@ -37,6 +39,7 @@ export default function Workout() {
   const [showMedia, setShowMedia] = useState({}); // mobile toggle { [exerciseId]: true/false }
   const [swapOpen, setSwapOpen] = useState({}); // { [exerciseId]: true/false }
   const [saveError, setSaveError] = useState('');
+  const [cardioLog, setCardioLog] = useState({ duration: '', distance: '', speed: '' });
   const workoutLogs = useUserStore((s) => s.workoutLogs);
 
   const today = new Date().toISOString().split('T')[0];
@@ -181,9 +184,19 @@ export default function Workout() {
           : { sets: [] },
       };
     });
-    logWorkout({ dayName: currentDay.day, exercises });
+    const cardioData = currentDay.cardio && (cardioLog.duration || cardioLog.distance)
+      ? {
+          type: currentDay.cardio.type,
+          duration: Number(cardioLog.duration) || 0,
+          distance: Number(cardioLog.distance) || 0,
+          speed: cardioLog.speed,
+        }
+      : null;
+
+    logWorkout({ dayName: currentDay.day, exercises, cardio: cardioData });
     setIsLogging(false);
     setLogData({});
+    setCardioLog({ duration: '', distance: '', speed: '' });
     showCoach('workoutComplete');
   };
 
@@ -193,7 +206,7 @@ export default function Workout() {
     const newExId = exerciseDB[newKey]?.id;
     if (newExId) {
       setExpandedExercise(newExId);
-      setSwapOpen((prev) => ({ [newExId]: true }));
+      setSwapOpen(() => ({ [newExId]: true }));
     }
   };
 
@@ -269,6 +282,15 @@ export default function Workout() {
                     )}
                   </div>
                 ))}
+                {log.cardio && (
+                  <div className="mt-2 pt-2 border-t border-white/[0.04] flex items-center gap-2 flex-wrap">
+                    <Zap size={11} className="text-accent shrink-0" />
+                    <span className="text-[11px] text-accent font-medium capitalize">{log.cardio.type}</span>
+                    {log.cardio.duration > 0 && <span className="text-[11px] text-text-muted">{log.cardio.duration} min</span>}
+                    {log.cardio.distance > 0 && <span className="text-[11px] text-text-muted">{log.cardio.distance} km</span>}
+                    {log.cardio.speed && <span className="text-[11px] text-text-muted">{log.cardio.speed} {log.cardio.type === 'treadmill' ? 'km/h' : 'resistance'}</span>}
+                  </div>
+                )}
               </div>
             ))
           )}
@@ -285,7 +307,7 @@ export default function Workout() {
             {schedule.map((day, i) => (
               <button
                 key={i}
-                onClick={() => { setActiveDay(i); setExpandedExercise(null); setIsLogging(false); setLogData({}); }}
+                onClick={() => { setActiveDay(i); setExpandedExercise(null); setIsLogging(false); setLogData({}); setCardioLog({ duration: '', distance: '', speed: '' }); }}
                 className={`shrink-0 px-4 py-2.5 rounded-lg text-xs font-medium transition-all relative ${
                   activeDay === i
                     ? 'bg-white text-black'
@@ -320,7 +342,7 @@ export default function Workout() {
                     <Save size={16} /> Save Workout
                   </button>
                   <button
-                    onClick={() => { setIsLogging(false); setLogData({}); setSaveError(''); showCoach('workoutCancel', 'left'); }}
+                    onClick={() => { setIsLogging(false); setLogData({}); setSaveError(''); setCardioLog({ duration: '', distance: '', speed: '' }); showCoach('workoutCancel', 'left'); }}
                     className="px-4 py-2.5 rounded-lg text-sm font-medium text-text-muted border border-white/[0.06] hover:text-text-secondary"
                   >
                     Cancel
@@ -693,6 +715,71 @@ export default function Workout() {
               );
             })}
           </div>
+
+          {/* Cardio Section */}
+          {currentDay.cardio && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-4 border border-accent/20 rounded-xl overflow-hidden"
+            >
+              <div className="px-4 py-3 bg-accent/5 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Timer size={14} className="text-accent" />
+                  <span className="text-sm font-bold text-text-primary capitalize">
+                    {currentDay.cardio.type} · Cardio
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 text-[11px] text-text-muted">
+                  <span>{currentDay.cardio.targetDuration} min target</span>
+                  {currentDay.cardio.targetDistance && <span>{currentDay.cardio.targetDistance} km</span>}
+                </div>
+              </div>
+              <div className="px-4 py-3">
+                <p className="text-xs text-text-muted mb-3">{currentDay.cardio.note}</p>
+                {isLogging ? (
+                  <div className="grid grid-cols-3 gap-2">
+                    <div>
+                      <label className="text-[10px] text-text-muted block mb-1 uppercase tracking-wider">Duration (min)</label>
+                      <input
+                        type="number"
+                        value={cardioLog.duration}
+                        onChange={(e) => setCardioLog((p) => ({ ...p, duration: e.target.value }))}
+                        placeholder={String(currentDay.cardio.targetDuration)}
+                        className="w-full px-2 py-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-center text-text-primary text-sm font-bold focus:outline-none focus:border-accent/30"
+                      />
+                    </div>
+                    {currentDay.cardio.targetDistance !== null && (
+                      <div>
+                        <label className="text-[10px] text-text-muted block mb-1 uppercase tracking-wider">Distance (km)</label>
+                        <input
+                          type="number"
+                          value={cardioLog.distance}
+                          onChange={(e) => setCardioLog((p) => ({ ...p, distance: e.target.value }))}
+                          placeholder={String(currentDay.cardio.targetDistance)}
+                          className="w-full px-2 py-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-center text-text-primary text-sm font-bold focus:outline-none focus:border-accent/30"
+                        />
+                      </div>
+                    )}
+                    <div>
+                      <label className="text-[10px] text-text-muted block mb-1 uppercase tracking-wider">
+                        {currentDay.cardio.type === 'treadmill' ? 'Speed (km/h)' : 'Resistance'}
+                      </label>
+                      <input
+                        type="number"
+                        value={cardioLog.speed}
+                        onChange={(e) => setCardioLog((p) => ({ ...p, speed: e.target.value }))}
+                        placeholder={currentDay.cardio.type === 'treadmill' ? '7' : '5'}
+                        className="w-full px-2 py-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-center text-text-primary text-sm font-bold focus:outline-none focus:border-accent/30"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-xs text-text-muted/50 italic">Start workout to log cardio</p>
+                )}
+              </div>
+            </motion.div>
+          )}
 
           {/* Tips */}
           {workoutPlan.tips && (
