@@ -35,23 +35,15 @@ export async function saveProfile(userId, profileData) {
     workout_days: profileData.workoutDays,
     workout_duration: profileData.workoutDuration,
     use_supplements: profileData.useSupplements,
+    updated_at: new Date().toISOString(),
   };
 
-  const { data: existing } = await supabase
+  // Use upsert to atomically insert-or-update (eliminates race conditions)
+  return supabase
     .from('profiles')
-    .select('id')
-    .eq('user_id', userId)
-    .maybeSingle();
-
-  if (existing) {
-    return supabase
-      .from('profiles')
-      .update({ ...data, updated_at: new Date().toISOString() })
-      .eq('user_id', userId)
-      .select()
-      .single();
-  }
-  return supabase.from('profiles').insert(data).select().single();
+    .upsert(data, { onConflict: 'user_id' })
+    .select()
+    .single();
 }
 
 export async function fetchProfile(userId) {
@@ -231,21 +223,12 @@ export async function saveGamification(userId, gamData) {
     updated_at: new Date().toISOString(),
   };
 
-  const { data: existing } = await supabase
+  // Use upsert to atomically insert-or-update (eliminates 409 conflicts from concurrent calls)
+  return supabase
     .from('gamification')
-    .select('id')
-    .eq('user_id', userId)
-    .maybeSingle();
-
-  if (existing) {
-    return supabase
-      .from('gamification')
-      .update(data)
-      .eq('user_id', userId)
-      .select()
-      .single();
-  }
-  return supabase.from('gamification').insert(data).select().single();
+    .upsert(data, { onConflict: 'user_id' })
+    .select()
+    .single();
 }
 
 export async function fetchGamification(userId) {
