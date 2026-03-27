@@ -11,7 +11,7 @@ export default function PageWrapper({ children, className = '' }) {
     >
       {children}
       <div className="mt-16 pb-4 text-center">
-        <p className="text-[11px] text-text-muted/40 tracking-wide">💧 Stay hydrated — drink water throughout your workout and day</p>
+        <p className="text-[11px] text-text-muted/40 tracking-wide">💧 Stay hydrated</p>
       </div>
     </motion.div>
   );

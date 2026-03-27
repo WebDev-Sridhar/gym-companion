@@ -24,6 +24,7 @@ import {
   Square,
   CheckSquare,
   Save,
+  Trash2,
 } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import ProLock from '../components/ui/ProLock';
@@ -100,8 +101,9 @@ const mealLabels = {
 };
 
 export default function Diet() {
-  const { dietPlan, nutritionTargets, profile, logFood, unlogFood, getTodaysFoodLogs, getTodaysCalories, getTodaysProtein, plan, swapMeal } = useUserStore();
+  const { dietPlan, nutritionTargets, profile, logFood, unlogFood, getTodaysFoodLogs, getTodaysCalories, getTodaysProtein, plan, swapMeal, addPendingFoodLog, removePendingFoodLog, clearPendingFoodLogs } = useUserStore();
   const foodLogs = useUserStore((s) => s.foodLogs);
+  const pendingFoodLogs = useUserStore((s) => s.pendingFoodLogs);
   const isPro = plan === 'pro';
   const [expandedMeal, setExpandedMeal] = useState(null);
   const [showAlts, setShowAlts] = useState(null);
@@ -114,8 +116,7 @@ export default function Diet() {
   // Per-slot item selection: { breakfast: { selected: Set([0,1,2]), customItems: [{name, calories, protein}] } }
   const [itemSelections, setItemSelections] = useState({});
 
-  // Buffered logs: { mealType: { items, calories, protein } } — not yet saved to DB
-  const [pendingLogs, setPendingLogs] = useState({});
+  // pendingFoodLogs from store (survives navigation)
 
   const today = new Date().toISOString().split('T')[0];
   const dayIndex = new Date().getDay();
@@ -263,27 +264,27 @@ export default function Diet() {
     setShowAlts(null);
   };
 
-  // Buffer the meal (don't save to DB yet)
+  // Buffer the meal (don't save to DB yet) — stored in Zustand, survives navigation
   const handleLog = (mealKey) => {
     const items = getSelectedItemNames(mealKey);
     if (items.length === 0) return;
     const { calories, protein } = getAdjustedNutrition(mealKey);
-    setPendingLogs((prev) => ({ ...prev, [mealKey]: { items, calories, protein } }));
+    addPendingFoodLog(mealKey, { items, calories, protein });
   };
 
   // Remove a meal from the buffer
   const handleRemovePending = (mealKey) => {
-    setPendingLogs((prev) => { const c = { ...prev }; delete c[mealKey]; return c; });
+    removePendingFoodLog(mealKey);
   };
 
   // Commit all buffered logs to DB at once
   const handleCompleteLogs = () => {
-    const entries = Object.entries(pendingLogs);
+    const entries = Object.entries(pendingFoodLogs);
     if (entries.length === 0) return;
     entries.forEach(([mealType, { items, calories, protein }]) => {
       logFood(mealType, items, calories, protein);
     });
-    setPendingLogs({});
+    clearPendingFoodLogs();
     setItemSelections({});
     showCoach('mealLogged', 'left');
   };
@@ -344,7 +345,16 @@ export default function Diet() {
                             ? `Supplement · ${log.mealType.replace('supplement_', '')}`
                             : (mealLabels[log.mealType] || log.mealType)}
                         </span>
-                        <span className="text-[11px] text-text-muted">{log.totalCalories} cal · {log.totalProtein}g P</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] text-text-muted">{log.totalCalories} cal · {log.totalProtein}g P</span>
+                          <button
+                            onClick={() => unlogFood(log.id)}
+                            className="p-1 rounded text-text-muted/40 hover:text-red-400 transition-colors"
+                            title="Delete log"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        </div>
                       </div>
                       {log.items?.length > 0 && (
                         <p className="text-[11px] text-text-muted/50">{log.items.slice(0, 3).join(', ')}{log.items.length > 3 ? ` +${log.items.length - 3} more` : ''}</p>
@@ -599,24 +609,12 @@ export default function Diet() {
                           )}
                         </div>
 
-                        {/* Log / Buffered / Logged+Undo */}
+                        {/* Log / Buffered / Logged (no undo — delete from history instead) */}
                         {isLogged ? (
-                          <div className="flex items-center gap-2">
-                            <div className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-accent/5 text-accent/50 text-center flex items-center justify-center gap-2">
-                              <Check size={14} /> Logged
-                            </div>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                const todayLog = todaysLogs.filter((l) => l.mealType === key).pop();
-                                if (todayLog) { unlogFood(todayLog.id); showCoach('mealUndo', 'left'); }
-                              }}
-                              className="px-3 py-2.5 rounded-lg text-sm font-medium text-text-muted border border-white/[0.08] hover:text-red-400 hover:border-red-400/20 transition-all flex items-center gap-1"
-                            >
-                              <Undo2 size={14} /> Undo
-                            </button>
+                          <div className="w-full py-2.5 rounded-lg text-sm font-medium bg-accent/5 text-accent/50 text-center flex items-center justify-center gap-2">
+                            <Check size={14} /> Logged
                           </div>
-                        ) : pendingLogs[key] ? (
+                        ) : pendingFoodLogs[key] ? (
                           <div className="flex items-center gap-2">
                             <div className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-white/[0.05] text-text-secondary text-center flex items-center justify-center gap-2">
                               <Check size={14} /> Added to log
@@ -814,7 +812,7 @@ export default function Diet() {
                 {Object.entries(dietPlan.supplements).map(([suppKey, supp]) => {
                   const suppMealType = `supplement_${suppKey}`;
                   const suppLog = todaysLogs.find((l) => l.mealType === suppMealType);
-                  const suppPending = !!pendingLogs[suppMealType];
+                  const suppPending = !!pendingFoodLogs[suppMealType];
                   return (
                     <div key={suppKey} className={`rounded-lg p-3 transition-all ${suppLog ? 'bg-accent/5 border border-accent/15' : suppPending ? 'bg-white/[0.04] border border-white/[0.1]' : 'bg-white/[0.03]'}`}>
                       <div className="flex items-center justify-between mb-1">
@@ -858,16 +856,16 @@ export default function Diet() {
           )}
 
           {/* Complete Log Button */}
-          {Object.keys(pendingLogs).length > 0 && (
+          {Object.keys(pendingFoodLogs).length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="mt-6 sticky bottom-20 z-10"
             >
               {(() => {
-                const totalPendingCal = Object.values(pendingLogs).reduce((s, l) => s + (l.calories || 0), 0);
-                const totalPendingProt = Object.values(pendingLogs).reduce((s, l) => s + (l.protein || 0), 0);
-                const count = Object.keys(pendingLogs).length;
+                const totalPendingCal = Object.values(pendingFoodLogs).reduce((s, l) => s + (l.calories || 0), 0);
+                const totalPendingProt = Object.values(pendingFoodLogs).reduce((s, l) => s + (l.protein || 0), 0);
+                const count = Object.keys(pendingFoodLogs).length;
                 return (
                   <button
                     onClick={handleCompleteLogs}

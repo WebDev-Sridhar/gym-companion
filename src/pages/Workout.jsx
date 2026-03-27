@@ -27,19 +27,23 @@ import useUserStore from '../store/useUserStore';
 import { exercises as exerciseDB, getAlternatives } from '../data/exercises';
 
 export default function Workout() {
-  const { workoutPlan, logWorkout, deleteWorkoutLog, plan, swapExercise, resetExerciseSwap, currentWorkoutDay } = useUserStore();
+  const { workoutPlan, logWorkout, deleteWorkoutLog, plan, swapExercise, resetExerciseSwap, currentWorkoutDay, setActiveWorkoutLog, clearActiveWorkoutLog } = useUserStore();
   const exerciseSwaps = useUserStore((s) => s.exerciseSwaps);
+  const activeWorkoutLog = useUserStore((s) => s.activeWorkoutLog);
+  const transformationLevel = useUserStore((s) => s.transformationLevel);
   const isPro = plan === 'pro';
-  const [activeDay, setActiveDay] = useState(() => currentWorkoutDay);
-  const [isLogging, setIsLogging] = useState(false);
+
+  // Restore in-progress workout from store if navigating back
+  const [activeDay, setActiveDay] = useState(() => activeWorkoutLog?.activeDay ?? currentWorkoutDay);
+  const [isLogging, setIsLogging] = useState(() => !!activeWorkoutLog);
   const [expandedExercise, setExpandedExercise] = useState(null);
-  const [logData, setLogData] = useState({});
+  const [logData, setLogData] = useState(() => activeWorkoutLog?.logData || {});
   const [showHistory, setShowHistory] = useState(false);
   const [mediaMode, setMediaMode] = useState({}); // { [exerciseId]: 'gif' | 'video' }
   const [showMedia, setShowMedia] = useState({}); // mobile toggle { [exerciseId]: true/false }
   const [swapOpen, setSwapOpen] = useState({}); // { [exerciseId]: true/false }
   const [saveError, setSaveError] = useState('');
-  const [cardioLog, setCardioLog] = useState({ duration: '', distance: '', speed: '' });
+  const [cardioLog, setCardioLog] = useState(() => activeWorkoutLog?.cardioLog || { duration: '', distance: '', speed: '' });
   const workoutLogs = useUserStore((s) => s.workoutLogs);
 
   const today = new Date().toISOString().split('T')[0];
@@ -113,6 +117,13 @@ export default function Workout() {
     });
   }, [isLogging, currentDay, daySwaps]);
 
+  // Persist in-progress workout to store so it survives navigation
+  useEffect(() => {
+    if (isLogging) {
+      setActiveWorkoutLog({ dayName: currentDay?.day, activeDay, logData, cardioLog });
+    }
+  }, [isLogging, logData, cardioLog, activeDay]);
+
   const handleSetEntry = (exerciseId, setIndex, field, value) => {
     setLogData((prev) => {
       const exercise = prev[exerciseId] || { sets: [] };
@@ -156,19 +167,21 @@ export default function Workout() {
       return;
     }
 
-    // Validate: at least 2 sets with reps filled across all exercises
-    let totalFilledSets = 0;
+    // Validate: at least 3 exercises with at least 2 filled sets each
+    let qualifiedExercises = 0;
     for (let idx = 0; idx < currentDay.exercises.length; idx++) {
       const ex = resolveExercise(currentDay.exercises[idx], idx);
       const logged = logData[ex.id];
+      let filledSets = 0;
       if (logged?.sets) {
         for (const s of logged.sets) {
-          if (Number(s.reps) > 0) totalFilledSets++;
+          if (Number(s.reps) > 0) filledSets++;
         }
       }
+      if (filledSets >= 2) qualifiedExercises++;
     }
-    if (totalFilledSets < 2) {
-      setSaveError('Enter at least 2 sets with reps before saving.');
+    if (qualifiedExercises < 3) {
+      setSaveError('Log at least 3 exercises with 2 sets each before saving.');
       return;
     }
 
@@ -197,6 +210,7 @@ export default function Workout() {
     setIsLogging(false);
     setLogData({});
     setCardioLog({ duration: '', distance: '', speed: '' });
+    clearActiveWorkoutLog();
     showCoach('workoutComplete');
   };
 
@@ -307,7 +321,7 @@ export default function Workout() {
             {schedule.map((day, i) => (
               <button
                 key={i}
-                onClick={() => { setActiveDay(i); setExpandedExercise(null); setIsLogging(false); setLogData({}); setCardioLog({ duration: '', distance: '', speed: '' }); }}
+                onClick={() => { setActiveDay(i); setExpandedExercise(null); setIsLogging(false); setLogData({}); setCardioLog({ duration: '', distance: '', speed: '' }); clearActiveWorkoutLog(); }}
                 className={`shrink-0 px-4 py-2.5 rounded-lg text-xs font-medium transition-all relative ${
                   activeDay === i
                     ? 'bg-white text-black'
@@ -342,7 +356,7 @@ export default function Workout() {
                     <Save size={16} /> Save Workout
                   </button>
                   <button
-                    onClick={() => { setIsLogging(false); setLogData({}); setSaveError(''); setCardioLog({ duration: '', distance: '', speed: '' }); showCoach('workoutCancel', 'left'); }}
+                    onClick={() => { setIsLogging(false); setLogData({}); setSaveError(''); setCardioLog({ duration: '', distance: '', speed: '' }); clearActiveWorkoutLog(); showCoach('workoutCancel', 'left'); }}
                     className="px-4 py-2.5 rounded-lg text-sm font-medium text-text-muted border border-white/[0.06] hover:text-text-secondary"
                   >
                     Cancel
@@ -371,14 +385,16 @@ export default function Workout() {
             </motion.div>
           )}
 
-          {/* Progressive Overload Note */}
+          {/* Progressive Overload Note — only show at intermediate+ level (Level 5+) */}
           <div className="space-y-2 mb-6">
-            <div className="flex items-start gap-2.5 border border-white/[0.06] rounded-lg px-4 py-3">
-              <Dumbbell size={14} className="text-accent shrink-0 mt-0.5" />
-              <p className="text-xs text-text-muted">
-                <span className="text-text-secondary font-medium">How to progress:</span> Pick a weight you can do for 8 reps with good form. Stick with that weight until you can do 12 reps easily, then increase the weight and go back to 8 reps. Push to failure on your last set.
-              </p>
-            </div>
+            {transformationLevel >= 5 && (
+              <div className="flex items-start gap-2.5 border border-white/[0.06] rounded-lg px-4 py-3">
+                <Dumbbell size={14} className="text-accent shrink-0 mt-0.5" />
+                <p className="text-xs text-text-muted">
+                  <span className="text-text-secondary font-medium">How to progress:</span> Pick a weight you can do for 8 reps with good form. Stick with that weight until you can do 12 reps easily, then increase the weight and go back to 8 reps. Push to failure on your last set.
+                </p>
+              </div>
+            )}
             <div className="flex items-start gap-2.5 bg-red-500/5 border border-red-500/10 rounded-lg px-4 py-3">
               <AlertTriangle size={14} className="text-red-400 shrink-0 mt-0.5" />
               <p className="text-xs text-text-muted">

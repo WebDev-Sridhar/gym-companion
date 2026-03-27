@@ -213,6 +213,8 @@ export async function saveGamification(userId, gamData) {
     longest_streak: gamData.longestStreak,
     total_workouts: gamData.totalWorkouts,
     last_login_date: gamData.lastLoginDate,
+    current_workout_day: gamData.currentWorkoutDay || 0,
+    exercise_swaps: gamData.exerciseSwaps || {},
     updated_at: new Date().toISOString(),
   };
 
@@ -249,6 +251,8 @@ export async function fetchGamification(userId) {
       longestStreak: data.longest_streak,
       totalWorkouts: data.total_workouts,
       lastLoginDate: data.last_login_date,
+      currentWorkoutDay: data.current_workout_day || 0,
+      exerciseSwaps: data.exercise_swaps || {},
     },
     error,
   };

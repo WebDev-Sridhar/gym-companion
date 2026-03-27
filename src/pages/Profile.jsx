@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Edit3, Trophy, Flame, TrendingUp, Dumbbell, RotateCcw, Save, X, LogOut, Mail, Sparkles, Crown, Check, Lock, Medal, Zap, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-react';
+import { User, Edit3, Trophy, Flame, TrendingUp, Dumbbell, RotateCcw, Save, X, LogOut, Mail, Sparkles, Crown, Check, Lock, Medal, Zap, ChevronDown, ChevronUp, AlertTriangle, ArrowRight } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { showCoach } from '../components/ui/CoachPopup';
 import { showUpgradeModal } from '../components/ui/PaymentModal';
@@ -12,7 +12,7 @@ import { TRANSFORMATION_LEVELS, computeTransformationStats, getCurrentTransforma
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { profile, transformationLevel, xp, currentStreak, longestStreak, totalWorkouts, weightLogs, workoutLogs, foodLogs, nutritionTargets, resetAll, updateProfile, plan, subscription, deactivatePro } = useUserStore();
+  const { profile, isOnboarded, transformationLevel, xp, currentStreak, longestStreak, totalWorkouts, weightLogs, workoutLogs, foodLogs, nutritionTargets, resetAll, updateProfile, plan, subscription, deactivatePro } = useUserStore();
   const isPro = plan === 'pro';
   const { user, signOut } = useAuthStore();
   const [editing, setEditing] = useState(false);
@@ -20,17 +20,14 @@ export default function Profile() {
   const [showWeightHistory, setShowWeightHistory] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
 
-  if (!profile) {
-    return <PageWrapper><div className="text-center py-20"><User size={48} className="text-text-muted mx-auto mb-4" /><p className="text-text-muted">No profile found.</p></div></PageWrapper>;
-  }
+  // Compute stats with fallbacks for post-reset state (no profile)
+  const stats = profile ? computeTransformationStats(workoutLogs, weightLogs, foodLogs, currentStreak, longestStreak, nutritionTargets) : null;
+  const currentLevel = stats ? getCurrentTransformationLevel(stats) : { id: 0, name: 'Just Starting', rewardMessage: '' };
 
-  const stats = computeTransformationStats(workoutLogs, weightLogs, foodLogs, currentStreak, longestStreak, nutritionTargets);
-  const currentLevel = getCurrentTransformationLevel(stats);
-
-  const startEdit = () => { setEditData({ name: profile.name, age: profile.age, height: profile.height, weight: profile.weight, workoutDays: profile.workoutDays }); setEditing(true); };
+  const startEdit = () => { if (!profile) return; setEditData({ name: profile.name, age: profile.age, height: profile.height, weight: profile.weight, workoutDays: profile.workoutDays }); setEditing(true); };
   const saveEdit = () => { updateProfile(editData); setEditing(false); };
   const handleReset = () => setShowResetModal(true);
-  const confirmReset = () => { setShowResetModal(false); resetAll(); showCoach('resetData'); navigate('/dashboard'); };
+  const confirmReset = () => { setShowResetModal(false); resetAll(); showCoach('resetData'); };
   const handleSignOut = async () => { await signOut(); navigate('/'); };
 
   const goalLabel = { weightLoss: 'Weight Loss', muscleGain: 'Muscle Gain', maintenance: 'Maintenance' };
@@ -45,13 +42,24 @@ export default function Profile() {
         <p className="text-text-muted text-sm mt-1">Track your fitness journey</p>
       </div>
 
+      {/* CTA for non-onboarded users (after reset) */}
+      {!isOnboarded && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="border border-accent/20 rounded-xl p-5 mb-6 bg-accent/[0.03] text-center">
+          <h3 className="text-lg font-bold text-text-primary mb-2">Welcome to GymThozhan</h3>
+          <p className="text-sm text-text-muted mb-4">Complete onboarding to get your personalized workout and diet plan.</p>
+          <Link to="/onboarding" className="btn-primary px-6 py-2.5 rounded-lg text-sm font-bold inline-flex items-center gap-2">
+            Complete Onboarding <ArrowRight size={14} />
+          </Link>
+        </motion.div>
+      )}
+
       {/* Avatar + Level */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="border border-white/[0.06] rounded-xl p-6 sm:p-8 mb-6 text-center">
         <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white mx-auto mb-4 flex items-center justify-center text-2xl sm:text-3xl font-black text-black">
-          {profile.name?.[0]?.toUpperCase() || '?'}
+          {profile?.name?.[0]?.toUpperCase() || '?'}
         </div>
         <div className="flex items-center justify-center gap-2 mb-1">
-          <h2 className="text-lg sm:text-xl font-bold text-text-primary">{profile.name}</h2>
+          <h2 className="text-lg sm:text-xl font-bold text-text-primary">{profile?.name || 'User'}</h2>
           {isPro && (
             <span className="text-[10px] bg-accent/15 text-accent border border-accent/30 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
               <Crown size={9} /> PRO
@@ -197,73 +205,75 @@ export default function Profile() {
         );
       })()}
 
-      {/* Personal Info */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="border border-white/[0.06] rounded-xl p-5 mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-bold text-sm text-text-secondary">Personal Info</h3>
-          {!editing ? (
-            <button onClick={startEdit} className="text-accent text-xs font-medium flex items-center gap-1 hover:underline"><Edit3 size={12} /> Edit</button>
+      {/* Personal Info — only when profile exists */}
+      {profile && (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="border border-white/[0.06] rounded-xl p-5 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-bold text-sm text-text-secondary">Personal Info</h3>
+            {!editing ? (
+              <button onClick={startEdit} className="text-accent text-xs font-medium flex items-center gap-1 hover:underline"><Edit3 size={12} /> Edit</button>
+            ) : (
+              <div className="flex gap-2">
+                <button onClick={saveEdit} className="text-accent text-xs font-medium flex items-center gap-1"><Save size={12} /> Save</button>
+                <button onClick={() => setEditing(false)} className="text-text-muted text-xs flex items-center gap-1"><X size={12} /> Cancel</button>
+              </div>
+            )}
+          </div>
+          {editing ? (
+            <div className="space-y-3">
+              {[
+                { key: 'name', label: 'Name', type: 'text' },
+                { key: 'age', label: 'Age', type: 'number' },
+                { key: 'height', label: 'Height (cm)', type: 'number' },
+                { key: 'weight', label: 'Weight (kg)', type: 'number' },
+              ].map((f) => (
+                <div key={f.key}>
+                  <label className="text-[11px] text-text-muted uppercase tracking-wider">{f.label}</label>
+                  <input type={f.type} value={editData[f.key] || ''} onChange={(e) => setEditData({ ...editData, [f.key]: f.type === 'number' ? parseFloat(e.target.value) : e.target.value })} className="w-full px-3 py-2.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-text-primary focus:outline-none focus:border-white/20 mt-1 text-sm" />
+                </div>
+              ))}
+              <div>
+                <label className="text-[11px] text-text-muted uppercase tracking-wider block mb-2">Workout Days / Week</label>
+                <div className="flex gap-2">
+                  {[3, 4, 5, 6].map((d) => (
+                    <button
+                      key={d}
+                      type="button"
+                      onClick={() => setEditData({ ...editData, workoutDays: d })}
+                      className={`w-12 h-10 rounded-lg font-bold text-sm transition-all ${
+                        editData.workoutDays === d
+                          ? 'bg-accent text-black'
+                          : 'border border-white/[0.08] text-text-muted hover:border-white/[0.20]'
+                      }`}
+                    >
+                      {d}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-[10px] text-text-muted mt-1">Changing days will regenerate your workout split.</p>
+              </div>
+            </div>
           ) : (
-            <div className="flex gap-2">
-              <button onClick={saveEdit} className="text-accent text-xs font-medium flex items-center gap-1"><Save size={12} /> Save</button>
-              <button onClick={() => setEditing(false)} className="text-text-muted text-xs flex items-center gap-1"><X size={12} /> Cancel</button>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { label: 'Age', value: `${profile.age} years` },
+                { label: 'Gender', value: profile.gender },
+                { label: 'Height', value: `${profile.height} cm` },
+                { label: 'Weight', value: `${profile.weight} kg` },
+                { label: 'Activity', value: actLabel[profile.activityLevel] },
+                { label: 'Goal', value: goalLabel[profile.goal] },
+                { label: 'Diet', value: profile.dietType === 'veg' ? 'Vegetarian' : 'Non-Veg' },
+                { label: 'Workout Days', value: `${profile.workoutDays}/week` },
+              ].map((item) => (
+                <div key={item.label} className="bg-white/[0.03] rounded-lg p-3">
+                  <div className="text-[10px] text-text-muted uppercase tracking-wider">{item.label}</div>
+                  <div className="text-sm font-medium text-text-primary capitalize mt-0.5">{item.value}</div>
+                </div>
+              ))}
             </div>
           )}
-        </div>
-        {editing ? (
-          <div className="space-y-3">
-            {[
-              { key: 'name', label: 'Name', type: 'text' },
-              { key: 'age', label: 'Age', type: 'number' },
-              { key: 'height', label: 'Height (cm)', type: 'number' },
-              { key: 'weight', label: 'Weight (kg)', type: 'number' },
-            ].map((f) => (
-              <div key={f.key}>
-                <label className="text-[11px] text-text-muted uppercase tracking-wider">{f.label}</label>
-                <input type={f.type} value={editData[f.key] || ''} onChange={(e) => setEditData({ ...editData, [f.key]: f.type === 'number' ? parseFloat(e.target.value) : e.target.value })} className="w-full px-3 py-2.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-text-primary focus:outline-none focus:border-white/20 mt-1 text-sm" />
-              </div>
-            ))}
-            <div>
-              <label className="text-[11px] text-text-muted uppercase tracking-wider block mb-2">Workout Days / Week</label>
-              <div className="flex gap-2">
-                {[3, 4, 5, 6].map((d) => (
-                  <button
-                    key={d}
-                    type="button"
-                    onClick={() => setEditData({ ...editData, workoutDays: d })}
-                    className={`w-12 h-10 rounded-lg font-bold text-sm transition-all ${
-                      editData.workoutDays === d
-                        ? 'bg-accent text-black'
-                        : 'border border-white/[0.08] text-text-muted hover:border-white/[0.20]'
-                    }`}
-                  >
-                    {d}
-                  </button>
-                ))}
-              </div>
-              <p className="text-[10px] text-text-muted mt-1">Changing days will regenerate your workout split.</p>
-            </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-2">
-            {[
-              { label: 'Age', value: `${profile.age} years` },
-              { label: 'Gender', value: profile.gender },
-              { label: 'Height', value: `${profile.height} cm` },
-              { label: 'Weight', value: `${profile.weight} kg` },
-              { label: 'Activity', value: actLabel[profile.activityLevel] },
-              { label: 'Goal', value: goalLabel[profile.goal] },
-              { label: 'Diet', value: profile.dietType === 'veg' ? 'Vegetarian' : 'Non-Veg' },
-              { label: 'Workout Days', value: `${profile.workoutDays}/week` },
-            ].map((item) => (
-              <div key={item.label} className="bg-white/[0.03] rounded-lg p-3">
-                <div className="text-[10px] text-text-muted uppercase tracking-wider">{item.label}</div>
-                <div className="text-sm font-medium text-text-primary capitalize mt-0.5">{item.value}</div>
-              </div>
-            ))}
-          </div>
-        )}
-      </motion.div>
+        </motion.div>
+      )}
 
       {/* Subscription */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className={`border rounded-xl p-5 mb-6 ${isPro ? 'border-accent/20 bg-gradient-to-br from-accent/[0.06] to-transparent' : 'border-accent/15 bg-gradient-to-br from-accent/[0.04] to-transparent'}`}>

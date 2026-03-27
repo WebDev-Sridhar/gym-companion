@@ -321,17 +321,29 @@ export default function Dashboard() {
           {days.map((day, i) => {
             const isPast = i < today;
             const isToday = i === today;
+
+            // Calculate actual date for this weekday
+            const now = new Date();
+            const startOfWeek = new Date(now);
+            startOfWeek.setDate(now.getDate() - now.getDay());
+            const dayDate = new Date(startOfWeek);
+            dayDate.setDate(startOfWeek.getDate() + i);
+            const dateStr = dayDate.toISOString().split('T')[0];
+            const hasLog = workoutLogs.some((l) => l.date === dateStr);
+
             return (
               <div key={i} className="text-center">
                 <div className="text-[10px] text-text-muted mb-2 font-medium">{day}</div>
                 <div className={`w-9 h-9 sm:w-11 sm:h-11 mx-auto rounded-lg flex items-center justify-center text-xs font-bold ${
                   isToday
                     ? 'bg-accent text-white'
+                    : isPast && hasLog
+                    ? 'bg-white/[0.06] text-accent'
                     : isPast
-                    ? 'bg-white/[0.06] text-text-muted'
+                    ? 'bg-white/[0.06] text-red-400/60'
                     : 'bg-white/[0.02] text-text-muted'
                 }`}>
-                  {isPast ? '✓' : isToday ? '●' : '·'}
+                  {isToday ? '●' : isPast ? (hasLog ? '✓' : '✗') : '·'}
                 </div>
               </div>
             );

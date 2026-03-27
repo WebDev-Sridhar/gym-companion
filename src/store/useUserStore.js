@@ -69,6 +69,8 @@ const buildGamSaveData = (state) => ({
   longestStreak: state.longestStreak,
   totalWorkouts: state.totalWorkouts,
   lastLoginDate: state.lastLoginDate,
+  currentWorkoutDay: state.currentWorkoutDay,
+  exerciseSwaps: state.exerciseSwaps,
 });
 
 const useUserStore = create(
@@ -108,6 +110,12 @@ const useUserStore = create(
 
       // Current workout day progression (index into workoutPlan.schedule)
       currentWorkoutDay: 0,
+
+      // Pending food logs (survives navigation, cleared on complete)
+      pendingFoodLogs: {},
+
+      // Active workout log (survives navigation, cleared on save/cancel)
+      activeWorkoutLog: null, // { dayName, activeDay, logData, cardioLog }
 
       // Subscription
       plan: 'free', // 'free' | 'pro'
@@ -159,6 +167,23 @@ const useUserStore = create(
           },
         }));
       },
+
+      // Pending Food Log Actions
+      addPendingFoodLog: (mealKey, data) => {
+        set((s) => ({ pendingFoodLogs: { ...s.pendingFoodLogs, [mealKey]: data } }));
+      },
+      removePendingFoodLog: (mealKey) => {
+        set((s) => {
+          const copy = { ...s.pendingFoodLogs };
+          delete copy[mealKey];
+          return { pendingFoodLogs: copy };
+        });
+      },
+      clearPendingFoodLogs: () => set({ pendingFoodLogs: {} }),
+
+      // Active Workout Log Actions (persist in-progress logging across navigation)
+      setActiveWorkoutLog: (data) => set({ activeWorkoutLog: data }),
+      clearActiveWorkoutLog: () => set({ activeWorkoutLog: null }),
 
       // Subscription Actions
       activatePro: (subscriptionData) => {
@@ -348,6 +373,7 @@ const useUserStore = create(
           newStreak, newLongestStreak, state.nutritionTargets
         );
         const newLevel = getCurrentTransformationLevel(stats).id;
+        const newXp = Math.max(0, state.xp - XP_REWARDS.workout);
 
         set({
           workoutLogs: newLogs,
@@ -356,14 +382,13 @@ const useUserStore = create(
           longestStreak: newLongestStreak,
           transformationLevel: newLevel,
           level: newLevel,
+          xp: newXp,
         });
 
         syncToSupabase(async (userId) => {
           await Promise.all([
             deleteExerciseLog(logId),
-            saveGamification(userId, buildGamSaveData({
-              ...get(),
-            })),
+            saveGamification(userId, buildGamSaveData({ ...get() })),
           ]);
         });
       },
@@ -378,16 +403,21 @@ const useUserStore = create(
           state.currentStreak, state.longestStreak, state.nutritionTargets
         );
         const newLevel = getCurrentTransformationLevel(stats).id;
+        const newXp = Math.max(0, state.xp - XP_REWARDS.weight);
 
         set({
           weightLogs: newWeightLogs,
           weightLogsCount: newWeightLogs.length,
           transformationLevel: newLevel,
           level: newLevel,
+          xp: newXp,
         });
 
-        syncToSupabase(async () => {
-          await deleteProgressLog(logId);
+        syncToSupabase(async (userId) => {
+          await Promise.all([
+            deleteProgressLog(logId),
+            saveGamification(userId, buildGamSaveData({ ...get() })),
+          ]);
         });
       },
 
@@ -451,17 +481,19 @@ const useUserStore = create(
           state.currentStreak, state.longestStreak, state.nutritionTargets
         );
         const newLevel = getCurrentTransformationLevel(stats).id;
+        const newXp = Math.max(0, state.xp - XP_REWARDS.meal);
 
         set({
           foodLogs: newFoodLogs,
           transformationLevel: newLevel,
           level: newLevel,
+          xp: newXp,
         });
 
         syncToSupabase(async (userId) => {
           await Promise.all([
             deleteFoodLog(logId),
-            saveGamification(userId, buildGamSaveData({ ...state, transformationLevel: newLevel })),
+            saveGamification(userId, buildGamSaveData({ ...get() })),
           ]);
         });
       },
@@ -589,6 +621,8 @@ const useUserStore = create(
           totalWorkouts,
           lastLoginDate: gamification?.lastLoginDate || null,
           weightLogsCount: weLogs.length,
+          currentWorkoutDay: gamification?.currentWorkoutDay || 0,
+          exerciseSwaps: gamification?.exerciseSwaps || {},
           plan,
           subscription: subData,
         });
@@ -641,6 +675,8 @@ const useUserStore = create(
           mealSwaps: {},
           exerciseSwaps: {},
           currentWorkoutDay: 0,
+          pendingFoodLogs: {},
+          activeWorkoutLog: null,
           plan,
           subscription,
         });

@@ -26,11 +26,13 @@ const useAuthStore = create((set, get) => ({
 
       if (session) {
         set({ session, user: session.user });
-        // Only hydrate from Supabase if local state is empty (not already onboarded)
-        const alreadyLoaded = useUserStore.getState().isOnboarded;
-        if (!alreadyLoaded) {
+        // Always hydrate from Supabase on boot to ensure cross-device sync.
+        // Use sessionStorage flag to avoid redundant hydration within the same tab session.
+        const alreadyHydratedThisSession = sessionStorage.getItem('gymthozhan-hydrated');
+        if (!alreadyHydratedThisSession) {
           try {
             await get().hydrateProfile(session.user.id);
+            sessionStorage.setItem('gymthozhan-hydrated', 'true');
           } catch (e) {
             console.warn('Initial hydration failed:', e.message);
           }
@@ -43,14 +45,11 @@ const useAuthStore = create((set, get) => ({
         set({ session, user: session?.user ?? null });
 
         if (event === 'SIGNED_IN' && session) {
-          // Only hydrate if not already onboarded (avoid re-loading on tab focus/return)
-          const alreadyLoaded = useUserStore.getState().isOnboarded;
-          if (!alreadyLoaded) {
-            try {
-              await get().hydrateProfile(session.user.id);
-            } catch (e) {
-              console.warn('Auth change hydration failed:', e.message);
-            }
+          try {
+            await get().hydrateProfile(session.user.id);
+            sessionStorage.setItem('gymthozhan-hydrated', 'true');
+          } catch (e) {
+            console.warn('Auth change hydration failed:', e.message);
           }
         }
       });
@@ -135,6 +134,7 @@ const useAuthStore = create((set, get) => ({
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       useUserStore.getState().resetAll();
+      sessionStorage.removeItem('gymthozhan-hydrated');
       set({
         session: null,
         user: null,
