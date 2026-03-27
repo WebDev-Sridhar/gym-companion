@@ -274,6 +274,7 @@ export const TRANSFORMATION_LEVELS = [
  * @returns {object} The highest completed level, or { id: 0, name: 'Just Starting' }
  */
 export function getCurrentTransformationLevel(stats) {
+  if (!stats) return { id: 0, name: 'Just Starting', difficulty: 'Beginner', rewardMessage: 'Your journey begins now.', taskChecks: [] };
   for (let i = TRANSFORMATION_LEVELS.length - 1; i >= 0; i--) {
     const level = TRANSFORMATION_LEVELS[i];
     if (level.taskChecks.every((t) => t.check(stats))) {
@@ -313,7 +314,7 @@ export function getNextLevel(currentLevelId) {
  */
 export function getLevelProgress(levelId, stats) {
   const level = TRANSFORMATION_LEVELS.find((l) => l.id === levelId);
-  if (!level) return { completedTasks: 0, totalTasks: 0, percentage: 0, taskDetails: [] };
+  if (!level || !stats) return { completedTasks: 0, totalTasks: 0, percentage: 0, taskDetails: [] };
 
   const taskDetails = level.taskChecks.map((t) => ({
     text: t.text,
