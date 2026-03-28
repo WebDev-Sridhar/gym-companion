@@ -303,7 +303,7 @@ export default function Onboarding() {
                       <button
                         key={range.key}
                         onClick={() => update('bodyFat', range.key)}
-                        className={`rounded-xl overflow-hidden bg-[#1a1a1a] transition-all ${
+                        className={`rounded-xl overflow-hidden bg-[#1a1a1a] transition-all bg-[#1d1e1f] ${
                           formData.bodyFat === range.key
                             ? 'ring-2 ring-accent'
                             : 'ring-1 ring-white/[0.06] hover:ring-white/[0.15]'
