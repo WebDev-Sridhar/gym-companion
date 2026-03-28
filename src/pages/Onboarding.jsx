@@ -196,7 +196,7 @@ export default function Onboarding() {
                             {opt.label}
                           </span>
                         </div>
-                        <p className="text-xs text-text-muted ml-9">{opt.desc}</p>
+                        <p className="text-xs text-text-muted">{opt.desc}</p>
                       </button>
                     ))}
                   </div>
@@ -298,28 +298,24 @@ export default function Onboarding() {
                 <div>
                   <h2 className="text-2xl font-bold mb-2 text-text-primary">Body fat estimate</h2>
                   <p className="text-text-muted text-sm mb-5">Pick the range that closest describes you. Used to personalise your plan.</p>
-                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
+                  <div className="grid grid-cols-5 gap-1">
                     {bfRanges.map((range) => (
                       <button
                         key={range.key}
                         onClick={() => update('bodyFat', range.key)}
-                        className={`flex flex-col items-center p-3 rounded-xl border-2 transition-all ${
+                        className={`rounded-lg border-2 transition-all overflow-hidden ${
                           formData.bodyFat === range.key
                             ? 'border-accent bg-accent/5'
-                            : 'border-white/[0.06] hover:border-white/[0.12]'
+                            : 'border-transparent hover:border-white/[0.12]'
                         }`}
                       >
                         <img
                           src={range.image}
                           alt={range.desc}
-                          className={`w-full h-full object-contain mx-auto transition-opacity ${
-                            formData.bodyFat === range.key ? 'opacity-100' : 'opacity-50'
+                          className={`w-full h-auto object-contain transition-opacity ${
+                            formData.bodyFat === range.key ? 'opacity-100' : 'opacity-40'
                           }`}
                         />
-                        {/* <span className={`text-xs font-bold mt-2 ${formData.bodyFat === range.key ? 'text-accent' : 'text-text-primary'}`}>
-                          {range.label}
-                        </span> */}
-                        {/* <span className="text-[10px] text-text-muted text-center leading-tight mt-0.5">{range.desc}</span> */}
                       </button>
                     ))}
                   </div>
