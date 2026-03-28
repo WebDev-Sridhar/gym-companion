@@ -133,7 +133,10 @@ const useAuthStore = create((set, get) => ({
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      useUserStore.getState().resetAll();
+      // Only clear local state — do NOT delete Supabase data on sign-out.
+      // resetAll() is reserved for the explicit "Reset All Data" action in Profile.
+      const userStore = useUserStore.getState();
+      userStore.clearLocalState();
       sessionStorage.removeItem('gymthozhan-hydrated');
       set({
         session: null,

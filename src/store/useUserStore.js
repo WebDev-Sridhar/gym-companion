@@ -534,14 +534,12 @@ const useUserStore = create(
           });
 
           syncToSupabase(async (userId) => {
-            await saveGamification(userId, {
+            await saveGamification(userId, buildGamSaveData({
+              ...state,
               transformationLevel: newLevel,
               xp: newXp,
-              currentStreak: state.currentStreak,
-              longestStreak: state.longestStreak,
-              totalWorkouts: state.totalWorkouts,
               lastLoginDate: today,
-            });
+            }));
           });
         }
       },
@@ -652,7 +650,37 @@ const useUserStore = create(
         });
       },
 
-      // Reset (preserves subscription/plan)
+      // Clear local state only (used on sign-out — does NOT delete Supabase data)
+      clearLocalState: () => {
+        set({
+          profile: null,
+          isOnboarded: false,
+          workoutPlan: null,
+          dietPlan: null,
+          nutritionTargets: null,
+          workoutLogs: [],
+          weightLogs: [],
+          foodLogs: [],
+          transformationLevel: 0,
+          level: 0,
+          xp: 0,
+          currentStreak: 0,
+          longestStreak: 0,
+          lastLoginDate: null,
+          totalWorkouts: 0,
+          weightLogsCount: 0,
+          mealSwaps: {},
+          exerciseSwaps: {},
+          currentWorkoutDay: 0,
+          pendingFoodLogs: {},
+          activeWorkoutLog: null,
+          plan: 'free',
+          subscription: null,
+        });
+        localStorage.removeItem('gym-companion-storage');
+      },
+
+      // Reset (preserves subscription/plan) — deletes Supabase data too
       resetAll: () => {
         const { plan, subscription } = get();
         set({
