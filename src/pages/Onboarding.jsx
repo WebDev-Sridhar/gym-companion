@@ -131,7 +131,7 @@ export default function Onboarding() {
         <div className="absolute top-1/3 left-1/4 w-80 h-80 bg-accent/[0.03] rounded-full blur-[120px]" />
       </div>
 
-      <div className={`relative z-10 w-full ${step === 6 ? 'max-w-3xl' : 'max-w-lg'} transition-all duration-300`}>
+      <div className={`relative z-10 w-full ${step === 6 ? 'max-w-4xl' : 'max-w-lg'} transition-all duration-300`}>
         {/* Progress */}
         <div className="mb-8">
           <div className="flex justify-between text-xs text-text-muted mb-2">
@@ -313,7 +313,7 @@ export default function Onboarding() {
                           src={range.image}
                           alt={range.desc}
                           className={`w-full h-auto block transition-opacity ${
-                            formData.bodyFat === range.key ? 'opacity-100' : 'opacity-50'
+                            formData.bodyFat === range.key ? 'opacity-100' : 'opacity-80'
                           }`}
                         />
                       </button>
