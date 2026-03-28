@@ -136,7 +136,7 @@ export default function useWorkoutSearch() {
       const scored = filtered
         .map(w => ({ workout: w, score: scoreWorkout(w, debouncedQuery) }))
         .filter(s => s.score > 0)
-        .sort((a, b) => b.score - a.score);
+        .sort((a, b) => b.score - a.score || (b.workout.priorityScore || 0) - (a.workout.priorityScore || 0));
 
       return {
         results: scored.map(s => s.workout),
@@ -144,8 +144,11 @@ export default function useWorkoutSearch() {
       };
     }
 
+    // No search query — sort by priorityScore (curated first)
+    const sorted = [...filtered].sort((a, b) => (b.priorityScore || 0) - (a.priorityScore || 0));
+
     return {
-      results: filtered,
+      results: sorted,
       suggestions: [],
     };
   }, [debouncedQuery, selectedMuscle, selectedEquipment, selectedDifficulty]);
@@ -157,7 +160,7 @@ export default function useWorkoutSearch() {
     const scored = allExercises
       .map(w => ({ workout: w, score: scoreWorkout(w, query) }))
       .filter(s => s.score > 0)
-      .sort((a, b) => b.score - a.score)
+      .sort((a, b) => b.score - a.score || (b.workout.priorityScore || 0) - (a.workout.priorityScore || 0))
       .slice(0, 8);
 
     return scored.map(s => s.workout);
