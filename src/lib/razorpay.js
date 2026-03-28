@@ -1,7 +1,5 @@
 import supabase from './supabase';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-
 let scriptLoaded = null;
 
 export function loadRazorpayScript() {
@@ -26,43 +24,21 @@ export function loadRazorpayScript() {
 }
 
 export async function createOrder(planType) {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) throw new Error('Not authenticated');
-
-  const res = await fetch(`${SUPABASE_URL}/functions/v1/create-order`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${session.access_token}`,
-    },
-    body: JSON.stringify({ planType }),
+  const { data, error } = await supabase.functions.invoke('create-order', {
+    body: { planType },
   });
 
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.error || 'Failed to create order');
-  }
-  return res.json();
+  if (error) throw new Error(error.message || 'Failed to create order');
+  return data;
 }
 
 export async function verifyPayment({ razorpay_order_id, razorpay_payment_id, razorpay_signature }) {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) throw new Error('Not authenticated');
-
-  const res = await fetch(`${SUPABASE_URL}/functions/v1/verify-payment`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${session.access_token}`,
-    },
-    body: JSON.stringify({ razorpay_order_id, razorpay_payment_id, razorpay_signature }),
+  const { data, error } = await supabase.functions.invoke('verify-payment', {
+    body: { razorpay_order_id, razorpay_payment_id, razorpay_signature },
   });
 
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.error || 'Payment verification failed');
-  }
-  return res.json();
+  if (error) throw new Error(error.message || 'Payment verification failed');
+  return data;
 }
 
 export function openCheckout({ orderId, amount, planType, userEmail, userName, onSuccess, onFailure }) {
