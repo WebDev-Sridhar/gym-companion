@@ -253,3 +253,41 @@
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }
 }
+
+
+.anatomy-svg {
+  width: 100%;
+  max-width: 400px;
+  background-color: transparent;
+}
+
+/* Base Body Outline */
+.body-outline {
+  fill: #1e293b; /* Slate 800 */
+  stroke: #475569; /* Slate 600 */
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Interactive Muscle Groups */
+.muscle-group {
+  fill: transparent;
+  stroke: #3b82f6; /* Blue 500 */
+  stroke-width: 1.2;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.muscle-group:hover {
+  fill: rgba(59, 130, 246, 0.3); /* Premium translucent glow */
+  stroke: #60a5fa; /* Blue 400 */
+  stroke-width: 2;
+  filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.5));
+}
+
+/* Optional: Active/Selected state for React */
+.muscle-group.active {
+  fill: rgba(59, 130, 246, 0.5);
+  stroke: #93c5fd;
+}

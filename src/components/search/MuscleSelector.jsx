@@ -1,81 +1,96 @@
 import { useState } from 'react';
 
+const BODY_OUTLINE_FRONT = 'M 120 40 C 120 20 180 20 180 40 C 180 60 165 70 150 70 C 135 70 120 60 120 40 Z M 135 70 L 130 90 L 170 90 L 165 70 Z M 130 90 C 80 95 60 110 40 140 C 30 180 30 250 50 340 L 65 340 C 55 260 60 180 85 180 C 85 240 100 300 120 310 L 120 580 C 100 590 100 600 120 600 L 140 600 L 145 320 L 155 320 L 160 600 L 180 600 C 200 600 200 590 180 580 L 180 310 C 200 300 215 240 215 180 C 240 180 245 260 235 340 L 250 340 C 270 250 270 180 260 140 C 240 110 220 95 170 90 Z';
+
+const BODY_OUTLINE_BACK = 'M 120 40 C 120 20 180 20 180 40 C 180 60 165 70 150 70 C 135 70 120 60 120 40 Z M 135 70 L 130 90 L 170 90 L 165 70 Z M 130 90 C 80 95 60 110 40 140 C 30 180 30 250 50 340 L 65 340 C 55 260 60 180 85 180 C 85 240 100 300 120 310 L 120 580 C 100 590 100 600 120 600 L 140 600 L 145 320 L 155 320 L 160 600 L 180 600 C 200 600 200 590 180 580 L 180 310 C 200 300 215 240 215 180 C 240 180 245 260 235 340 L 250 340 C 270 250 270 180 260 140 C 240 110 220 95 170 90 Z';
+
 const FRONT_MUSCLES = [
   {
-    name: 'Traps',
-    path: 'M 128,75 Q 140,68 150,72 L 150,85 Q 140,80 128,82 Z M 172,75 Q 160,68 150,72 L 150,85 Q 160,80 172,82 Z',
+    name: 'Chest',
+    path: 'M 148 110 C 110 110 90 120 90 150 C 90 180 120 185 148 185 Z M 152 110 C 190 110 210 120 210 150 C 210 180 180 185 152 185 Z',
   },
   {
     name: 'Shoulders',
-    path: 'M 118,85 Q 108,88 105,100 L 112,108 Q 118,95 125,88 Z M 182,85 Q 192,88 195,100 L 188,108 Q 182,95 175,88 Z',
-  },
-  {
-    name: 'Chest',
-    path: 'M 125,88 Q 150,82 175,88 L 175,110 Q 150,115 125,110 Z',
+    path: 'M 90 100 C 60 105 45 130 45 160 C 45 190 65 200 85 170 C 85 140 90 120 90 100 Z M 210 100 C 240 105 255 130 255 160 C 255 190 235 200 215 170 C 215 140 210 120 210 100 Z',
   },
   {
     name: 'Biceps',
-    path: 'M 105,110 Q 100,125 102,145 L 112,145 Q 115,125 112,110 Z M 195,110 Q 200,125 198,145 L 188,145 Q 185,125 188,110 Z',
+    path: 'M 45 165 C 35 195 35 230 55 250 C 65 230 75 190 60 165 Z M 255 165 C 265 195 265 230 245 250 C 235 230 225 190 240 165 Z',
   },
   {
     name: 'Forearms',
-    path: 'M 102,148 Q 98,168 100,185 L 108,185 Q 112,168 112,148 Z M 198,148 Q 202,168 200,185 L 192,185 Q 188,168 188,148 Z',
+    path: 'M 53 255 C 33 290 33 320 48 340 C 63 320 68 290 60 255 Z M 247 255 C 267 290 267 320 252 340 C 237 320 232 290 240 255 Z',
   },
   {
     name: 'Abs',
-    path: 'M 135,112 Q 150,108 165,112 L 165,160 Q 150,165 135,160 Z',
+    path: 'M 135 190 C 135 230 140 285 150 295 C 160 285 165 230 165 190 C 150 195 150 195 135 190 Z',
   },
   {
     name: 'Obliques',
-    path: 'M 120,112 L 135,112 L 135,160 L 120,155 Z M 180,112 L 165,112 L 165,160 L 180,155 Z',
+    path: 'M 90 190 C 80 230 90 280 125 290 C 125 250 110 210 90 190 Z M 210 190 C 220 230 210 280 175 290 C 175 250 190 210 210 190 Z',
   },
   {
     name: 'Quads',
-    path: 'M 122,170 Q 125,165 140,168 L 140,230 Q 130,235 125,230 Q 120,210 122,170 Z M 178,170 Q 175,165 160,168 L 160,230 Q 170,235 175,230 Q 180,210 178,170 Z',
+    path: 'M 135 310 C 105 310 85 390 95 460 C 120 460 140 400 143 310 Z M 165 310 C 195 310 215 390 205 460 C 180 460 160 400 157 310 Z',
   },
   {
     name: 'Calves',
-    path: 'M 125,245 Q 128,240 138,242 L 136,290 Q 130,295 126,290 Q 123,270 125,245 Z M 175,245 Q 172,240 162,242 L 164,290 Q 170,295 174,290 Q 177,270 175,245 Z',
+    path: 'M 97 470 C 75 510 85 560 105 585 C 115 560 125 510 115 470 Z M 203 470 C 225 510 215 560 195 585 C 185 560 175 510 185 470 Z',
   },
 ];
 
 const BACK_MUSCLES = [
   {
-    name: 'Traps',
-    path: 'M 128,75 Q 140,68 150,72 L 150,90 Q 140,85 128,87 Z M 172,75 Q 160,68 150,72 L 150,90 Q 160,85 172,87 Z',
+    name: 'Back',
+    path: 'M 150 95 C 120 105 100 150 90 200 C 110 260 135 290 148 295 C 152 295 165 295 165 295 C 165 295 190 260 210 200 C 200 150 180 105 150 95 Z',
   },
   {
     name: 'Rear Delts',
-    path: 'M 118,85 Q 108,88 105,100 L 112,108 Q 118,95 125,88 Z M 182,85 Q 192,88 195,100 L 188,108 Q 182,95 175,88 Z',
-  },
-  {
-    name: 'Back',
-    path: 'M 125,90 Q 150,85 175,90 L 175,145 Q 150,152 125,145 Z',
+    path: 'M 90 100 C 60 105 45 130 45 160 C 45 190 65 200 85 170 C 85 140 90 120 90 100 Z M 210 100 C 240 105 255 130 255 160 C 255 190 235 200 215 170 C 215 140 210 120 210 100 Z',
   },
   {
     name: 'Triceps',
-    path: 'M 105,110 Q 100,125 102,145 L 112,145 Q 115,125 112,110 Z M 195,110 Q 200,125 198,145 L 188,145 Q 185,125 188,110 Z',
+    path: 'M 45 160 C 30 190 40 235 55 250 C 70 210 65 175 65 160 Z M 255 160 C 270 190 260 235 245 250 C 230 210 235 175 235 160 Z',
   },
   {
     name: 'Forearms',
-    path: 'M 102,148 Q 98,168 100,185 L 108,185 Q 112,168 112,148 Z M 198,148 Q 202,168 200,185 L 192,185 Q 188,168 188,148 Z',
+    path: 'M 53 255 C 33 290 33 320 48 340 C 63 320 68 290 60 255 Z M 247 255 C 267 290 267 320 252 340 C 237 320 232 290 240 255 Z',
   },
   {
     name: 'Glutes',
-    path: 'M 122,150 Q 150,145 178,150 L 178,175 Q 150,180 122,175 Z',
+    path: 'M 148 295 C 110 295 90 325 100 365 C 120 375 140 355 148 355 Z M 152 295 C 190 295 210 325 200 365 C 180 375 160 355 152 355 Z',
   },
   {
     name: 'Hamstrings',
-    path: 'M 122,178 Q 125,175 140,177 L 140,235 Q 130,240 125,235 Q 120,215 122,178 Z M 178,178 Q 175,175 160,177 L 160,235 Q 170,240 175,235 Q 180,215 178,178 Z',
+    path: 'M 100 375 C 90 415 100 445 105 455 C 125 445 135 415 140 375 Z M 200 375 C 210 415 200 445 195 455 C 175 445 165 415 160 375 Z',
   },
   {
     name: 'Calves',
-    path: 'M 125,245 Q 128,240 138,242 L 136,290 Q 130,295 126,290 Q 123,270 125,245 Z M 175,245 Q 172,240 162,242 L 164,290 Q 170,295 174,290 Q 177,270 175,245 Z',
+    path: 'M 97 470 C 75 510 85 560 105 585 C 115 560 125 510 115 470 Z M 203 470 C 225 510 215 560 195 585 C 185 560 175 510 185 470 Z',
   },
 ];
 
-// Body outline (silhouette)
-const BODY_OUTLINE = 'M 150,20 Q 140,20 135,28 Q 130,38 132,50 Q 134,60 140,65 Q 145,70 150,70 Q 155,70 160,65 Q 166,60 168,50 Q 170,38 165,28 Q 160,20 150,20 Z M 150,72 Q 125,72 118,85 Q 108,85 102,100 Q 96,118 98,140 Q 99,155 100,165 Q 100,175 102,185 Q 104,190 108,190 Q 108,185 107,175 Q 106,165 108,155 L 118,155 L 118,165 Q 120,170 122,170 Q 122,195 124,220 Q 126,238 128,245 Q 126,250 125,260 Q 124,275 126,290 Q 128,300 132,305 Q 136,308 140,305 Q 138,298 137,290 Q 136,278 137,265 Q 138,255 140,245 Q 140,238 142,230 L 150,230 Q 150,230 158,230 Q 160,238 160,245 Q 162,255 163,265 Q 164,278 163,290 Q 162,298 160,305 Q 164,308 168,305 Q 172,300 174,290 Q 176,275 175,260 Q 174,250 172,245 Q 174,238 176,220 Q 178,195 178,170 Q 180,170 182,165 L 182,155 L 192,155 Q 194,165 193,175 Q 192,185 192,190 Q 196,190 198,185 Q 200,175 200,165 Q 201,155 202,140 Q 204,118 198,100 Q 192,85 182,85 Q 175,72 150,72 Z';
+// Label positions for the 300x600 viewBox
+const FRONT_LABELS = {
+  Chest: { x: 150, y: 150 },
+  Shoulders: { x: 52, y: 140 },
+  Biceps: { x: 40, y: 210 },
+  Forearms: { x: 38, y: 300 },
+  Abs: { x: 150, y: 245 },
+  Obliques: { x: 95, y: 240 },
+  Quads: { x: 150, y: 390 },
+  Calves: { x: 150, y: 530 },
+};
+
+const BACK_LABELS = {
+  Back: { x: 150, y: 200 },
+  'Rear Delts': { x: 52, y: 140 },
+  Triceps: { x: 40, y: 210 },
+  Forearms: { x: 38, y: 300 },
+  Glutes: { x: 150, y: 335 },
+  Hamstrings: { x: 150, y: 420 },
+  Calves: { x: 150, y: 530 },
+};
 
 function MuscleGroup({ name, path, isSelected, onSelect }) {
   return (
@@ -83,8 +98,8 @@ function MuscleGroup({ name, path, isSelected, onSelect }) {
       d={path}
       className={`cursor-pointer transition-all duration-200 ${
         isSelected
-          ? 'fill-[#09cadb]/35 stroke-[#09cadb] stroke-[1.5]'
-          : 'fill-white/[0.08] stroke-white/20 stroke-[0.5] hover:fill-[#09cadb]/15 hover:stroke-[#09cadb]/50'
+          ? 'fill-[#09cadb]/35 stroke-[#09cadb] stroke-[2]'
+          : 'fill-white/[0.08] stroke-white/20 stroke-[0.8] hover:fill-[#09cadb]/15 hover:stroke-[#09cadb]/50'
       }`}
       onClick={() => onSelect(name)}
     >
@@ -93,35 +108,12 @@ function MuscleGroup({ name, path, isSelected, onSelect }) {
   );
 }
 
-// Muscle label positions
-const FRONT_LABELS = {
-  Traps: { x: 150, y: 73 },
-  Shoulders: { x: 98, y: 95 },
-  Chest: { x: 150, y: 100 },
-  Biceps: { x: 96, y: 128 },
-  Forearms: { x: 93, y: 167 },
-  Abs: { x: 150, y: 137 },
-  Obliques: { x: 120, y: 137 },
-  Quads: { x: 150, y: 200 },
-  Calves: { x: 150, y: 268 },
-};
-
-const BACK_LABELS = {
-  Traps: { x: 150, y: 78 },
-  'Rear Delts': { x: 98, y: 95 },
-  Back: { x: 150, y: 118 },
-  Triceps: { x: 96, y: 128 },
-  Forearms: { x: 93, y: 167 },
-  Glutes: { x: 150, y: 163 },
-  Hamstrings: { x: 150, y: 207 },
-  Calves: { x: 150, y: 268 },
-};
-
 export default function MuscleSelector({ selectedMuscle, onSelectMuscle }) {
   const [view, setView] = useState('front');
 
   const muscles = view === 'front' ? FRONT_MUSCLES : BACK_MUSCLES;
   const labels = view === 'front' ? FRONT_LABELS : BACK_LABELS;
+  const bodyOutline = view === 'front' ? BODY_OUTLINE_FRONT : BODY_OUTLINE_BACK;
 
   const handleSelect = (name) => {
     onSelectMuscle(selectedMuscle === name ? null : name);
@@ -148,14 +140,14 @@ export default function MuscleSelector({ selectedMuscle, onSelectMuscle }) {
 
       {/* SVG Body */}
       <svg
-        viewBox="65 10 170 310"
-        className="w-full max-w-[220px] h-auto"
+        viewBox="0 0 300 600"
+        className="w-full max-w-[240px] h-auto"
         xmlns="http://www.w3.org/2000/svg"
       >
         {/* Body outline */}
         <path
-          d={BODY_OUTLINE}
-          className="fill-white/[0.03] stroke-white/10 stroke-[0.8]"
+          d={bodyOutline}
+          className="fill-white/[0.03] stroke-white/10 stroke-[1]"
         />
 
         {/* Muscle groups */}
@@ -176,7 +168,7 @@ export default function MuscleSelector({ selectedMuscle, onSelectMuscle }) {
             x={pos.x}
             y={pos.y}
             textAnchor="middle"
-            className={`text-[5px] font-medium pointer-events-none select-none ${
+            className={`text-[10px] font-medium pointer-events-none select-none ${
               selectedMuscle === name ? 'fill-[#09cadb]' : 'fill-white/30'
             }`}
           >
