@@ -79,7 +79,6 @@ const useUserStore = create(
       // Profile
       profile: null,
       isOnboarded: false,
-      hasOnboardedBefore: false, // true once user completes onboarding at least once (survives reset)
 
       // Plans
       workoutPlan: null,
@@ -230,7 +229,9 @@ const useUserStore = create(
       },
 
       completeOnboarding: () => {
-        set({ isOnboarded: true, hasOnboardedBefore: true });
+        set({ isOnboarded: true });
+        // Persist separately so it survives resetAll (which wipes gym-companion-storage)
+        localStorage.setItem('gymthozhan-onboarded-before', 'true');
 
         const state = get();
         syncToSupabase(async (userId) => {
