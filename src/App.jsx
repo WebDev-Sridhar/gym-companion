@@ -53,7 +53,7 @@ function OnboardingRoute({ children }) {
   const session = useAuthStore((s) => s.session);
   const isOnboarded = useUserStore((s) => s.isOnboarded);
   const plan = useUserStore((s) => s.plan);
-  const hasOnboardedBefore = localStorage.getItem('gymthozhan-onboarded-before') === 'true';
+  const hasOnboardedBefore = useUserStore((s) => s.hasOnboardedBefore);
 
   if (!session) return <Navigate to="/auth" replace />;
   if (isOnboarded) return <Navigate to="/dashboard" replace />;

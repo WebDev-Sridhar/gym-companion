@@ -35,6 +35,7 @@ export async function saveProfile(userId, profileData) {
     workout_days: profileData.workoutDays,
     workout_duration: profileData.workoutDuration,
     use_supplements: profileData.useSupplements,
+    has_onboarded_before: profileData.hasOnboardedBefore || false,
     updated_at: new Date().toISOString(),
   };
 
@@ -358,7 +359,12 @@ export async function deleteAllUserData(userId) {
     if (res.error) console.error(`Failed to delete from ${tables[i]}:`, res.error.message);
   });
 
-  // Delete profile last after all dependent rows are gone
-  const profileRes = await supabase.from('profiles').delete().eq('user_id', userId);
-  if (profileRes.error) console.error('Failed to delete from profiles:', profileRes.error.message);
+  // Null out profile fields but keep the row (preserves has_onboarded_before flag)
+  const profileRes = await supabase.from('profiles').update({
+    name: null, age: null, height: null, weight: null, gender: null,
+    activity_level: null, goal: null, diet_type: null,
+    workout_days: null, workout_duration: null, use_supplements: null,
+    updated_at: new Date().toISOString(),
+  }).eq('user_id', userId);
+  if (profileRes.error) console.error('Failed to reset profiles:', profileRes.error.message);
 }

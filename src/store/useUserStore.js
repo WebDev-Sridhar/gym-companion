@@ -79,6 +79,7 @@ const useUserStore = create(
       // Profile
       profile: null,
       isOnboarded: false,
+      hasOnboardedBefore: false,
 
       // Plans
       workoutPlan: null,
@@ -229,14 +230,12 @@ const useUserStore = create(
       },
 
       completeOnboarding: () => {
-        set({ isOnboarded: true });
-        // Persist separately so it survives resetAll (which wipes gym-companion-storage)
-        localStorage.setItem('gymthozhan-onboarded-before', 'true');
+        set({ isOnboarded: true, hasOnboardedBefore: true });
 
         const state = get();
         syncToSupabase(async (userId) => {
           await Promise.all([
-            saveProfile(userId, state.profile),
+            saveProfile(userId, { ...state.profile, hasOnboardedBefore: true }),
             saveWorkoutPlan(userId, state.workoutPlan),
             saveDietPlan(userId, state.dietPlan),
             saveGamification(userId, buildGamSaveData(state)),
@@ -584,8 +583,6 @@ const useUserStore = create(
 
         if (!profile) return;
 
-        const nutritionTargets = calculateNutritionTargets(profile);
-
         // Determine plan status from subscription
         let plan = 'free';
         let subData = null;
@@ -598,6 +595,18 @@ const useUserStore = create(
             subData = { ...subscription, status: 'expired' };
           }
         }
+
+        // Profile row exists but fields are nulled (post-reset) — hydrate flag + subscription only
+        if (!profile.name) {
+          set({
+            hasOnboardedBefore: profile.hasOnboardedBefore || false,
+            plan,
+            subscription: subData,
+          });
+          return;
+        }
+
+        const nutritionTargets = calculateNutritionTargets(profile);
 
         // Recompute stats from actual logs (not gamification table, which may be stale)
         const wLogs = exerciseLogs || [];
@@ -619,6 +628,7 @@ const useUserStore = create(
         set({
           profile,
           isOnboarded: true,
+          hasOnboardedBefore: profile.hasOnboardedBefore || false,
           nutritionTargets,
           workoutPlan: generateWorkoutPlan(profile),
           dietPlan: generateDietPlan(profile),
@@ -696,10 +706,11 @@ const useUserStore = create(
 
       // Reset (preserves subscription/plan) — deletes Supabase data too
       resetAll: () => {
-        const { plan, subscription } = get();
+        const { plan, subscription, hasOnboardedBefore } = get();
         set({
           profile: null,
           isOnboarded: false,
+          hasOnboardedBefore, // preserve — stored in DB, survives reset
           workoutPlan: null,
           dietPlan: null,
           nutritionTargets: null,
