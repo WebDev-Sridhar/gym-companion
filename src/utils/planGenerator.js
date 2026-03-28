@@ -1,4 +1,4 @@
-import { exercises, workoutSplits } from '../data/exercises';
+import { exercises, workoutSplits } from '../data/exerciseDatabase';
 import { dietPlans, supplementPlans } from '../data/dietPlans';
 import { calculateNutritionTargets, calculateMacros } from './tdee';
 

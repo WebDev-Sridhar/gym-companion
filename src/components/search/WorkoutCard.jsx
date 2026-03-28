@@ -57,7 +57,7 @@ export default function WorkoutCard({ workout }) {
             {workout.name}
           </h3>
           <p className="text-xs text-[#09cadb] font-medium mb-3">
-            {workout.targetMuscle}
+            {workout.muscle}
           </p>
           <button
             onClick={() => setShowDetail(true)}
@@ -84,7 +84,7 @@ export default function WorkoutCard({ workout }) {
                 <h2 className="text-lg font-bold text-white">{workout.name}</h2>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-xs text-[#09cadb] font-medium">
-                    {workout.targetMuscle}
+                    {workout.muscle}
                   </span>
                   <span className="text-white/20">·</span>
                   <span
@@ -119,7 +119,7 @@ export default function WorkoutCard({ workout }) {
             <div className="p-4">
               <h3 className="text-sm font-semibold text-white/80 mb-3">Instructions</h3>
               <ol className="space-y-2">
-                {workout.instructions.map((step, i) => (
+                {(Array.isArray(workout.instructions) ? workout.instructions : workout.instructions.split('. ').filter(Boolean)).map((step, i) => (
                   <li key={i} className="flex gap-3 text-sm text-white/60">
                     <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#09cadb]/15 text-[#09cadb] text-xs flex items-center justify-center font-semibold">
                       {i + 1}

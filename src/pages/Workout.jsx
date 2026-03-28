@@ -27,7 +27,7 @@ import ProLock from '../components/ui/ProLock';
 import { showUpgradeModal } from '../components/ui/PaymentModal';
 import { showCoach } from '../components/ui/CoachPopup';
 import useUserStore from '../store/useUserStore';
-import { exercises as exerciseDB, getAlternatives } from '../data/exercises';
+import { exercises as exerciseDB, getAlternatives } from '../data/exerciseDatabase';
 
 const EMPTY_OBJ = {};
 

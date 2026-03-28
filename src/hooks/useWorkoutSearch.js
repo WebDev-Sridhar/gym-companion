@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
-import { workouts } from '../data/searchWorkout';
+import { allExercises } from '../data/exerciseDatabase';
 
 const PAGE_SIZE = 6;
 const DEBOUNCE_MS = 300;
@@ -46,7 +46,7 @@ function scoreWorkout(workout, query) {
   const normalizedQuery = query.toLowerCase().trim();
   const tokens = expandQuery(query);
   const nameLower = workout.name.toLowerCase();
-  const muscleLower = workout.targetMuscle.toLowerCase();
+  const muscleLower = workout.muscle.toLowerCase();
 
   let score = 0;
 
@@ -114,11 +114,11 @@ export default function useWorkoutSearch() {
 
   // Filter and score
   const { results, suggestions } = useMemo(() => {
-    let filtered = workouts;
+    let filtered = allExercises;
 
     // Apply muscle filter
     if (selectedMuscle) {
-      filtered = filtered.filter(w => w.targetMuscle === selectedMuscle);
+      filtered = filtered.filter(w => w.muscle === selectedMuscle);
     }
 
     // Apply equipment filter
@@ -154,7 +154,7 @@ export default function useWorkoutSearch() {
   const liveSuggestions = useMemo(() => {
     if (!query.trim() || query.trim().length < 2) return [];
 
-    const scored = workouts
+    const scored = allExercises
       .map(w => ({ workout: w, score: scoreWorkout(w, query) }))
       .filter(s => s.score > 0)
       .sort((a, b) => b.score - a.score)

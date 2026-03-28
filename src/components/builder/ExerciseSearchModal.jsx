@@ -2,41 +2,8 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Search, Plus, Dumbbell } from 'lucide-react';
 import useWorkoutSearch from '../../hooks/useWorkoutSearch';
-import { exercises as exerciseDB, getExercisesByMuscle } from '../../data/exercises';
+import { getExercisesByMuscle } from '../../data/exerciseDatabase';
 import ExerciseConfigModal from './ExerciseConfigModal';
-
-// Map a searchWorkout result back to exercises.js for full data
-function mapToExerciseData(searchResult) {
-  const entry = Object.entries(exerciseDB).find(
-    ([, ex]) => ex.id === searchResult.id
-  );
-  if (entry) {
-    const [key, ex] = entry;
-    return { ...ex, exerciseKey: key, _source: 'db' };
-  }
-  // Not in exercises.js — treat as external
-  return {
-    id: searchResult.id,
-    exerciseKey: null,
-    name: searchResult.name,
-    muscle: searchResult.targetMuscle,
-    sets: 3,
-    reps: '10-12',
-    rest: '60s',
-    difficulty: searchResult.difficulty || 'intermediate',
-    alternatives: getExercisesByMuscle(searchResult.targetMuscle || '')
-      .slice(0, 3)
-      .map((e) => e.key),
-    videoId: searchResult.videoId || null,
-    gifUrl: null,
-    instructions: searchResult.instructions
-      ? searchResult.instructions.join(' ')
-      : `Perform ${searchResult.name} with controlled form and full range of motion.`,
-    donts: [],
-    isCustom: true,
-    _source: 'search',
-  };
-}
 
 const MUSCLE_GROUPS = [
   'Chest', 'Back', 'Shoulders', 'Biceps', 'Triceps',
@@ -63,12 +30,12 @@ export default function ExerciseSearchModal({ onAdd, onClose, existingIds }) {
   const [showCustomForm, setShowCustomForm] = useState(false);
 
   const handleSelect = (workout) => {
-    const mapped = mapToExerciseData(workout);
     setConfigExercise({
-      ...mapped,
-      sets: mapped.sets || 3,
-      reps: mapped.reps || '10-12',
-      restSeconds: parseInt(mapped.rest) || 60,
+      ...workout,
+      exerciseKey: workout.key || null,
+      sets: workout.sets || 3,
+      reps: workout.reps || '10-12',
+      restSeconds: parseInt(workout.rest) || 60,
     });
   };
 
@@ -80,7 +47,6 @@ export default function ExerciseSearchModal({ onAdd, onClose, existingIds }) {
       reps: config.reps,
       rest: `${config.restSeconds}s`,
     };
-    delete exercise._source;
     delete exercise.restSeconds;
     onAdd(exercise);
     setConfigExercise(null);
@@ -198,7 +164,7 @@ export default function ExerciseSearchModal({ onAdd, onClose, existingIds }) {
                         </p>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-xs text-accent/80">
-                            {workout.targetMuscle}
+                            {workout.muscle}
                           </span>
                           {workout.equipment && (
                             <span className="text-xs text-text-muted">

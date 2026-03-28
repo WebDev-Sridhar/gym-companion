@@ -80,7 +80,7 @@ export default function SearchBar({ query, setQuery, suggestions, onSelectSugges
                 <p className="text-xs text-white/30 mt-0.5">{workout.equipment}</p>
               </div>
               <span className="flex-shrink-0 ml-3 text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#09cadb]/10 text-[#09cadb] border border-[#09cadb]/20">
-                {workout.targetMuscle}
+                {workout.muscle}
               </span>
             </button>
           ))}
