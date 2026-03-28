@@ -14,6 +14,7 @@ import Progress from './pages/Progress';
 import Profile from './pages/Profile';
 import KnowledgeHub from './pages/KnowledgeHub';
 import FAQ from './pages/FAQ';
+import Explore from './pages/Explore';
 import PlanSummary from './pages/PlanSummary';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Terms from './pages/Terms';
@@ -136,6 +137,7 @@ export default function App() {
           <Route path="/progress" element={<ProtectedRoute><Progress /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/knowledge" element={<ProtectedRoute><KnowledgeHub /></ProtectedRoute>} />
+          <Route path="/explore" element={<ProtectedRoute><Explore /></ProtectedRoute>} />
           <Route path="/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<Terms />} />

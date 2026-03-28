@@ -8,6 +8,7 @@ import {
   TrendingUp,
   User,
   BookOpen,
+  Search,
   Menu,
   X,
   Flame,
@@ -31,6 +32,7 @@ const desktopItems = [
   { path: '/workout', label: 'Workout', icon: Dumbbell },
   { path: '/diet', label: 'Diet', icon: UtensilsCrossed },
   { path: '/progress', label: 'Progress', icon: TrendingUp },
+  { path: '/explore', label: 'Explore', icon: Search },
   { path: '/knowledge', label: 'Learn', icon: BookOpen },
   { path: '/profile', label: 'Profile', icon: User },
 ];
@@ -134,6 +136,18 @@ export default function Navbar() {
               className="fixed top-[57px] left-4 right-4 z-50 bg-[#111] rounded-xl md:hidden overflow-hidden border border-white/[0.06]"
             >
               <div className="p-2">
+                <Link
+                  to="/explore"
+                  onClick={() => setIsOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+                    location.pathname === '/explore'
+                      ? 'bg-white/10 text-text-primary'
+                      : 'text-text-secondary hover:text-text-primary hover:bg-white/[0.04]'
+                  }`}
+                >
+                  <Search size={18} />
+                  Explore Workouts
+                </Link>
                 <Link
                   to="/knowledge"
                   onClick={() => setIsOpen(false)}
