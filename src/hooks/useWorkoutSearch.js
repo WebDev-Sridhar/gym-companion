@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { workouts } from '../data/searchWorkout';
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 6;
 const DEBOUNCE_MS = 300;
 
 const SYNONYMS = {

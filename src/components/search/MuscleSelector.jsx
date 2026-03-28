@@ -183,12 +183,9 @@ export default function MuscleSelector({ selectedMuscle, onSelectMuscle }) {
           <span className="text-xs text-[#09cadb] font-medium">
             Filtering: {selectedMuscle}
           </span>
-          <button
-            onClick={() => onSelectMuscle(null)}
-            className="text-[10px] text-white/40 hover:text-white/60 underline"
-          >
-            Clear
-          </button>
+          <button onClick={() => onSelectMuscle(null)} className="px-3 py-1 text-xs rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition">
+  Clear 
+</button>
         </div>
       )}
     </div>

@@ -29,31 +29,6 @@ export const workouts = [
     ]
   },
   {
-    "id": "spider-curl",
-    "name": "Spider Curl",
-    "targetMuscle": "Biceps",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "CITtSuda0Fg",
-    "instructions": [
-      "Grip the weight with palms facing up or in a neutral position.",
-      "Curl the weight up, keeping your elbows stationary.",
-      "Lower the weight slowly, fully extending your arms."
-    ],
-    "keywords": [
-      "spider",
-      "curl",
-      "biceps",
-      "pull",
-      "isolation"
-    ],
-    "aliases": [
-      "biceps workout",
-      "biceps exercise",
-      "how to do spider curl"
-    ]
-  },
-  {
     "id": "hinge",
     "name": "HINGE",
     "targetMuscle": "Back",
@@ -97,61 +72,6 @@ export const workouts = [
       "triceps workout",
       "triceps exercise",
       "how to do overhead triceps extension"
-    ]
-  },
-  {
-    "id": "dumbbell-shoulder-press",
-    "name": "Dumbbell Shoulder Press",
-    "targetMuscle": "Chest",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "GFblCmuEE18",
-    "instructions": [
-      "Position yourself and grip the handles/bar at chest height.",
-      "Press forward or upward, squeezing your chest at the top.",
-      "Lower slowly with control back to the starting position."
-    ],
-    "keywords": [
-      "dumbbell",
-      "shoulder",
-      "press",
-      "chest",
-      "free weight",
-      "push"
-    ],
-    "aliases": [
-      "db shoulder press",
-      "chest workout",
-      "chest exercise",
-      "how to do dumbbell shoulder press"
-    ]
-  },
-  {
-    "id": "dumbbell-hammer-curl",
-    "name": "Dumbbell Hammer Curl",
-    "targetMuscle": "Biceps",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "8XLxfXROrTo",
-    "instructions": [
-      "Grip the weight with palms facing up or in a neutral position.",
-      "Curl the weight up, keeping your elbows stationary.",
-      "Lower the weight slowly, fully extending your arms."
-    ],
-    "keywords": [
-      "dumbbell",
-      "hammer",
-      "curl",
-      "biceps",
-      "free weight",
-      "pull",
-      "isolation"
-    ],
-    "aliases": [
-      "db hammer curl",
-      "biceps workout",
-      "biceps exercise",
-      "how to do dumbbell hammer curl"
     ]
   },
   {
@@ -307,32 +227,6 @@ export const workouts = [
     ]
   },
   {
-    "id": "barbell-glute-bridge",
-    "name": "Barbell Glute Bridge",
-    "targetMuscle": "Glutes",
-    "difficulty": "beginner",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "0od5lwWMGV8",
-    "instructions": [
-      "Position your hips for the movement with feet planted firmly.",
-      "Drive through your heels, squeezing your glutes at the top.",
-      "Lower back down with control."
-    ],
-    "keywords": [
-      "barbell",
-      "glute",
-      "bridge",
-      "glutes",
-      "free weight"
-    ],
-    "aliases": [
-      "bb glute bridge",
-      "glutes workout",
-      "glutes exercise",
-      "how to do barbell glute bridge"
-    ]
-  },
-  {
     "id": "barbell-shrugs",
     "name": "BARBELL SHRUGS",
     "targetMuscle": "Traps",
@@ -412,57 +306,6 @@ export const workouts = [
       "general workout",
       "general exercise",
       "how to do how to pick up & dump heavy dumbbells safely"
-    ]
-  },
-  {
-    "id": "barbell-bench-press",
-    "name": "Barbell Bench Press",
-    "targetMuscle": "Chest",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "ysUTNll8JQ8",
-    "instructions": [
-      "Position yourself and grip the handles/bar at chest height.",
-      "Press forward or upward, squeezing your chest at the top.",
-      "Lower slowly with control back to the starting position."
-    ],
-    "keywords": [
-      "barbell",
-      "bench",
-      "press",
-      "chest",
-      "free weight",
-      "push"
-    ],
-    "aliases": [
-      "bb bench press",
-      "chest workout",
-      "chest exercise",
-      "how to do barbell bench press"
-    ]
-  },
-  {
-    "id": "pendlay-row",
-    "name": "Pendlay Row",
-    "targetMuscle": "Back",
-    "difficulty": "advanced",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "8CrrVQi6t4w",
-    "instructions": [
-      "Grip the bar or handle with the appropriate grip width.",
-      "Pull toward your body, squeezing your shoulder blades together.",
-      "Return to the starting position with a controlled negative."
-    ],
-    "keywords": [
-      "pendlay",
-      "row",
-      "back",
-      "pull"
-    ],
-    "aliases": [
-      "back workout",
-      "back exercise",
-      "how to do pendlay row"
     ]
   },
   {
@@ -648,33 +491,6 @@ export const workouts = [
       "chest workout",
       "chest exercise",
       "how to do chest flys |"
-    ]
-  },
-  {
-    "id": "dumbbell-bench-press",
-    "name": "Dumbbell Bench Press",
-    "targetMuscle": "Chest",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "Y_7aHqXeCfQ",
-    "instructions": [
-      "Position yourself and grip the handles/bar at chest height.",
-      "Press forward or upward, squeezing your chest at the top.",
-      "Lower slowly with control back to the starting position."
-    ],
-    "keywords": [
-      "dumbbell",
-      "bench",
-      "press",
-      "chest",
-      "free weight",
-      "push"
-    ],
-    "aliases": [
-      "db bench press",
-      "chest workout",
-      "chest exercise",
-      "how to do dumbbell bench press"
     ]
   },
   {
@@ -958,32 +774,6 @@ export const workouts = [
       "back workout",
       "back exercise",
       "how to do deficit deadlift"
-    ]
-  },
-  {
-    "id": "dumbbell-pull-over",
-    "name": "Dumbbell Pull-Over",
-    "targetMuscle": "Chest",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "ZhPOEQJRzBU",
-    "instructions": [
-      "Position yourself and grip the handles/bar at chest height.",
-      "Press forward or upward, squeezing your chest at the top.",
-      "Lower slowly with control back to the starting position."
-    ],
-    "keywords": [
-      "dumbbell",
-      "pull",
-      "over",
-      "chest",
-      "free weight"
-    ],
-    "aliases": [
-      "db pull-over",
-      "chest workout",
-      "chest exercise",
-      "how to do dumbbell pull-over"
     ]
   },
   {
@@ -1388,34 +1178,6 @@ export const workouts = [
       "biceps workout",
       "biceps exercise",
       "how to do barbell drag curl"
-    ]
-  },
-  {
-    "id": "seated-barbell-shoulder-press",
-    "name": "Seated Barbell Shoulder Press",
-    "targetMuscle": "Shoulders",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "oBGeXxnigsQ",
-    "instructions": [
-      "Hold the weight at shoulder height with proper grip.",
-      "Press or raise the weight in a controlled motion.",
-      "Lower back to the starting position slowly."
-    ],
-    "keywords": [
-      "seated",
-      "barbell",
-      "shoulder",
-      "press",
-      "shoulders",
-      "free weight",
-      "push"
-    ],
-    "aliases": [
-      "seated bb shoulder press",
-      "shoulders workout",
-      "shoulders exercise",
-      "how to do seated barbell shoulder press"
     ]
   },
   {
@@ -3769,33 +3531,6 @@ export const workouts = [
     ]
   },
   {
-    "id": "dumbbell-incline-chest-press",
-    "name": "Dumbbell Incline Chest Press",
-    "targetMuscle": "Chest",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "8iPEnn-ltC8",
-    "instructions": [
-      "Position yourself and grip the handles/bar at chest height.",
-      "Press forward or upward, squeezing your chest at the top.",
-      "Lower slowly with control back to the starting position."
-    ],
-    "keywords": [
-      "dumbbell",
-      "incline",
-      "chest",
-      "press",
-      "free weight",
-      "push"
-    ],
-    "aliases": [
-      "db incline chest press",
-      "chest workout",
-      "chest exercise",
-      "how to do dumbbell incline chest press"
-    ]
-  },
-  {
     "id": "dumbbell-shoulder-press-1",
     "name": "Dumbbell Shoulder Press",
     "targetMuscle": "Shoulders",
@@ -4228,31 +3963,6 @@ export const workouts = [
       "chest workout",
       "chest exercise",
       "how to do chest low-to-high cable fly"
-    ]
-  },
-  {
-    "id": "lat-pulldown",
-    "name": "Lat Pulldown",
-    "targetMuscle": "Back",
-    "difficulty": "beginner",
-    "equipment": "Machine & Cable",
-    "videoId": "CAwf7n6Luuc",
-    "instructions": [
-      "Grip the bar or handle with the appropriate grip width.",
-      "Pull toward your body, squeezing your shoulder blades together.",
-      "Return to the starting position with a controlled negative."
-    ],
-    "keywords": [
-      "lat",
-      "pulldown",
-      "back",
-      "machine",
-      "pull"
-    ],
-    "aliases": [
-      "back workout",
-      "back exercise",
-      "how to do lat pulldown"
     ]
   },
   {
@@ -5289,30 +4999,6 @@ export const workouts = [
     ]
   },
   {
-    "id": "hip-abduction",
-    "name": "Hip Abduction",
-    "targetMuscle": "Hips",
-    "difficulty": "beginner",
-    "equipment": "Machine & Cable",
-    "videoId": "1rbpTTzEnV4",
-    "instructions": [
-      "Position yourself on the machine with proper pad alignment.",
-      "Move your legs outward or inward against the resistance.",
-      "Return to the starting position with control."
-    ],
-    "keywords": [
-      "hip",
-      "abduction",
-      "hips",
-      "machine"
-    ],
-    "aliases": [
-      "hips workout",
-      "hips exercise",
-      "how to do hip abduction"
-    ]
-  },
-  {
     "id": "squat-press",
     "name": "Squat Press",
     "targetMuscle": "Quads",
@@ -5682,30 +5368,6 @@ export const workouts = [
     ]
   },
   {
-    "id": "hip-adduction",
-    "name": "Hip Adduction",
-    "targetMuscle": "Hips",
-    "difficulty": "beginner",
-    "equipment": "Machine & Cable",
-    "videoId": "5Mkus4JdXDE",
-    "instructions": [
-      "Position yourself on the machine with proper pad alignment.",
-      "Move your legs outward or inward against the resistance.",
-      "Return to the starting position with control."
-    ],
-    "keywords": [
-      "hip",
-      "adduction",
-      "hips",
-      "machine"
-    ],
-    "aliases": [
-      "hips workout",
-      "hips exercise",
-      "how to do hip adduction"
-    ]
-  },
-  {
     "id": "canoe-row",
     "name": "Canoe Row",
     "targetMuscle": "Back",
@@ -5802,30 +5464,6 @@ export const workouts = [
       "general workout",
       "general exercise",
       "how to do abdominal twist"
-    ]
-  },
-  {
-    "id": "ball-crunch",
-    "name": "Ball Crunch",
-    "targetMuscle": "Abs",
-    "difficulty": "beginner",
-    "equipment": "Machine & Cable",
-    "videoId": "rqc_oc4Tp4A",
-    "instructions": [
-      "Lie down or hang in the starting position with core engaged.",
-      "Contract your abs to perform the movement.",
-      "Return to the starting position with control, maintaining tension."
-    ],
-    "keywords": [
-      "ball",
-      "crunch",
-      "abs",
-      "machine"
-    ],
-    "aliases": [
-      "abs workout",
-      "abs exercise",
-      "how to do ball crunch"
     ]
   },
   {
@@ -6907,30 +6545,6 @@ export const workouts = [
     ]
   },
   {
-    "id": "plank",
-    "name": "Plank",
-    "targetMuscle": "Abs",
-    "difficulty": "beginner",
-    "equipment": "Bodyweight",
-    "videoId": "fqzUlmyTpJk",
-    "instructions": [
-      "Lie down or hang in the starting position with core engaged.",
-      "Contract your abs to perform the movement.",
-      "Return to the starting position with control, maintaining tension."
-    ],
-    "keywords": [
-      "plank",
-      "abs",
-      "bodyweight",
-      "no equipment"
-    ],
-    "aliases": [
-      "abs workout",
-      "abs exercise",
-      "how to do plank"
-    ]
-  },
-  {
     "id": "push-up",
     "name": "Push Up",
     "targetMuscle": "Chest",
@@ -7340,30 +6954,6 @@ export const workouts = [
       "abs workout",
       "abs exercise",
       "how to do v-up"
-    ]
-  },
-  {
-    "id": "burpee",
-    "name": "Burpee",
-    "targetMuscle": "Full Body",
-    "difficulty": "intermediate",
-    "equipment": "Bodyweight",
-    "videoId": "wS4OsJ4yzx4",
-    "instructions": [
-      "Start in the ready position with feet shoulder-width apart.",
-      "Perform the movement explosively with proper form.",
-      "Return to the starting position and repeat."
-    ],
-    "keywords": [
-      "burpee",
-      "full body",
-      "bodyweight",
-      "no equipment"
-    ],
-    "aliases": [
-      "full body workout",
-      "full body exercise",
-      "how to do burpee"
     ]
   },
   {
@@ -10855,6 +10445,402 @@ export const workouts = [
       "back workout",
       "back exercise",
       "how to do fun pull-up variations"
+    ]
+  },
+  {
+    "id": "incline-dumbbell-press",
+    "name": "Incline Dumbbell Press",
+    "targetMuscle": "Chest",
+    "difficulty": "beginner",
+    "equipment": "Barbell & Dumbbell",
+    "videoId": "8iPEnn-ltC8",
+    "instructions": [
+      "Set the bench to 30-45 degrees.",
+      "Hold dumbbells at shoulder level with palms facing forward.",
+      "Press the weights up and slightly inward until arms are extended."
+    ],
+    "keywords": [
+      "incline",
+      "dumbbell",
+      "press",
+      "chest",
+      "free weight",
+      "push"
+    ],
+    "aliases": [
+      "chest workout",
+      "chest exercise",
+      "how to do incline dumbbell press"
+    ]
+  },
+  {
+    "id": "pec-deck-machine",
+    "name": "Pec Deck Machine",
+    "targetMuscle": "Chest",
+    "difficulty": "beginner",
+    "equipment": "Machine & Cable",
+    "videoId": "Z57CtFmRMxA",
+    "instructions": [
+      "Sit with your back against the pad.",
+      "Place forearms on the pads or grip the handles.",
+      "Squeeze the pads together in front of your chest."
+    ],
+    "keywords": [
+      "pec",
+      "deck",
+      "machine",
+      "chest"
+    ],
+    "aliases": [
+      "chest workout",
+      "chest exercise",
+      "how to do pec deck machine"
+    ]
+  },
+  {
+    "id": "machine-row",
+    "name": "Machine Row",
+    "targetMuscle": "Back",
+    "difficulty": "beginner",
+    "equipment": "Machine & Cable",
+    "videoId": "hFnZDCbQKsI",
+    "instructions": [
+      "Sit with your chest against the pad.",
+      "Grip the handles and pull toward your torso, squeezing your back muscles.",
+      "Return slowly to the start."
+    ],
+    "keywords": [
+      "machine",
+      "row",
+      "back",
+      "pull"
+    ],
+    "aliases": [
+      "back workout",
+      "back exercise",
+      "how to do machine row"
+    ]
+  },
+  {
+    "id": "band-pull-apart",
+    "name": "Band Pull-apart",
+    "targetMuscle": "Rear Delts",
+    "difficulty": "beginner",
+    "equipment": "Barbell & Dumbbell",
+    "videoId": "eZwnwWMkEL4",
+    "instructions": [
+      "Hold a resistance band at shoulder width with arms extended in front.",
+      "Pull the band apart by squeezing your shoulder blades together until it touches your chest.",
+      "Return slowly."
+    ],
+    "keywords": [
+      "band",
+      "pull",
+      "apart",
+      "rear delts"
+    ],
+    "aliases": [
+      "rear delts workout",
+      "rear delts exercise",
+      "how to do band pull-apart"
+    ]
+  },
+  {
+    "id": "arnold-press",
+    "name": "Arnold Press",
+    "targetMuscle": "Shoulders",
+    "difficulty": "intermediate",
+    "equipment": "Barbell & Dumbbell",
+    "videoId": "6Z15_WdXmVw",
+    "instructions": [
+      "Start with dumbbells at shoulder height, palms facing you.",
+      "As you press up, rotate your palms to face forward at the top.",
+      "Reverse the motion as you lower."
+    ],
+    "keywords": [
+      "arnold",
+      "press",
+      "shoulders",
+      "push"
+    ],
+    "aliases": [
+      "shoulders workout",
+      "shoulders exercise",
+      "how to do arnold press"
+    ]
+  },
+  {
+    "id": "cable-lateral-raise",
+    "name": "Cable Lateral Raise",
+    "targetMuscle": "Shoulders",
+    "difficulty": "beginner",
+    "equipment": "Machine & Cable",
+    "videoId": "gjXX8g-VPXI",
+    "instructions": [
+      "Stand beside a low cable pulley.",
+      "Grab the handle with the far hand.",
+      "Raise your arm out to the side until parallel with the floor."
+    ],
+    "keywords": [
+      "cable",
+      "lateral",
+      "raise",
+      "shoulders",
+      "machine",
+      "isolation"
+    ],
+    "aliases": [
+      "shoulders workout",
+      "shoulders exercise",
+      "how to do cable lateral raise"
+    ]
+  },
+  {
+    "id": "machine-lateral-raise",
+    "name": "Machine Lateral Raise",
+    "targetMuscle": "Shoulders",
+    "difficulty": "beginner",
+    "equipment": "Machine & Cable",
+    "videoId": "NNAs8jx_zJI",
+    "instructions": [
+      "Sit in the machine with pads against your outer arms.",
+      "Raise your arms out to the side until parallel with the floor.",
+      "Lower slowly under control."
+    ],
+    "keywords": [
+      "machine",
+      "lateral",
+      "raise",
+      "shoulders",
+      "isolation"
+    ],
+    "aliases": [
+      "shoulders workout",
+      "shoulders exercise",
+      "how to do machine lateral raise"
+    ]
+  },
+  {
+    "id": "cross-body-hammer-curl",
+    "name": "Cross-body Hammer Curl",
+    "targetMuscle": "Biceps",
+    "difficulty": "beginner",
+    "equipment": "Barbell & Dumbbell",
+    "videoId": "766fXErlNLQ",
+    "instructions": [
+      "Hold dumbbells at your sides with a neutral grip.",
+      "Curl one dumbbell across your body toward the opposite shoulder.",
+      "Squeeze and lower, then repeat on the other side."
+    ],
+    "keywords": [
+      "cross",
+      "body",
+      "hammer",
+      "curl",
+      "biceps",
+      "pull",
+      "isolation"
+    ],
+    "aliases": [
+      "biceps workout",
+      "biceps exercise",
+      "how to do cross-body hammer curl"
+    ]
+  },
+  {
+    "id": "preacher-curl",
+    "name": "Preacher Curl",
+    "targetMuscle": "Biceps",
+    "difficulty": "beginner",
+    "equipment": "Barbell & Dumbbell",
+    "videoId": "fIWP-FRFNU0",
+    "instructions": [
+      "Sit at a preacher bench with your upper arms flat on the pad.",
+      "Curl the bar/dumbbells up, squeezing your biceps at the top.",
+      "Lower slowly — the preacher bench eliminates cheating."
+    ],
+    "keywords": [
+      "preacher",
+      "curl",
+      "biceps",
+      "pull",
+      "isolation"
+    ],
+    "aliases": [
+      "biceps workout",
+      "biceps exercise",
+      "how to do preacher curl"
+    ]
+  },
+  {
+    "id": "nordic-curl",
+    "name": "Nordic Curl",
+    "targetMuscle": "Hamstrings",
+    "difficulty": "advanced",
+    "equipment": "Barbell & Dumbbell",
+    "videoId": "TyKAicsT7Dg",
+    "instructions": [
+      "Kneel on the floor with your feet anchored.",
+      "Slowly lower yourself forward with control, resisting gravity with your hamstrings.",
+      "Push off the floor at the bottom if needed to return to the start."
+    ],
+    "keywords": [
+      "nordic",
+      "curl",
+      "hamstrings",
+      "pull",
+      "isolation"
+    ],
+    "aliases": [
+      "hamstrings workout",
+      "hamstrings exercise",
+      "how to do nordic curl"
+    ]
+  },
+  {
+    "id": "seated-calf-raise",
+    "name": "Seated Calf Raise",
+    "targetMuscle": "Calves",
+    "difficulty": "beginner",
+    "equipment": "Barbell & Dumbbell",
+    "videoId": "HSGjUouQZCQ",
+    "instructions": [
+      "Sit in the machine with the pad on your thighs and balls of your feet on the platform edge.",
+      "Lower your heels for a full stretch, then push up as high as possible.",
+      "This targets the soleus muscle more than standing calf raises."
+    ],
+    "keywords": [
+      "seated",
+      "calf",
+      "raise",
+      "calves",
+      "isolation"
+    ],
+    "aliases": [
+      "calves workout",
+      "calves exercise",
+      "how to do seated calf raise"
+    ]
+  },
+  {
+    "id": "smith-machine-calf-raise",
+    "name": "Smith Machine Calf Raise",
+    "targetMuscle": "Calves",
+    "difficulty": "beginner",
+    "equipment": "Machine & Cable",
+    "videoId": "FNdI5TynYxs",
+    "instructions": [
+      "Position the bar on your upper back in the Smith machine.",
+      "Stand on a raised platform with balls of your feet.",
+      "Lower heels for a stretch, then push up onto your toes."
+    ],
+    "keywords": [
+      "smith",
+      "machine",
+      "calf",
+      "raise",
+      "calves",
+      "isolation"
+    ],
+    "aliases": [
+      "calves workout",
+      "calves exercise",
+      "how to do smith machine calf raise"
+    ]
+  },
+  {
+    "id": "trap-bar-deadlift",
+    "name": "Trap Bar Deadlift",
+    "targetMuscle": "Full Body",
+    "difficulty": "beginner",
+    "equipment": "Barbell & Dumbbell",
+    "videoId": "FYx76NSijfU",
+    "instructions": [
+      "Step inside the trap bar.",
+      "Grip the handles, brace your core, and stand up by driving through the floor.",
+      "The neutral grip and center of gravity make this easier on the lower back than conventional deadlifts."
+    ],
+    "keywords": [
+      "trap",
+      "bar",
+      "deadlift",
+      "full body",
+      "compound"
+    ],
+    "aliases": [
+      "full body workout",
+      "full body exercise",
+      "how to do trap bar deadlift"
+    ]
+  },
+  {
+    "id": "side-plank",
+    "name": "Side Plank",
+    "targetMuscle": "Obliques",
+    "difficulty": "beginner",
+    "equipment": "Bodyweight",
+    "videoId": "N_s9em1xTqU",
+    "instructions": [
+      "Lie on your side with your forearm on the ground, elbow under your shoulder.",
+      "Lift your hips off the ground, forming a straight line from head to feet.",
+      "Hold the position, engaging your obliques."
+    ],
+    "keywords": [
+      "side",
+      "plank",
+      "obliques",
+      "bodyweight"
+    ],
+    "aliases": [
+      "obliques workout",
+      "obliques exercise",
+      "how to do side plank"
+    ]
+  },
+  {
+    "id": "dead-bug",
+    "name": "Dead Bug",
+    "targetMuscle": "Abs",
+    "difficulty": "beginner",
+    "equipment": "Bodyweight",
+    "videoId": "GbSC02oU3To",
+    "instructions": [
+      "Lie on your back with arms extended toward the ceiling and knees bent at 90 degrees.",
+      "Slowly extend your opposite arm and leg toward the floor while keeping your lower back pressed flat.",
+      "Return and alternate sides."
+    ],
+    "keywords": [
+      "dead",
+      "bug",
+      "abs"
+    ],
+    "aliases": [
+      "abs workout",
+      "abs exercise",
+      "how to do dead bug"
+    ]
+  },
+  {
+    "id": "deadlift",
+    "name": "Deadlift",
+    "targetMuscle": "Full Body",
+    "difficulty": "intermediate",
+    "equipment": "Barbell & Dumbbell",
+    "videoId": "op9kVnSso6Q",
+    "instructions": [
+      "Stand with feet hip-width apart, bar over mid-foot.",
+      "Hinge at the hips and grip the bar just outside your knees.",
+      "Brace your core, flatten your back, and drive through the floor to stand up."
+    ],
+    "keywords": [
+      "deadlift",
+      "full body",
+      "compound"
+    ],
+    "aliases": [
+      "full body workout",
+      "full body exercise",
+      "how to do deadlift"
     ]
   }
 ];
