@@ -13,7 +13,8 @@ export default function Footer() {
   return (
     <footer className="border-t border-white/[0.04] mt-auto">
       {/* Mobile: stacked · md+: single row with equal spacing */}
-      <div className="max-w-6xl mx-auto py-6 px-5 sm:px-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      {/* pb-20 on mobile clears the fixed bottom navigation bar */}
+      <div className="max-w-6xl mx-auto pt-6 pb-20 md:pb-6 px-5 sm:px-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center justify-center md:justify-start gap-2 shrink-0">
           <img src="/logo.jpeg" alt="GymThozhan" className="w-4 h-4 rounded object-cover" />
           <span className="font-semibold text-text-secondary text-xs">GymThozhan</span>
