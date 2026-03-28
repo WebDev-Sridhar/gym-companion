@@ -12,23 +12,26 @@ const links = [
 export default function Footer() {
   return (
     <footer className="border-t border-white/[0.04] mt-auto">
-      <div className="max-w-4xl mx-auto py-8 px-5 flex flex-col items-center gap-4">
-        <div className="flex items-center gap-2">
-          <img src="/logo.jpeg" alt="GymThozhan" className="w-5 h-5 rounded object-cover" />
-          <span className="font-bold text-text-secondary text-sm">GymThozhan</span>
+      {/* Mobile: stacked · md+: single row with equal spacing */}
+      <div className="max-w-6xl mx-auto py-6 px-5 sm:px-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="flex items-center justify-center md:justify-start gap-2 shrink-0">
+          <img src="/logo.jpeg" alt="GymThozhan" className="w-4 h-4 rounded object-cover" />
+          <span className="font-semibold text-text-secondary text-xs">GymThozhan</span>
         </div>
-        <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2">
+
+        <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 md:gap-x-6">
           {links.map(({ to, label }) => (
             <Link
               key={to}
               to={to}
-              className="text-xs text-text-muted hover:text-text-primary transition-colors hover:underline underline-offset-4"
+              className="text-[11px] text-text-muted hover:text-text-primary transition-colors hover:underline underline-offset-4"
             >
               {label}
             </Link>
           ))}
         </nav>
-        <p className="text-[11px] text-text-muted/50">
+
+        <p className="text-[11px] text-text-muted/50 text-center md:text-right shrink-0">
           &copy; {new Date().getFullYear()} GymThozhan. All rights reserved.
         </p>
       </div>
