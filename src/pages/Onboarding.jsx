@@ -36,14 +36,14 @@ const bodyFatRanges = {
     { key: 'fit', label: '13–17%', desc: 'Fit / Visible definition', level: 1, image: '/bodyfat15.png' },
     { key: 'average', label: '18–22%', desc: 'Average / Healthy', level: 2, image: '/bodyfat20.png' },
     { key: 'aboveAvg', label: '23–27%', desc: 'Above average', level: 3, image: '/bodyfat25.png' },
-    { key: 'high', label: '28%+', desc: 'High body fat', level: 4, image: '/bodyfat25.png' },
+    { key: 'high', label: '28%+', desc: 'High body fat', level: 4, image: '/bodyfat40.png' },
   ],
   female: [
-    { key: 'lean', label: '16–19%', desc: 'Athletic / Very lean', level: 0, image: '/bodyfat10.png' },
-    { key: 'fit', label: '20–24%', desc: 'Fit / Toned', level: 1, image: '/bodyfat15.png' },
-    { key: 'average', label: '25–29%', desc: 'Average / Healthy', level: 2, image: '/bodyfat20.png' },
-    { key: 'aboveAvg', label: '30–34%', desc: 'Above average', level: 3, image: '/bodyfat25.png' },
-    { key: 'high', label: '35%+', desc: 'High body fat', level: 4, image: '/bodyfat25.png' },
+    { key: 'lean', label: '16–19%', desc: 'Athletic / Very lean', level: 0, image: '/fbodyfat10.png' },
+    { key: 'fit', label: '20–24%', desc: 'Fit / Toned', level: 1, image: '/fbodyfat15.png' },
+    { key: 'average', label: '25–29%', desc: 'Average / Healthy', level: 2, image: '/fbodyfat20.png' },
+    { key: 'aboveAvg', label: '30–34%', desc: 'Above average', level: 3, image: '/fbodyfat25.png' },
+    { key: 'high', label: '35%+', desc: 'High body fat', level: 4, image: '/fbodyfat30.png' },
   ],
 };
 
@@ -172,13 +172,13 @@ export default function Onboarding() {
                         key: 'never',
                         label: 'First time at the gym',
                         desc: "I've never trained before or just starting out. I need a beginner-friendly starter program.",
-                        icon: '🌱',
+                        
                       },
                       {
                         key: 'beginner',
                         label: 'Some experience',
                         desc: "I've trained before or know the basics. Ready for a structured split program.",
-                        icon: '💪',
+                        
                       },
                     ].map((opt) => (
                       <button
@@ -298,12 +298,12 @@ export default function Onboarding() {
                 <div>
                   <h2 className="text-2xl font-bold mb-2 text-text-primary">Body fat estimate</h2>
                   <p className="text-text-muted text-sm mb-5">Pick the range that closest describes you. Used to personalise your plan.</p>
-                  <div className="grid grid-cols-5 gap-2">
+                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
                     {bfRanges.map((range) => (
                       <button
                         key={range.key}
                         onClick={() => update('bodyFat', range.key)}
-                        className={`flex flex-col items-center p-2 rounded-xl border-2 transition-all ${
+                        className={`flex flex-col items-center p-3 rounded-xl border-2 transition-all ${
                           formData.bodyFat === range.key
                             ? 'border-accent bg-accent/5'
                             : 'border-white/[0.06] hover:border-white/[0.12]'
@@ -312,14 +312,14 @@ export default function Onboarding() {
                         <img
                           src={range.image}
                           alt={range.desc}
-                          className={`w-12 h-16 object-contain mx-auto transition-opacity ${
+                          className={`w-20 h-28 sm:w-16 sm:h-24 object-contain mx-auto transition-opacity ${
                             formData.bodyFat === range.key ? 'opacity-100' : 'opacity-50'
                           }`}
                         />
-                        <span className={`text-[11px] font-bold mt-1 ${formData.bodyFat === range.key ? 'text-accent' : 'text-text-primary'}`}>
+                        {/* <span className={`text-xs font-bold mt-2 ${formData.bodyFat === range.key ? 'text-accent' : 'text-text-primary'}`}>
                           {range.label}
-                        </span>
-                        <span className="text-[9px] text-text-muted text-center leading-tight mt-0.5">{range.desc}</span>
+                        </span> */}
+                        {/* <span className="text-[10px] text-text-muted text-center leading-tight mt-0.5">{range.desc}</span> */}
                       </button>
                     ))}
                   </div>
