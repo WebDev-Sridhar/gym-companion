@@ -390,6 +390,31 @@ export const workouts = [
       "how to do single-arm bent over row"
     ]
   },
+  
+  {
+    "id": "pec-deck-machine",
+    "name": "Pec Deck Machine",
+    "targetMuscle": "Chest",
+    "difficulty": "beginner",
+    "equipment": "Machine & Cable",
+    "videoId": "Z57CtFmRMxA",
+    "instructions": [
+      "Sit with your back against the pad.",
+      "Place forearms on the pads or grip the handles.",
+      "Squeeze the pads together in front of your chest."
+    ],
+    "keywords": [
+      "pec",
+      "deck",
+      "machine",
+      "chest"
+    ],
+    "aliases": [
+      "chest workout",
+      "chest exercise",
+      "how to do pec deck machine"
+    ]
+  },
   {
     "id": "incline-barbell-bench-press",
     "name": "Incline Barbell Bench Press",
@@ -470,29 +495,7 @@ export const workouts = [
       "how to do barbell bicep curl"
     ]
   },
-  {
-    "id": "chest-flys",
-    "name": "Chest Flys |",
-    "targetMuscle": "Chest",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "91VuuoGNTCI",
-    "instructions": [
-      "Position yourself and grip the handles/bar at chest height.",
-      "Press forward or upward, squeezing your chest at the top.",
-      "Lower slowly with control back to the starting position."
-    ],
-    "keywords": [
-      "chest",
-      "flys",
-      "isolation"
-    ],
-    "aliases": [
-      "chest workout",
-      "chest exercise",
-      "how to do chest flys |"
-    ]
-  },
+
   {
     "id": "dumbbell-rear-fly-20",
     "name": "Dumbbell Rear Fly 2.0",
@@ -673,38 +676,7 @@ export const workouts = [
       "how to do barbell push-press"
     ]
   },
-  {
-    "id": "cable-chest-fly-tips-for-building-a-bigger-chest-more-muscle-activation",
-    "name": "Cable Chest Fly: Tips For Building A Bigger Chest! More Muscle Activation",
-    "targetMuscle": "Chest",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "fwN2ECQsvGg",
-    "instructions": [
-      "Position yourself and grip the handles/bar at chest height.",
-      "Press forward or upward, squeezing your chest at the top.",
-      "Lower slowly with control back to the starting position."
-    ],
-    "keywords": [
-      "cable",
-      "chest",
-      "fly:",
-      "tips",
-      "for",
-      "building",
-      "bigger",
-      "chest!",
-      "more",
-      "muscle",
-      "activation",
-      "isolation"
-    ],
-    "aliases": [
-      "chest workout",
-      "chest exercise",
-      "how to do cable chest fly: tips for building a bigger chest! more muscle activation"
-    ]
-  },
+
   {
     "id": "romanian-deadlift",
     "name": "Romanian Deadlift",
@@ -729,29 +701,7 @@ export const workouts = [
       "how to do romanian deadlift"
     ]
   },
-  {
-    "id": "bench-slide",
-    "name": "Bench Slide",
-    "targetMuscle": "Chest",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "KK2dx_Bq79w",
-    "instructions": [
-      "Position yourself and grip the handles/bar at chest height.",
-      "Press forward or upward, squeezing your chest at the top.",
-      "Lower slowly with control back to the starting position."
-    ],
-    "keywords": [
-      "bench",
-      "slide",
-      "chest"
-    ],
-    "aliases": [
-      "chest workout",
-      "chest exercise",
-      "how to do bench slide"
-    ]
-  },
+
   {
     "id": "deficit-deadlift",
     "name": "Deficit Deadlift",
@@ -1866,61 +1816,7 @@ export const workouts = [
       "how to do barbell bent-over row"
     ]
   },
-  {
-    "id": "barbell-incline-chest-press",
-    "name": "Barbell Incline Chest Press",
-    "targetMuscle": "Chest",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "DbFgADa2PL8",
-    "instructions": [
-      "Position yourself and grip the handles/bar at chest height.",
-      "Press forward or upward, squeezing your chest at the top.",
-      "Lower slowly with control back to the starting position."
-    ],
-    "keywords": [
-      "barbell",
-      "incline",
-      "chest",
-      "press",
-      "free weight",
-      "push"
-    ],
-    "aliases": [
-      "bb incline chest press",
-      "chest workout",
-      "chest exercise",
-      "how to do barbell incline chest press"
-    ]
-  },
-  {
-    "id": "straight-bar-single-arm-floor-press",
-    "name": "Straight-Bar Single-Arm Floor Press",
-    "targetMuscle": "Chest",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "KaJEdw3m2ec",
-    "instructions": [
-      "Position yourself and grip the handles/bar at chest height.",
-      "Press forward or upward, squeezing your chest at the top.",
-      "Lower slowly with control back to the starting position."
-    ],
-    "keywords": [
-      "straight",
-      "bar",
-      "single",
-      "arm",
-      "floor",
-      "press",
-      "chest",
-      "push"
-    ],
-    "aliases": [
-      "chest workout",
-      "chest exercise",
-      "how to do straight-bar single-arm floor press"
-    ]
-  },
+
   {
     "id": "standing-straight-bar-military-overhead-press",
     "name": "Standing Straight-Bar Military / Overhead Press",
@@ -1973,37 +1869,7 @@ export const workouts = [
       "how to do t-bar row"
     ]
   },
-  {
-    "id": "dumbbell-laying-reverse-crunch-into-a-floor-press",
-    "name": "Dumbbell Laying Reverse Crunch into a Floor Press",
-    "targetMuscle": "Chest",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "5oFIeO131Pk",
-    "instructions": [
-      "Position yourself and grip the handles/bar at chest height.",
-      "Press forward or upward, squeezing your chest at the top.",
-      "Lower slowly with control back to the starting position."
-    ],
-    "keywords": [
-      "dumbbell",
-      "laying",
-      "reverse",
-      "crunch",
-      "into",
-      "floor",
-      "press",
-      "chest",
-      "free weight",
-      "push"
-    ],
-    "aliases": [
-      "db laying reverse crunch into a floor press",
-      "chest workout",
-      "chest exercise",
-      "how to do dumbbell laying reverse crunch into a floor press"
-    ]
-  },
+
   {
     "id": "dumbbell-romanian-deadlift",
     "name": "Dumbbell Romanian Deadlift",
@@ -2521,34 +2387,7 @@ export const workouts = [
       "how to do strap bent-over row"
     ]
   },
-  {
-    "id": "dumbbell-push-up-into-a-row",
-    "name": "Dumbbell Push-Up into a Row",
-    "targetMuscle": "Chest",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "Mk5dUWaZVGk",
-    "instructions": [
-      "Position yourself and grip the handles/bar at chest height.",
-      "Press forward or upward, squeezing your chest at the top.",
-      "Lower slowly with control back to the starting position."
-    ],
-    "keywords": [
-      "dumbbell",
-      "push",
-      "into",
-      "row",
-      "chest",
-      "free weight",
-      "pull"
-    ],
-    "aliases": [
-      "db push-up into a row",
-      "chest workout",
-      "chest exercise",
-      "how to do dumbbell push-up into a row"
-    ]
-  },
+
   {
     "id": "seated-overhead-tricep-extension-with-an-ez-curl-bar",
     "name": "Seated Overhead Tricep Extension with an EZ-Curl Bar",
@@ -2854,35 +2693,7 @@ export const workouts = [
       "how to do seated barbell shoulder press"
     ]
   },
-  {
-    "id": "close-grip-barbell-bench-press",
-    "name": "Close-Grip Barbell Bench Press",
-    "targetMuscle": "Chest",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "nEF0bv2FW94",
-    "instructions": [
-      "Position yourself and grip the handles/bar at chest height.",
-      "Press forward or upward, squeezing your chest at the top.",
-      "Lower slowly with control back to the starting position."
-    ],
-    "keywords": [
-      "close",
-      "grip",
-      "barbell",
-      "bench",
-      "press",
-      "chest",
-      "free weight",
-      "push"
-    ],
-    "aliases": [
-      "close-grip bb bench press",
-      "chest workout",
-      "chest exercise",
-      "how to do close-grip barbell bench press"
-    ]
-  },
+
   {
     "id": "dumbbell-t-push-up",
     "name": "Dumbbell T Push-Up",
@@ -3415,34 +3226,7 @@ export const workouts = [
       "how to do dumbbell bent-over raise"
     ]
   },
-  {
-    "id": "dumbbell-flys-on-a-flat-bench",
-    "name": "Dumbbell Flys On A Flat Bench",
-    "targetMuscle": "Chest",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "eozdVDA78K0",
-    "instructions": [
-      "Position yourself and grip the handles/bar at chest height.",
-      "Press forward or upward, squeezing your chest at the top.",
-      "Lower slowly with control back to the starting position."
-    ],
-    "keywords": [
-      "dumbbell",
-      "flys",
-      "flat",
-      "bench",
-      "chest",
-      "free weight",
-      "isolation"
-    ],
-    "aliases": [
-      "db flys on a flat bench",
-      "chest workout",
-      "chest exercise",
-      "how to do dumbbell flys on a flat bench"
-    ]
-  },
+
   {
     "id": "inside-grip-bicep-curl-with-e-z-bar-curl",
     "name": "Inside-Grip Bicep Curl With E-Z Bar Curl",
@@ -3721,34 +3505,7 @@ export const workouts = [
       "how to do standing oblique twists with dumbbells"
     ]
   },
-  {
-    "id": "dumbbell-flys-on-an-incline-bench",
-    "name": "Dumbbell Flys On An Incline Bench",
-    "targetMuscle": "Chest",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "8nrLh4GpS7w",
-    "instructions": [
-      "Position yourself and grip the handles/bar at chest height.",
-      "Press forward or upward, squeezing your chest at the top.",
-      "Lower slowly with control back to the starting position."
-    ],
-    "keywords": [
-      "dumbbell",
-      "flys",
-      "incline",
-      "bench",
-      "chest",
-      "free weight",
-      "isolation"
-    ],
-    "aliases": [
-      "db flys on an incline bench",
-      "chest workout",
-      "chest exercise",
-      "how to do dumbbell flys on an incline bench"
-    ]
-  },
+
   {
     "id": "dumbbell-chest-press",
     "name": "Dumbbell Chest Press",
@@ -3911,33 +3668,7 @@ export const workouts = [
       "how to do straight-bar bicep curl"
     ]
   },
-  {
-    "id": "dumbbell-bench-press-1",
-    "name": "Dumbbell Bench Press",
-    "targetMuscle": "Chest",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "622ku8i0M14",
-    "instructions": [
-      "Position yourself and grip the handles/bar at chest height.",
-      "Press forward or upward, squeezing your chest at the top.",
-      "Lower slowly with control back to the starting position."
-    ],
-    "keywords": [
-      "dumbbell",
-      "bench",
-      "press",
-      "chest",
-      "free weight",
-      "push"
-    ],
-    "aliases": [
-      "db bench press",
-      "chest workout",
-      "chest exercise",
-      "how to do dumbbell bench press"
-    ]
-  },
+
   {
     "id": "chest-low-to-high-cable-fly",
     "name": "Chest Low-To-High Cable Fly",
@@ -4404,32 +4135,7 @@ export const workouts = [
       "how to do strap lat-pulldown"
     ]
   },
-  {
-    "id": "low-cable-chest-fly",
-    "name": "Low Cable Chest Fly",
-    "targetMuscle": "Chest",
-    "difficulty": "beginner",
-    "equipment": "Machine & Cable",
-    "videoId": "M1N804yWA-8",
-    "instructions": [
-      "Position yourself and grip the handles/bar at chest height.",
-      "Press forward or upward, squeezing your chest at the top.",
-      "Lower slowly with control back to the starting position."
-    ],
-    "keywords": [
-      "low",
-      "cable",
-      "chest",
-      "fly",
-      "machine",
-      "isolation"
-    ],
-    "aliases": [
-      "chest workout",
-      "chest exercise",
-      "how to do low cable chest fly"
-    ]
-  },
+
   {
     "id": "rope-push-down",
     "name": "Rope Push-Down",
@@ -4817,32 +4523,7 @@ export const workouts = [
       "how to do single-arm reverse pulldown"
     ]
   },
-  {
-    "id": "high-cable-chest-fly",
-    "name": "High Cable Chest Fly",
-    "targetMuscle": "Chest",
-    "difficulty": "beginner",
-    "equipment": "Machine & Cable",
-    "videoId": "Iwe6AmxVf7o",
-    "instructions": [
-      "Position yourself and grip the handles/bar at chest height.",
-      "Press forward or upward, squeezing your chest at the top.",
-      "Lower slowly with control back to the starting position."
-    ],
-    "keywords": [
-      "high",
-      "cable",
-      "chest",
-      "fly",
-      "machine",
-      "isolation"
-    ],
-    "aliases": [
-      "chest workout",
-      "chest exercise",
-      "how to do high cable chest fly"
-    ]
-  },
+
   {
     "id": "tricep-lunge",
     "name": "Tricep Lunge",
@@ -6144,30 +5825,7 @@ export const workouts = [
       "how to do prone leg curl"
     ]
   },
-  {
-    "id": "chest-pressd",
-    "name": "Chest PressD",
-    "targetMuscle": "Chest",
-    "difficulty": "beginner",
-    "equipment": "Machine & Cable",
-    "videoId": "C72WwfthrYE",
-    "instructions": [
-      "Position yourself and grip the handles/bar at chest height.",
-      "Press forward or upward, squeezing your chest at the top.",
-      "Lower slowly with control back to the starting position."
-    ],
-    "keywords": [
-      "chest",
-      "pressd",
-      "machine",
-      "push"
-    ],
-    "aliases": [
-      "chest workout",
-      "chest exercise",
-      "how to do chest pressd"
-    ]
-  },
+
   {
     "id": "seated-leg-press",
     "name": "Seated Leg Press",
@@ -10447,56 +10105,7 @@ export const workouts = [
       "how to do fun pull-up variations"
     ]
   },
-  {
-    "id": "incline-dumbbell-press",
-    "name": "Incline Dumbbell Press",
-    "targetMuscle": "Chest",
-    "difficulty": "beginner",
-    "equipment": "Barbell & Dumbbell",
-    "videoId": "8iPEnn-ltC8",
-    "instructions": [
-      "Set the bench to 30-45 degrees.",
-      "Hold dumbbells at shoulder level with palms facing forward.",
-      "Press the weights up and slightly inward until arms are extended."
-    ],
-    "keywords": [
-      "incline",
-      "dumbbell",
-      "press",
-      "chest",
-      "free weight",
-      "push"
-    ],
-    "aliases": [
-      "chest workout",
-      "chest exercise",
-      "how to do incline dumbbell press"
-    ]
-  },
-  {
-    "id": "pec-deck-machine",
-    "name": "Pec Deck Machine",
-    "targetMuscle": "Chest",
-    "difficulty": "beginner",
-    "equipment": "Machine & Cable",
-    "videoId": "Z57CtFmRMxA",
-    "instructions": [
-      "Sit with your back against the pad.",
-      "Place forearms on the pads or grip the handles.",
-      "Squeeze the pads together in front of your chest."
-    ],
-    "keywords": [
-      "pec",
-      "deck",
-      "machine",
-      "chest"
-    ],
-    "aliases": [
-      "chest workout",
-      "chest exercise",
-      "how to do pec deck machine"
-    ]
-  },
+
   {
     "id": "machine-row",
     "name": "Machine Row",

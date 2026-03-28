@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import { Play, Lock, X, Dumbbell, Zap, Target } from 'lucide-react';
-import useUserStore from '../../store/useUserStore';
-import { showUpgradeModal } from '../ui/PaymentModal';
+import { Play, X, Dumbbell, Zap, Target } from 'lucide-react';
 
 const difficultyColors = {
   beginner: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
@@ -17,16 +15,6 @@ const equipmentIcons = {
 
 export default function WorkoutCard({ workout }) {
   const [showDetail, setShowDetail] = useState(false);
-  const plan = useUserStore((s) => s.plan);
-  const isPro = plan === 'pro';
-
-  const handleView = () => {
-    if (!isPro) {
-      showUpgradeModal();
-      return;
-    }
-    setShowDetail(true);
-  };
 
   const EquipIcon = equipmentIcons[workout.equipment] || Dumbbell;
 
@@ -55,23 +43,12 @@ export default function WorkoutCard({ workout }) {
             {workout.equipment}
           </span>
 
-          {/* Play overlay for PRO */}
-          {isPro && (
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
-              <div className="w-10 h-10 rounded-full bg-[#09cadb]/90 flex items-center justify-center">
-                <Play size={18} className="text-white ml-0.5" fill="white" />
-              </div>
+          {/* Play overlay */}
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
+            <div className="w-10 h-10 rounded-full bg-[#09cadb]/90 flex items-center justify-center">
+              <Play size={18} className="text-white ml-0.5" fill="white" />
             </div>
-          )}
-
-          {/* Lock overlay for free users */}
-          {!isPro && (
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50">
-              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
-                <Lock size={16} className="text-white/70" />
-              </div>
-            </div>
-          )}
+          </div>
         </div>
 
         {/* Content */}
@@ -83,24 +60,16 @@ export default function WorkoutCard({ workout }) {
             {workout.targetMuscle}
           </p>
           <button
-            onClick={handleView}
+            onClick={() => setShowDetail(true)}
             className="w-full text-xs font-medium py-2 rounded-lg transition-colors flex items-center justify-center gap-1.5 bg-white/[0.06] text-white/70 hover:bg-white/[0.1] hover:text-white border border-white/[0.06]"
           >
-            {isPro ? (
-              <>
-                <Play size={12} /> View Details
-              </>
-            ) : (
-              <>
-                <Lock size={12} /> Unlock with Pro
-              </>
-            )}
+            <Play size={12} /> View Details
           </button>
         </div>
       </div>
 
       {/* Detail Modal */}
-      {showDetail && isPro && (
+      {showDetail && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
           onClick={() => setShowDetail(false)}

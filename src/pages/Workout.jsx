@@ -345,13 +345,24 @@ export default function Workout() {
           <div className="mb-4">
             <div className="flex gap-2">
               {!isLogging ? (
-                <button
-                  onClick={() => { setSaveError(''); setIsLogging(true); showCoach('workoutStart'); }}
-                  disabled={hasLoggedToday}
-                  className="btn-primary px-5 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <Play size={16} /> {hasLoggedToday ? 'Already Logged Today' : 'Start Workout'}
-                </button>
+                isPro ? (
+                  <button
+                    onClick={() => { setSaveError(''); setIsLogging(true); showCoach('workoutStart'); }}
+                    disabled={hasLoggedToday}
+                    className="btn-primary px-5 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <Play size={16} /> {hasLoggedToday ? 'Already Logged Today' : 'Start Workout'}
+                  </button>
+                ) : (
+                  <ProLock message="Workout logging">
+                    <button
+                      disabled
+                      className="btn-primary px-5 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 opacity-40 cursor-not-allowed"
+                    >
+                      <Play size={16} /> Start Workout
+                    </button>
+                  </ProLock>
+                )
               ) : (
                 <>
                   <button
@@ -482,8 +493,8 @@ export default function Workout() {
                         className="overflow-hidden"
                       >
                         <div className="px-4 pb-4">
-                          {/* Swapped indicator with reset */}
-                          {isSwapped && (
+                          {/* Swapped indicator with reset (only show if Pro since swap is Pro) */}
+                          {isSwapped && isPro && (
                             <div className="flex items-center justify-between bg-accent/5 border border-accent/10 rounded-lg px-3 py-2 mb-4">
                               <span className="text-xs text-text-muted">
                                 Swapped from <span className="text-text-secondary font-medium">{exercise._originalName}</span>
@@ -530,145 +541,127 @@ export default function Workout() {
                                 <p className="text-sm text-text-muted leading-relaxed">{exercise.instructions}</p>
                               </div>
 
-                              {/* Common Mistakes, Alternatives + Swap — Pro Only */}
-                              {isPro ? (
-                                <>
-                                  {exercise.donts?.length > 0 && (
-                                    <div className="bg-red-500/5 border border-red-500/10 rounded-lg p-3">
-                                      <h4 className="text-xs font-bold text-red-400 mb-2 uppercase tracking-wider flex items-center gap-1.5">
-                                        <AlertTriangle size={12} /> Common Mistakes
-                                      </h4>
-                                      <ul className="space-y-1.5">
-                                        {exercise.donts.map((dont, j) => (
-                                          <li key={j} className="text-sm text-text-muted flex items-start gap-2">
-                                            <span className="text-red-400 mt-0.5 text-xs shrink-0">✕</span>
-                                            {dont}
-                                          </li>
-                                        ))}
-                                      </ul>
-                                    </div>
-                                  )}
-
-                                  {/* Alternatives with Swap */}
-                                  {alternatives.length > 0 && (
-                                    <div>
-                                      <div className="flex items-center justify-between mb-2">
-                                        <span className="text-[11px] text-text-muted font-medium uppercase tracking-wider">Alternatives</span>
-                                        <button
-                                          onClick={() => setSwapOpen((prev) => ({ ...prev, [exercise.id]: !prev[exercise.id] }))}
-                                          className="flex items-center gap-1 text-xs font-medium text-accent hover:text-accent/80 transition-colors"
-                                        >
-                                          <RefreshCw size={11} /> {swapOpen[exercise.id] ? 'Close' : 'Swap Exercise'}
-                                        </button>
-                                      </div>
-
-                                      <AnimatePresence>
-                                        {swapOpen[exercise.id] ? (
-                                          <motion.div
-                                            initial={{ height: 0, opacity: 0 }}
-                                            animate={{ height: 'auto', opacity: 1 }}
-                                            exit={{ height: 0, opacity: 0 }}
-                                            className="space-y-2 overflow-hidden"
-                                          >
-                                            {alternatives.map((alt) => (
-                                              <div
-                                                key={alt.key}
-                                                className="flex items-center gap-3 bg-white/[0.03] border border-white/[0.06] rounded-lg p-2.5 hover:border-accent/20 transition-colors group"
-                                              >
-                                                {/* Alt GIF thumbnail */}
-                                                <div className="w-12 h-12 rounded-lg bg-white/[0.04] shrink-0 overflow-hidden flex items-center justify-center">
-                                                  {alt.gifUrl ? (
-                                                    <img
-                                                      src={alt.gifUrl}
-                                                      alt={alt.name}
-                                                      className="w-full h-full object-cover"
-                                                      loading="lazy"
-                                                      onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
-                                                    />
-                                                  ) : null}
-                                                  <div className="w-full h-full items-center justify-center" style={{ display: alt.gifUrl ? 'none' : 'flex' }}>
-                                                    <Dumbbell size={14} className="text-text-muted" />
-                                                  </div>
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                  <p className="text-sm font-medium text-text-primary truncate">{alt.name}</p>
-                                                  <p className="text-[11px] text-text-muted">{alt.muscle} · {alt.difficulty}</p>
-                                                </div>
-                                                <button
-                                                  onClick={() => handleSwap(i, alt.key)}
-                                                  className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
-                                                >
-                                                  Swap
-                                                </button>
-                                              </div>
-                                            ))}
-                                            <p className="text-[10px] text-text-muted italic">Swaps persist until you reset them.</p>
-                                          </motion.div>
-                                        ) : (
-                                          <div className="flex flex-wrap gap-1.5">
-                                            {alternatives.map((alt) => (
-                                              <span key={alt.key} className="text-xs bg-white/[0.04] px-2.5 py-1 rounded-md text-text-muted">{alt.name}</span>
-                                            ))}
-                                          </div>
-                                        )}
-                                      </AnimatePresence>
-                                    </div>
-                                  )}
-                                </>
-                              ) : (
-                                <div className="my-3">
-                                  <ProLock message="Common mistakes, alternatives & exercise swap">
-                                    <div className="space-y-3 py-4">
-                                      <div className="bg-red-500/5 rounded-lg p-3 h-20" />
-                                      <div className="bg-white/[0.03] rounded-lg p-3 h-14" />
-                                    </div>
-                                  </ProLock>
+                              {/* Common Mistakes — Free */}
+                              {exercise.donts?.length > 0 && (
+                                <div className="bg-red-500/5 border border-red-500/10 rounded-lg p-3">
+                                  <h4 className="text-xs font-bold text-red-400 mb-2 uppercase tracking-wider flex items-center gap-1.5">
+                                    <AlertTriangle size={12} /> Common Mistakes
+                                  </h4>
+                                  <ul className="space-y-1.5">
+                                    {exercise.donts.map((dont, j) => (
+                                      <li key={j} className="text-sm text-text-muted flex items-start gap-2">
+                                        <span className="text-red-400 mt-0.5 text-xs shrink-0">✕</span>
+                                        {dont}
+                                      </li>
+                                    ))}
+                                  </ul>
                                 </div>
+                              )}
+
+                              {/* Alternatives with Swap — Pro Only */}
+                              {alternatives.length > 0 && (
+                                isPro ? (
+                                  <div>
+                                    <div className="flex items-center justify-between mb-2">
+                                      <span className="text-[11px] text-text-muted font-medium uppercase tracking-wider">Alternatives</span>
+                                      <button
+                                        onClick={() => setSwapOpen((prev) => ({ ...prev, [exercise.id]: !prev[exercise.id] }))}
+                                        className="flex items-center gap-1 text-xs font-medium text-accent hover:text-accent/80 transition-colors"
+                                      >
+                                        <RefreshCw size={11} /> {swapOpen[exercise.id] ? 'Close' : 'Swap Exercise'}
+                                      </button>
+                                    </div>
+
+                                    <AnimatePresence>
+                                      {swapOpen[exercise.id] ? (
+                                        <motion.div
+                                          initial={{ height: 0, opacity: 0 }}
+                                          animate={{ height: 'auto', opacity: 1 }}
+                                          exit={{ height: 0, opacity: 0 }}
+                                          className="space-y-2 overflow-hidden"
+                                        >
+                                          {alternatives.map((alt) => (
+                                            <div
+                                              key={alt.key}
+                                              className="flex items-center gap-3 bg-white/[0.03] border border-white/[0.06] rounded-lg p-2.5 hover:border-accent/20 transition-colors group"
+                                            >
+                                              {/* Alt GIF thumbnail */}
+                                              <div className="w-12 h-12 rounded-lg bg-white/[0.04] shrink-0 overflow-hidden flex items-center justify-center">
+                                                {alt.gifUrl ? (
+                                                  <img
+                                                    src={alt.gifUrl}
+                                                    alt={alt.name}
+                                                    className="w-full h-full object-cover"
+                                                    loading="lazy"
+                                                    onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                                                  />
+                                                ) : null}
+                                                <div className="w-full h-full items-center justify-center" style={{ display: alt.gifUrl ? 'none' : 'flex' }}>
+                                                  <Dumbbell size={14} className="text-text-muted" />
+                                                </div>
+                                              </div>
+                                              <div className="flex-1 min-w-0">
+                                                <p className="text-sm font-medium text-text-primary truncate">{alt.name}</p>
+                                                <p className="text-[11px] text-text-muted">{alt.muscle} · {alt.difficulty}</p>
+                                              </div>
+                                              <button
+                                                onClick={() => handleSwap(i, alt.key)}
+                                                className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
+                                              >
+                                                Swap
+                                              </button>
+                                            </div>
+                                          ))}
+                                          <p className="text-[10px] text-text-muted italic">Swaps persist until you reset them.</p>
+                                        </motion.div>
+                                      ) : (
+                                        <div className="flex flex-wrap gap-1.5">
+                                          {alternatives.map((alt) => (
+                                            <span key={alt.key} className="text-xs bg-white/[0.04] px-2.5 py-1 rounded-md text-text-muted">{alt.name}</span>
+                                          ))}
+                                        </div>
+                                      )}
+                                    </AnimatePresence>
+                                  </div>
+                                ) : (
+                                  <ProLock message="Exercise swap">
+                                    <div className="bg-white/[0.03] rounded-lg p-3 h-14" />
+                                  </ProLock>
+                                )
                               )}
                             </div>
 
-                            {/* Right — GIF Preview / YouTube Video */}
+                            {/* Right — GIF Preview / YouTube Video (Free) */}
                             <div className="lg:w-[45%] shrink-0">
-                              {isPro ? (
-                                <>
-                                  {/* Mobile: Show Media button */}
-                                  <div className="lg:hidden">
-                                    {!showMedia[exercise.id] ? (
-                                      <button
-                                        onClick={() => setShowMedia((prev) => ({ ...prev, [exercise.id]: true }))}
-                                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium btn-primary"
-                                      >
-                                        <Image size={14} /> Show Form Guide
-                                      </button>
-                                    ) : (
-                                      <ExerciseMedia
-                                        exercise={exercise}
-                                        mode={mode}
-                                        onToggle={() => setMediaMode((prev) => ({ ...prev, [exercise.id]: mode === 'gif' ? 'video' : 'gif' }))}
-                                        onHide={() => setShowMedia((prev) => ({ ...prev, [exercise.id]: false }))}
-                                        showHide
-                                      />
-                                    )}
-                                  </div>
-                                  {/* Desktop: always visible */}
-                                  <div className="hidden lg:block">
-                                    <div className="lg:sticky lg:top-4">
-                                      <ExerciseMedia
-                                        exercise={exercise}
-                                        mode={mode}
-                                        onToggle={() => setMediaMode((prev) => ({ ...prev, [exercise.id]: mode === 'gif' ? 'video' : 'gif' }))}
-                                      />
-                                    </div>
-                                  </div>
-                                </>
-                              ) : (
-                                <div className="aspect-video bg-white/[0.03] rounded-lg flex items-center justify-center border border-white/[0.06]">
-                                  <div className="text-center">
-                                    <Play size={32} className="text-text-muted mx-auto mb-1" />
-                                    <span className="text-[10px] text-text-muted uppercase tracking-wider">Pro</span>
-                                  </div>
+                              {/* Mobile: Show Media button */}
+                              <div className="lg:hidden">
+                                {!showMedia[exercise.id] ? (
+                                  <button
+                                    onClick={() => setShowMedia((prev) => ({ ...prev, [exercise.id]: true }))}
+                                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium btn-primary"
+                                  >
+                                    <Image size={14} /> Show Form Guide
+                                  </button>
+                                ) : (
+                                  <ExerciseMedia
+                                    exercise={exercise}
+                                    mode={mode}
+                                    onToggle={() => setMediaMode((prev) => ({ ...prev, [exercise.id]: mode === 'gif' ? 'video' : 'gif' }))}
+                                    onHide={() => setShowMedia((prev) => ({ ...prev, [exercise.id]: false }))}
+                                    showHide
+                                  />
+                                )}
+                              </div>
+                              {/* Desktop: always visible */}
+                              <div className="hidden lg:block">
+                                <div className="lg:sticky lg:top-4">
+                                  <ExerciseMedia
+                                    exercise={exercise}
+                                    mode={mode}
+                                    onToggle={() => setMediaMode((prev) => ({ ...prev, [exercise.id]: mode === 'gif' ? 'video' : 'gif' }))}
+                                  />
                                 </div>
-                              )}
+                              </div>
                             </div>
                           </div>
 
