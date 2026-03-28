@@ -295,25 +295,27 @@ export default function Onboarding() {
 
               {/* STEP 6 — Body Fat % */}
               {step === 6 && (
-                <div>
-                  <h2 className="text-2xl font-bold mb-2 text-text-primary">Body fat estimate</h2>
-                  <p className="text-text-muted text-sm mb-5">Pick the range that closest describes you. Used to personalise your plan.</p>
-                  <div className="grid grid-cols-5 gap-1">
+                <div className="-mx-4 sm:mx-0 sm:w-[140%] sm:-ml-[20%]">
+                  <div className="px-4 sm:px-0">
+                    <h2 className="text-2xl font-bold mb-2 text-text-primary">Body fat estimate</h2>
+                    <p className="text-text-muted text-sm mb-5">Pick the range that closest describes you.</p>
+                  </div>
+                  <div className="grid grid-cols-5 gap-0">
                     {bfRanges.map((range) => (
                       <button
                         key={range.key}
                         onClick={() => update('bodyFat', range.key)}
-                        className={`rounded-lg border-2 transition-all overflow-hidden ${
+                        className={`relative transition-all overflow-hidden bg-dark-bg ${
                           formData.bodyFat === range.key
-                            ? 'border-accent bg-accent/5'
-                            : 'border-transparent hover:border-white/[0.12]'
+                            ? 'ring-2 ring-accent ring-offset-1 ring-offset-dark-bg rounded-lg scale-[1.03] z-10'
+                            : 'hover:brightness-125'
                         }`}
                       >
                         <img
                           src={range.image}
                           alt={range.desc}
-                          className={`w-full h-auto object-contain transition-opacity ${
-                            formData.bodyFat === range.key ? 'opacity-100' : 'opacity-40'
+                          className={`w-full h-auto block transition-opacity ${
+                            formData.bodyFat === range.key ? 'opacity-100' : 'opacity-60'
                           }`}
                         />
                       </button>
