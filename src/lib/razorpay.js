@@ -1,9 +1,6 @@
 import supabase from './supabase';
 
-const PLAN_AMOUNTS = {
-  monthly: 14900, // ₹149 in paise
-  yearly: 99900,  // ₹999 in paise
-};
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 
 let scriptLoaded = null;
 
@@ -28,66 +25,57 @@ export function loadRazorpayScript() {
   return scriptLoaded;
 }
 
-export async function createPendingSubscription(planType, userId) {
-  const amount = PLAN_AMOUNTS[planType];
-  const { data, error } = await supabase
-    .from('subscriptions')
-    .insert({
-      user_id: userId,
-      plan_type: planType,
-      status: 'pending',
-      amount,
-      currency: 'INR',
-    })
-    .select()
-    .single();
+export async function createOrder(planType) {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) throw new Error('Not authenticated');
 
-  if (error) throw new Error(error.message);
-  return data;
-}
+  const res = await fetch(`${SUPABASE_URL}/functions/v1/create-order`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session.access_token}`,
+    },
+    body: JSON.stringify({ planType }),
+  });
 
-export async function activateSubscription(subscriptionId, paymentId, planType) {
-  const now = new Date();
-  const expiresAt = new Date(now);
-  if (planType === 'monthly') {
-    expiresAt.setMonth(expiresAt.getMonth() + 1);
-  } else {
-    expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || 'Failed to create order');
   }
-
-  const { data, error } = await supabase
-    .from('subscriptions')
-    .update({
-      status: 'active',
-      razorpay_payment_id: paymentId,
-      starts_at: now.toISOString(),
-      expires_at: expiresAt.toISOString(),
-      updated_at: now.toISOString(),
-    })
-    .eq('id', subscriptionId)
-    .select()
-    .single();
-
-  if (error) throw new Error(error.message);
-  return data;
+  return res.json();
 }
 
-export function openCheckout({ amount, planType, userEmail, userName, onSuccess, onFailure }) {
+export async function verifyPayment({ razorpay_order_id, razorpay_payment_id, razorpay_signature }) {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) throw new Error('Not authenticated');
+
+  const res = await fetch(`${SUPABASE_URL}/functions/v1/verify-payment`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session.access_token}`,
+    },
+    body: JSON.stringify({ razorpay_order_id, razorpay_payment_id, razorpay_signature }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || 'Payment verification failed');
+  }
+  return res.json();
+}
+
+export function openCheckout({ orderId, amount, planType, userEmail, userName, onSuccess, onFailure }) {
   const options = {
     key: import.meta.env.VITE_RAZORPAY_KEY_ID,
     amount,
     currency: 'INR',
+    order_id: orderId,
     name: 'GymThozhan',
     description: planType === 'monthly' ? 'Pro Monthly Plan' : 'Pro Yearly Plan',
     prefill: {
       name: userName || '',
       email: userEmail || '',
-    },
-    method: {
-      upi: true,
-      card: true,
-      netbanking: true,
-      wallet: true,
     },
     theme: {
       color: '#0A798F',

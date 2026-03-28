@@ -1,13 +1,8 @@
 import { useState, useCallback } from 'react';
-import { loadRazorpayScript, createPendingSubscription, activateSubscription, openCheckout } from '../lib/razorpay';
+import { loadRazorpayScript, createOrder, verifyPayment, openCheckout } from '../lib/razorpay';
 import useAuthStore from '../store/useAuthStore';
 import useUserStore from '../store/useUserStore';
 import { showToast } from '../components/ui/Toast';
-
-const PLAN_AMOUNTS = {
-  monthly: 14900,
-  yearly: 99900,
-};
 
 export default function usePayment() {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -30,37 +25,35 @@ export default function usePayment() {
         return;
       }
 
-      // 3. Create pending subscription in Supabase
-      const pendingSub = await createPendingSubscription(planType, user.id);
+      // 3. Create order via Edge Function (server creates Razorpay order + pending subscription)
+      const { orderId, amount } = await createOrder(planType);
 
-      // 4. Open Razorpay Checkout
+      // 4. Open Razorpay checkout with order_id
       openCheckout({
-        amount: PLAN_AMOUNTS[planType],
+        orderId,
+        amount,
         planType,
         userEmail: user?.email || '',
         userName: profile?.name || user?.user_metadata?.full_name || '',
         onSuccess: async (response) => {
           try {
-            // 5. Activate subscription in Supabase
-            const activated = await activateSubscription(
-              pendingSub.id,
-              response.razorpay_payment_id,
-              planType
-            );
+            // 5. Verify payment via Edge Function (server verifies signature + activates subscription)
+            const { subscription } = await verifyPayment(response);
 
-            // 6. Update store
+            // 6. Update local store (subscription already activated server-side)
             useUserStore.getState().activatePro({
-              id: activated.id,
-              planType: activated.plan_type,
+              id: subscription.id,
+              planType: subscription.planType,
               status: 'active',
-              startsAt: activated.starts_at,
-              expiresAt: activated.expires_at,
-              razorpayPaymentId: activated.razorpay_payment_id,
+              startsAt: subscription.startsAt,
+              expiresAt: subscription.expiresAt,
             });
 
             showToast('Pro activated! Enjoy your premium features.', 'success', 5000);
           } catch (err) {
-            showToast('Failed to activate subscription. Contact support.', 'error', 5000);
+            // Verification failed — but payment may have gone through
+            // Webhook will catch it as backup
+            showToast('Payment received. Activating your plan shortly...', 'info', 5000);
           } finally {
             setIsProcessing(false);
           }

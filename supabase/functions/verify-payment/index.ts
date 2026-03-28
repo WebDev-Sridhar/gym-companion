@@ -80,6 +80,30 @@ serve(async (req) => {
       });
     }
 
+    // Idempotent — already activated
+    if (subscription.status === 'active') {
+      return new Response(
+        JSON.stringify({
+          success: true,
+          subscription: {
+            id: subscription.id,
+            planType: subscription.plan_type,
+            status: 'active',
+            startsAt: subscription.starts_at,
+            expiresAt: subscription.expires_at,
+          },
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (subscription.status !== 'pending') {
+      return new Response(JSON.stringify({ error: 'Subscription is not in pending state' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     // Calculate expiry
     const now = new Date();
     const expiresAt = new Date(now);

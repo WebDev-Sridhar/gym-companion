@@ -75,6 +75,13 @@ serve(async (req) => {
       });
     }
 
+    // Cancel any stale pending subscriptions for this user
+    await supabase
+      .from('subscriptions')
+      .update({ status: 'cancelled', updated_at: new Date().toISOString() })
+      .eq('user_id', user.id)
+      .eq('status', 'pending');
+
     // Insert pending subscription
     await supabase.from('subscriptions').insert({
       user_id: user.id,
