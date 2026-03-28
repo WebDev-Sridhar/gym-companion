@@ -101,7 +101,11 @@ export default function Onboarding() {
   };
 
   const handleBack = () => {
-    if (step > 1) setStep(step - 1);
+    if (step === 1) {
+      navigate(-1);
+    } else {
+      setStep(step - 1);
+    }
   };
 
   const bmr = calculateBMR(formData.weight, formData.height, formData.age, formData.gender || 'male');
@@ -505,12 +509,9 @@ export default function Onboarding() {
           <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/[0.04]">
             <button
               onClick={goBack}
-              disabled={step === 1}
-              className={`flex items-center gap-1 px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                step === 1 ? 'text-text-muted cursor-not-allowed' : 'text-text-muted hover:text-text-secondary'
-              }`}
+              className="flex items-center gap-1 px-4 py-2 rounded-lg font-medium text-sm transition-all text-text-muted hover:text-text-secondary"
             >
-              <ChevronLeft size={16} /> Back
+              <ChevronLeft size={16} /> {step === 1 ? 'Exit' : 'Back'}
             </button>
 
             <button

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Link, BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import useUserStore from './store/useUserStore';
 import useAuthStore from './store/useAuthStore';
@@ -23,7 +23,7 @@ import Contact from './pages/Contact';
 import About from './pages/About';
 import { ToastContainer } from './components/ui/Toast';
 import { CoachPopupContainer } from './components/ui/CoachPopup';
-import { PaymentModalContainer } from './components/ui/PaymentModal';
+import { PaymentModalContainer, showUpgradeModal } from './components/ui/PaymentModal';
 
 function LoadingScreen() {
   return (
@@ -52,9 +52,40 @@ function ProtectedRoute({ children }) {
 function OnboardingRoute({ children }) {
   const session = useAuthStore((s) => s.session);
   const isOnboarded = useUserStore((s) => s.isOnboarded);
+  const hasOnboardedBefore = useUserStore((s) => s.hasOnboardedBefore);
+  const plan = useUserStore((s) => s.plan);
 
   if (!session) return <Navigate to="/auth" replace />;
   if (isOnboarded) return <Navigate to="/dashboard" replace />;
+
+  // Block re-onboarding for free users — unlimited plan generation is PRO only
+  if (hasOnboardedBefore && plan !== 'pro') {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center px-5">
+        <div className="max-w-sm w-full text-center">
+          <div className="w-14 h-14 rounded-xl overflow-hidden mx-auto mb-6">
+            <img src="/logo.jpeg" alt="GymThozhan" className="w-full h-full object-cover" />
+          </div>
+          <h1 className="text-2xl font-bold text-text-primary mb-2">PRO Feature</h1>
+          <p className="text-text-muted text-sm mb-6 leading-relaxed">
+            Unlimited plan generation is available for PRO users only. Upgrade to regenerate your workout and diet plans anytime.
+          </p>
+          <button
+            onClick={() => showUpgradeModal()}
+            className="w-full py-3 rounded-lg font-bold text-sm btn-primary mb-3"
+          >
+            Upgrade to PRO
+          </button>
+          <Link
+            to="/profile"
+            className="block text-text-muted text-sm hover:text-text-secondary transition-colors"
+          >
+            Back to Profile
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return children;
 }

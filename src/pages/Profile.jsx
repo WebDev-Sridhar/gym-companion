@@ -402,6 +402,13 @@ export default function Profile() {
                 </ul>
               </div>
               <p className="text-xs text-red-400/80 font-medium text-center">This action cannot be undone.</p>
+              {plan !== 'pro' && (
+                <div className="bg-accent/5 border border-accent/10 rounded-lg p-3">
+                  <p className="text-xs text-accent font-medium text-center">
+                    Re-onboarding after reset requires PRO. Unlimited plan generation is a PRO-only feature.
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="flex gap-3">

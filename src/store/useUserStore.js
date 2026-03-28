@@ -79,6 +79,7 @@ const useUserStore = create(
       // Profile
       profile: null,
       isOnboarded: false,
+      hasOnboardedBefore: false, // true once user completes onboarding at least once (survives reset)
 
       // Plans
       workoutPlan: null,
@@ -229,7 +230,7 @@ const useUserStore = create(
       },
 
       completeOnboarding: () => {
-        set({ isOnboarded: true });
+        set({ isOnboarded: true, hasOnboardedBefore: true });
 
         const state = get();
         syncToSupabase(async (userId) => {
