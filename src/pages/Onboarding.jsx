@@ -131,7 +131,7 @@ export default function Onboarding() {
         <div className="absolute top-1/3 left-1/4 w-80 h-80 bg-accent/[0.03] rounded-full blur-[120px]" />
       </div>
 
-      <div className="relative z-10 w-full max-w-lg">
+      <div className={`relative z-10 w-full ${step === 6 ? 'max-w-3xl' : 'max-w-lg'} transition-all duration-300`}>
         {/* Progress */}
         <div className="mb-8">
           <div className="flex justify-between text-xs text-text-muted mb-2">
@@ -191,7 +191,7 @@ export default function Onboarding() {
                         }`}
                       >
                         <div className="flex items-center gap-3 mb-1">
-                          <span className="text-2xl">{opt.icon}</span>
+                          {/* <span className="text-2xl">{opt.icon}</span> */}
                           <span className={`font-bold text-sm ${formData.gymExperience === opt.key ? 'text-accent' : 'text-text-primary'}`}>
                             {opt.label}
                           </span>
@@ -295,27 +295,25 @@ export default function Onboarding() {
 
               {/* STEP 6 — Body Fat % */}
               {step === 6 && (
-                <div className="-mx-4 sm:mx-0 sm:w-[140%] sm:-ml-[20%]">
-                  <div className="px-4 sm:px-0">
-                    <h2 className="text-2xl font-bold mb-2 text-text-primary">Body fat estimate</h2>
-                    <p className="text-text-muted text-sm mb-5">Pick the range that closest describes you.</p>
-                  </div>
-                  <div className="grid grid-cols-5 gap-0">
+                <div>
+                  <h2 className="text-2xl font-bold mb-2 text-text-primary">Body fat estimate</h2>
+                  <p className="text-text-muted text-sm mb-5">Pick the range that closest describes you.</p>
+                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
                     {bfRanges.map((range) => (
                       <button
                         key={range.key}
                         onClick={() => update('bodyFat', range.key)}
-                        className={`relative transition-all overflow-hidden bg-dark-bg ${
+                        className={`rounded-xl overflow-hidden bg-[#1a1a1a] transition-all ${
                           formData.bodyFat === range.key
-                            ? 'ring-2 ring-accent ring-offset-1 ring-offset-dark-bg rounded-lg scale-[1.03] z-10'
-                            : 'hover:brightness-125'
+                            ? 'ring-2 ring-accent'
+                            : 'ring-1 ring-white/[0.06] hover:ring-white/[0.15]'
                         }`}
                       >
                         <img
                           src={range.image}
                           alt={range.desc}
                           className={`w-full h-auto block transition-opacity ${
-                            formData.bodyFat === range.key ? 'opacity-100' : 'opacity-60'
+                            formData.bodyFat === range.key ? 'opacity-100' : 'opacity-50'
                           }`}
                         />
                       </button>
