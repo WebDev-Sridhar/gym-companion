@@ -15,6 +15,12 @@ import Profile from './pages/Profile';
 import KnowledgeHub from './pages/KnowledgeHub';
 import FAQ from './pages/FAQ';
 import PlanSummary from './pages/PlanSummary';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import Terms from './pages/Terms';
+import RefundPolicy from './pages/RefundPolicy';
+import Disclaimer from './pages/Disclaimer';
+import Contact from './pages/Contact';
+import About from './pages/About';
 import { ToastContainer } from './components/ui/Toast';
 import { CoachPopupContainer } from './components/ui/CoachPopup';
 import { PaymentModalContainer } from './components/ui/PaymentModal';
@@ -100,6 +106,12 @@ export default function App() {
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/knowledge" element={<ProtectedRoute><KnowledgeHub /></ProtectedRoute>} />
           <Route path="/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/refund-policy" element={<RefundPolicy />} />
+          <Route path="/disclaimer" element={<Disclaimer />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/about" element={<About />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AnimatePresence>

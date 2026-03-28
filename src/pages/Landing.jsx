@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import useAuthStore from '../store/useAuthStore';
 import { showUpgradeModal } from '../components/ui/PaymentModal';
+import Footer from '../components/layout/Footer';
 
 function ProPricingButton({ planType, accent }) {
   const session = useAuthStore((s) => s.session);
@@ -583,17 +584,7 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-5 sm:px-8 border-t border-white/[0.04]">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <img src="/logo.jpeg" alt="GymThozhan" className="w-5 h-5 rounded object-cover" />
-            <span className="font-bold text-text-secondary text-sm">GymThozhan</span>
-          </div>
-          <p className="text-text-muted text-xs">
-            Built for beginners everywhere.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

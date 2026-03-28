@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../store/useAuthStore';
+import { LoginAgreement } from '../components/layout/Footer';
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -95,9 +96,9 @@ export default function Auth() {
           )}
         </motion.button>
 
-        <p className="text-center text-text-muted text-xs mt-6">
-          By signing in, you agree to our Terms of Service
-        </p>
+        <div className="mt-6">
+          <LoginAgreement />
+        </div>
       </motion.div>
     </div>
   );
