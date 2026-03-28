@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import ProLock from '../components/ui/ProLock';
+import { showUpgradeModal } from '../components/ui/PaymentModal';
 import { showCoach } from '../components/ui/CoachPopup';
 import useUserStore from '../store/useUserStore';
 import { exercises as exerciseDB, getAlternatives } from '../data/exercises';
@@ -345,28 +346,23 @@ export default function Workout() {
           <div className="mb-4">
             <div className="flex gap-2">
               {!isLogging ? (
-                isPro ? (
-                  <button
-                    onClick={() => { setSaveError(''); setIsLogging(true); showCoach('workoutStart'); }}
-                    disabled={hasLoggedToday}
-                    className="btn-primary px-5 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
-                  >
-                    <Play size={16} /> {hasLoggedToday ? 'Already Logged Today' : 'Start Workout'}
-                  </button>
-                ) : (
-                  <ProLock message="Workout logging">
-                    <button
-                      disabled
-                      className="btn-primary px-5 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 opacity-40 cursor-not-allowed"
-                    >
-                      <Play size={16} /> Start Workout
-                    </button>
-                  </ProLock>
-                )
+                <button
+                  onClick={() => { setSaveError(''); setIsLogging(true); showCoach('workoutStart'); }}
+                  disabled={hasLoggedToday}
+                  className="btn-primary px-5 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <Play size={16} /> {hasLoggedToday ? 'Already Logged Today' : 'Start Workout'}
+                </button>
               ) : (
                 <>
                   <button
-                    onClick={handleSaveWorkout}
+                    onClick={() => {
+                      if (!isPro) {
+                        showUpgradeModal();
+                        return;
+                      }
+                      handleSaveWorkout();
+                    }}
                     className="btn-secondary px-5 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2"
                   >
                     <Save size={16} /> Save Workout
@@ -558,7 +554,7 @@ export default function Workout() {
                                 </div>
                               )}
 
-                              {/* Alternatives with Swap — Pro Only */}
+                              {/* Alternatives with Swap */}
                               {alternatives.length > 0 && (
                                 isPro ? (
                                   <div>
@@ -624,9 +620,14 @@ export default function Workout() {
                                     </AnimatePresence>
                                   </div>
                                 ) : (
-                                  <ProLock message="Exercise swap">
-                                    <div className="bg-white/[0.03] rounded-lg p-3 h-14" />
-                                  </ProLock>
+                                  <div>
+                                    <span className="text-[11px] text-text-muted font-medium uppercase tracking-wider">Alternatives</span>
+                                    <div className="flex flex-wrap gap-1.5 mt-2">
+                                      {alternatives.map((alt) => (
+                                        <span key={alt.key} className="text-xs bg-white/[0.04] px-2.5 py-1 rounded-md text-text-muted">{alt.name}</span>
+                                      ))}
+                                    </div>
+                                  </div>
                                 )
                               )}
                             </div>
@@ -665,8 +666,25 @@ export default function Workout() {
                             </div>
                           </div>
 
-                          {/* Logging Inputs — Per-Set Tracking */}
-                          {isLogging && (() => {
+                          {/* Pro Upgrade CTA — below video for free users */}
+                          {!isPro && (
+                            <div
+                              onClick={() => showUpgradeModal()}
+                              className="mt-4 flex items-center gap-3 p-4 rounded-xl border border-accent/20 bg-accent/[0.04] cursor-pointer hover:bg-accent/[0.08] transition-colors"
+                            >
+                              <div className="w-9 h-9 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center shrink-0">
+                                <Zap size={16} className="text-accent" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-bold text-text-primary">Upgrade to Pro</p>
+                                <p className="text-xs text-text-muted">Unlock workout logging, exercise swap & full history</p>
+                              </div>
+                              <span className="text-xs font-semibold text-accent shrink-0">Upgrade</span>
+                            </div>
+                          )}
+
+                          {/* Logging Inputs — Per-Set Tracking (Pro only) */}
+                          {isLogging && isPro && (() => {
                             const setsData = logData[exercise.id]?.sets || [];
                             return (
                               <div className="bg-white/[0.03] rounded-lg p-4 mt-4">
