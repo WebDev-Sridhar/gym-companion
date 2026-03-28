@@ -564,6 +564,18 @@ const useUserStore = create(
         };
       },
 
+      // Hydrate subscription only (when profile doesn't exist, e.g. after reset)
+      hydrateSubscription: (subscription) => {
+        if (subscription && subscription.status === 'active') {
+          const expired = new Date(subscription.expiresAt) < new Date();
+          if (!expired) {
+            set({ plan: 'pro', subscription });
+          } else {
+            set({ plan: 'free', subscription: { ...subscription, status: 'expired' } });
+          }
+        }
+      },
+
       // Hydrate from Supabase (called after login)
       hydrateFromSupabase: (data) => {
         const { profile, gamification, exerciseLogs, progressLogs, foodLogs, subscription } = data;

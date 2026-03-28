@@ -83,7 +83,14 @@ const useAuthStore = create((set, get) => ({
 
   hydrateProfile: async (userId) => {
     try {
-      const { data: profile } = await fetchProfile(userId);
+      const [
+        { data: profile },
+        { data: subscription },
+      ] = await Promise.all([
+        fetchProfile(userId),
+        fetchSubscription(userId),
+      ]);
+
       if (profile) {
         const [
           { data: workoutPlan },
@@ -92,7 +99,6 @@ const useAuthStore = create((set, get) => ({
           { data: exerciseLogs },
           { data: progressLogs },
           { data: foodLogs },
-          { data: subscription },
         ] = await Promise.all([
           fetchWorkoutPlan(userId),
           fetchDietPlan(userId),
@@ -100,7 +106,6 @@ const useAuthStore = create((set, get) => ({
           fetchExerciseLogs(userId),
           fetchProgressLogs(userId),
           fetchFoodLogs(userId),
-          fetchSubscription(userId),
         ]);
 
         useUserStore.getState().hydrateFromSupabase({
@@ -113,6 +118,9 @@ const useAuthStore = create((set, get) => ({
           foodLogs: foodLogs || [],
           subscription,
         });
+      } else {
+        // No profile (user reset data) but subscription may still exist
+        useUserStore.getState().hydrateSubscription(subscription);
       }
     } catch (err) {
       console.warn('Profile hydration failed:', err.message);

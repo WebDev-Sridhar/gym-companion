@@ -347,7 +347,8 @@ export async function cancelSubscription(subscriptionId) {
 // =====================
 export async function deleteAllUserData(userId) {
   // Delete dependent tables first, then profiles last (FK constraints)
-  const tables = ['exercise_logs', 'food_logs', 'progress', 'workout_plans', 'diet_plans', 'gamification', 'subscriptions'];
+  // Note: subscriptions are NOT deleted — they represent payment records and must persist across resets
+  const tables = ['exercise_logs', 'food_logs', 'progress', 'workout_plans', 'diet_plans', 'gamification'];
   const results = await Promise.all(
     tables.map((table) => supabase.from(table).delete().eq('user_id', userId))
   );
