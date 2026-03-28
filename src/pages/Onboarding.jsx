@@ -36,7 +36,7 @@ const bodyFatRanges = {
     { key: 'fit', label: '13–17%', desc: 'Fit / Visible definition', level: 1, image: '/bodyfat15.png' },
     { key: 'average', label: '18–22%', desc: 'Average / Healthy', level: 2, image: '/bodyfat20.png' },
     { key: 'aboveAvg', label: '23–27%', desc: 'Above average', level: 3, image: '/bodyfat25.png' },
-    { key: 'high', label: '28%+', desc: 'High body fat', level: 4, image: '/bodyfat40.png' },
+    { key: 'high', label: '28%+', desc: 'High body fat', level: 4, image: '/bodyfat30.png' },
   ],
   female: [
     { key: 'lean', label: '16–19%', desc: 'Athletic / Very lean', level: 0, image: '/fbodyfat10.png' },
@@ -312,7 +312,7 @@ export default function Onboarding() {
                         <img
                           src={range.image}
                           alt={range.desc}
-                          className={`w-20 h-28 sm:w-16 sm:h-24 object-contain mx-auto transition-opacity ${
+                          className={`w-full h-full object-contain mx-auto transition-opacity ${
                             formData.bodyFat === range.key ? 'opacity-100' : 'opacity-50'
                           }`}
                         />
