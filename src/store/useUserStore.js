@@ -734,8 +734,6 @@ const useUserStore = create(
           subscription,
         });
 
-        localStorage.removeItem('gym-companion-storage');
-
         syncToSupabase(async (userId) => {
           await deleteAllUserData(userId);
         });
