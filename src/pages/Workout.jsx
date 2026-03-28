@@ -636,7 +636,7 @@ export default function Workout() {
                                     {!showMedia[exercise.id] ? (
                                       <button
                                         onClick={() => setShowMedia((prev) => ({ ...prev, [exercise.id]: true }))}
-                                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-white/[0.08] text-text-muted hover:text-text-secondary hover:border-white/15 transition-colors text-sm font-medium"
+                                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium btn-primary"
                                       >
                                         <Image size={14} /> Show Form Guide
                                       </button>

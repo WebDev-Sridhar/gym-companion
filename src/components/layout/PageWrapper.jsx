@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import Footer from './Footer';
 
 export default function PageWrapper({ children, className = '' }) {
   return (
@@ -13,6 +14,7 @@ export default function PageWrapper({ children, className = '' }) {
       <div className="mt-16 pb-4 text-center">
         <p className="text-[11px] text-text-muted/40 tracking-wide">💧 Stay hydrated</p>
       </div>
+      <Footer />
     </motion.div>
   );
 }
