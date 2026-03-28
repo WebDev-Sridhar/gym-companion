@@ -32,46 +32,21 @@ const goals = [
 // Body fat ranges per gender
 const bodyFatRanges = {
   male: [
-    { key: 'lean', label: '8–12%', desc: 'Very lean / Athletic', level: 0 },
-    { key: 'fit', label: '13–17%', desc: 'Fit / Visible definition', level: 1 },
-    { key: 'average', label: '18–22%', desc: 'Average / Healthy', level: 2 },
-    { key: 'aboveAvg', label: '23–27%', desc: 'Above average', level: 3 },
-    { key: 'high', label: '28%+', desc: 'High body fat', level: 4 },
+    { key: 'lean', label: '8–12%', desc: 'Very lean / Athletic', level: 0, image: '/bodyfat10%.png' },
+    { key: 'fit', label: '13–17%', desc: 'Fit / Visible definition', level: 1, image: '/bodyfat15%.png' },
+    { key: 'average', label: '18–22%', desc: 'Average / Healthy', level: 2, image: '/bodyfat20%.png' },
+    { key: 'aboveAvg', label: '23–27%', desc: 'Above average', level: 3, image: '/bodyfat25%.png' },
+    { key: 'high', label: '28%+', desc: 'High body fat', level: 4, image: '/bodyfat25%.png' },
   ],
   female: [
-    { key: 'lean', label: '16–19%', desc: 'Athletic / Very lean', level: 0 },
-    { key: 'fit', label: '20–24%', desc: 'Fit / Toned', level: 1 },
-    { key: 'average', label: '25–29%', desc: 'Average / Healthy', level: 2 },
-    { key: 'aboveAvg', label: '30–34%', desc: 'Above average', level: 3 },
-    { key: 'high', label: '35%+', desc: 'High body fat', level: 4 },
+    { key: 'lean', label: '16–19%', desc: 'Athletic / Very lean', level: 0, image: '/bodyfat10%.png' },
+    { key: 'fit', label: '20–24%', desc: 'Fit / Toned', level: 1, image: '/bodyfat15%.png' },
+    { key: 'average', label: '25–29%', desc: 'Average / Healthy', level: 2, image: '/bodyfat20%.png' },
+    { key: 'aboveAvg', label: '30–34%', desc: 'Above average', level: 3, image: '/bodyfat25%.png' },
+    { key: 'high', label: '35%+', desc: 'High body fat', level: 4, image: '/bodyfat25%.png' },
   ],
 };
 
-// Simple inline SVG body silhouette — torso width scales with fat level
-function BodySilhouette({ fatLevel = 2, selected = false }) {
-  const color = selected ? '#c8ee44' : '#4a4a4a';
-  const torsoRx = [8, 9.5, 11, 13, 15][fatLevel];
-  const cx = 28;
-
-  return (
-    <svg viewBox="0 0 56 110" xmlns="http://www.w3.org/2000/svg" className="w-10 h-16 mx-auto">
-      {/* Head */}
-      <circle cx={cx} cy="9" r="7" fill={color} />
-      {/* Neck */}
-      <rect x={cx - 2.5} y="16" width="5" height="5" rx="1" fill={color} />
-      {/* Torso */}
-      <ellipse cx={cx} cy="43" rx={torsoRx} ry="19" fill={color} />
-      {/* Left arm */}
-      <ellipse cx={cx - torsoRx - 3} cy="41" rx="3" ry="13" fill={color} />
-      {/* Right arm */}
-      <ellipse cx={cx + torsoRx + 3} cy="41" rx="3" ry="13" fill={color} />
-      {/* Left leg */}
-      <ellipse cx={cx - 7} cy="82" rx="5" ry="17" fill={color} />
-      {/* Right leg */}
-      <ellipse cx={cx + 7} cy="82" rx="5" ry="17" fill={color} />
-    </svg>
-  );
-}
 
 export default function Onboarding() {
   const navigate = useNavigate();
@@ -334,7 +309,13 @@ export default function Onboarding() {
                             : 'border-white/[0.06] hover:border-white/[0.12]'
                         }`}
                       >
-                        <BodySilhouette fatLevel={range.level} selected={formData.bodyFat === range.key} />
+                        <img
+                          src={range.image}
+                          alt={range.desc}
+                          className={`w-12 h-16 object-contain mx-auto transition-opacity ${
+                            formData.bodyFat === range.key ? 'opacity-100' : 'opacity-50'
+                          }`}
+                        />
                         <span className={`text-[11px] font-bold mt-1 ${formData.bodyFat === range.key ? 'text-accent' : 'text-text-primary'}`}>
                           {range.label}
                         </span>
