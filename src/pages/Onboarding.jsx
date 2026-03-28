@@ -303,7 +303,7 @@ export default function Onboarding() {
                       <button
                         key={range.key}
                         onClick={() => update('bodyFat', range.key)}
-                        className={`rounded-xl overflow-hidden bg-[#1d1e1f] transition-all  ${
+                        className={`flex flex-col rounded-xl overflow-hidden bg-[#1d1e1f] transition-all ${
                           formData.bodyFat === range.key
                             ? 'ring-2 ring-accent'
                             : 'ring-1 ring-white/[0.06] hover:ring-white/[0.15]'
@@ -316,11 +316,12 @@ export default function Onboarding() {
                             formData.bodyFat === range.key ? 'opacity-100' : 'opacity-80'
                           }`}
                         />
-                         <span className={`text-xs font-bold mt-2 ${formData.bodyFat === range.key ? 'text-accent' : 'text-text-primary'}`}>
-                          {range.label}
-                        </span> 
-                       <span className="text-[10px] text-text-muted text-center leading-tight mt-0.5">{range.desc}</span>
-
+                        <div className="px-2 py-2 text-center">
+                          <span className={`block text-xs font-bold ${formData.bodyFat === range.key ? 'text-accent' : 'text-text-primary'}`}>
+                            {range.label}
+                          </span>
+                          <span className="block text-[10px] text-text-muted leading-tight mt-0.5">{range.desc}</span>
+                        </div>
                       </button>
                      
                     ))}
