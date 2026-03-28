@@ -15,6 +15,7 @@ import Profile from './pages/Profile';
 import KnowledgeHub from './pages/KnowledgeHub';
 import FAQ from './pages/FAQ';
 import Explore from './pages/Explore';
+import WorkoutBuilder from './pages/WorkoutBuilder';
 import PlanSummary from './pages/PlanSummary';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Terms from './pages/Terms';
@@ -138,6 +139,7 @@ export default function App() {
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/knowledge" element={<ProtectedRoute><KnowledgeHub /></ProtectedRoute>} />
           <Route path="/explore" element={<ProtectedRoute><Explore /></ProtectedRoute>} />
+          <Route path="/builder" element={<ProtectedRoute><WorkoutBuilder /></ProtectedRoute>} />
           <Route path="/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<Terms />} />

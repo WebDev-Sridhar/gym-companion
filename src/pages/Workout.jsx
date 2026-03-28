@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Dumbbell,
@@ -19,6 +20,7 @@ import {
   Video,
   Timer,
   Zap,
+  Wrench,
 } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import ProLock from '../components/ui/ProLock';
@@ -30,6 +32,7 @@ import { exercises as exerciseDB, getAlternatives } from '../data/exercises';
 const EMPTY_OBJ = {};
 
 export default function Workout() {
+  const navigate = useNavigate();
   const { workoutPlan, logWorkout, deleteWorkoutLog, plan, swapExercise, resetExerciseSwap, currentWorkoutDay, setActiveWorkoutLog, clearActiveWorkoutLog } = useUserStore();
   const exerciseSwaps = useUserStore((s) => s.exerciseSwaps);
   const activeWorkoutLog = useUserStore((s) => s.activeWorkoutLog);
@@ -244,14 +247,22 @@ export default function Workout() {
           </h1>
           <p className="text-text-muted text-xs sm:text-sm">{workoutPlan.splitName} · {workoutPlan.level}</p>
         </div>
-        <button
-          onClick={() => setShowHistory(!showHistory)}
-          className={`px-4 py-2 rounded-lg text-xs font-medium transition-all ${
-            showHistory ? 'bg-white text-black' : 'border border-white/[0.08] text-text-muted hover:text-text-secondary'
-          }`}
-        >
-          {showHistory ? 'Plan' : 'History'}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate('/builder')}
+            className="px-3 py-2 rounded-lg text-xs font-medium border border-accent/15 text-accent/80 bg-accent/[0.04] hover:bg-accent/[0.08] transition-all flex items-center gap-1.5"
+          >
+            <Wrench size={12} /> Customize
+          </button>
+          <button
+            onClick={() => setShowHistory(!showHistory)}
+            className={`px-4 py-2 rounded-lg text-xs font-medium transition-all ${
+              showHistory ? 'bg-white text-black' : 'border border-white/[0.08] text-text-muted hover:text-text-secondary'
+            }`}
+          >
+            {showHistory ? 'Plan' : 'History'}
+          </button>
+        </div>
       </div>
 
       {showHistory ? (

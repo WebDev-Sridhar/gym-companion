@@ -256,6 +256,16 @@ const useUserStore = create(
         get().setProfile(newProfile);
       },
 
+      // Custom Workout Plan (PRO Builder)
+      setCustomWorkoutPlan: (plan) => {
+        set({
+          workoutPlan: plan,
+          currentWorkoutDay: 0,
+          exerciseSwaps: {},
+        });
+        syncToSupabase((userId) => saveWorkoutPlan(userId, plan));
+      },
+
       // Workout Logging
       logWorkout: (workout) => {
         const state = get();
