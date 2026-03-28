@@ -32,18 +32,18 @@ const goals = [
 // Body fat ranges per gender
 const bodyFatRanges = {
   male: [
-    { key: 'lean', label: '8–12%', desc: 'Very lean / Athletic', level: 0, image: '/bodyfat10%.png' },
-    { key: 'fit', label: '13–17%', desc: 'Fit / Visible definition', level: 1, image: '/bodyfat15%.png' },
-    { key: 'average', label: '18–22%', desc: 'Average / Healthy', level: 2, image: '/bodyfat20%.png' },
-    { key: 'aboveAvg', label: '23–27%', desc: 'Above average', level: 3, image: '/bodyfat25%.png' },
-    { key: 'high', label: '28%+', desc: 'High body fat', level: 4, image: '/bodyfat25%.png' },
+    { key: 'lean', label: '8–12%', desc: 'Very lean / Athletic', level: 0, image: '/bodyfat10.png' },
+    { key: 'fit', label: '13–17%', desc: 'Fit / Visible definition', level: 1, image: '/bodyfat15.png' },
+    { key: 'average', label: '18–22%', desc: 'Average / Healthy', level: 2, image: '/bodyfat20.png' },
+    { key: 'aboveAvg', label: '23–27%', desc: 'Above average', level: 3, image: '/bodyfat25.png' },
+    { key: 'high', label: '28%+', desc: 'High body fat', level: 4, image: '/bodyfat25.png' },
   ],
   female: [
-    { key: 'lean', label: '16–19%', desc: 'Athletic / Very lean', level: 0, image: '/bodyfat10%.png' },
-    { key: 'fit', label: '20–24%', desc: 'Fit / Toned', level: 1, image: '/bodyfat15%.png' },
-    { key: 'average', label: '25–29%', desc: 'Average / Healthy', level: 2, image: '/bodyfat20%.png' },
-    { key: 'aboveAvg', label: '30–34%', desc: 'Above average', level: 3, image: '/bodyfat25%.png' },
-    { key: 'high', label: '35%+', desc: 'High body fat', level: 4, image: '/bodyfat25%.png' },
+    { key: 'lean', label: '16–19%', desc: 'Athletic / Very lean', level: 0, image: '/bodyfat10.png' },
+    { key: 'fit', label: '20–24%', desc: 'Fit / Toned', level: 1, image: '/bodyfat15.png' },
+    { key: 'average', label: '25–29%', desc: 'Average / Healthy', level: 2, image: '/bodyfat20.png' },
+    { key: 'aboveAvg', label: '30–34%', desc: 'Above average', level: 3, image: '/bodyfat25.png' },
+    { key: 'high', label: '35%+', desc: 'High body fat', level: 4, image: '/bodyfat25.png' },
   ],
 };
 
