@@ -16,10 +16,16 @@ import DaySelector from '../components/builder/DaySelector';
 import DayEditor from '../components/builder/DayEditor';
 import PageWrapper from '../components/layout/PageWrapper';
 
-function buildEmptyDay(index) {
+function buildEmptyDay() {
+  return { title: '', exercises: [] };
+}
+
+function buildDayFromDefault(defaultPlan, dayIndex) {
+  const defaultDay = defaultPlan?.schedule?.[dayIndex];
+  if (!defaultDay) return buildEmptyDay();
   return {
-    title: '',
-    exercises: [],
+    title: defaultDay.day.replace(/^Day \d+\s*-?\s*/, ''),
+    exercises: defaultDay.exercises.map((ex) => ({ ...ex })),
   };
 }
 
@@ -81,6 +87,7 @@ export default function WorkoutBuilder() {
   const navigate = useNavigate();
   const plan = useUserStore((s) => s.plan);
   const customPlan = useUserStore((s) => s.customPlan);
+  const defaultPlan = useUserStore((s) => s.defaultPlan);
   const setCustomWorkoutPlan = useUserStore((s) => s.setCustomWorkoutPlan);
 
   const [step, setStep] = useState(1); // 1 = days, 2 = editor
@@ -88,9 +95,10 @@ export default function WorkoutBuilder() {
   const [days, setDays] = useState([]);
   const [saving, setSaving] = useState(false);
 
-  // Load existing custom plan on mount (always edits customPlan, not active plan)
+  // Load existing custom plan on mount, or pre-select default plan's day count
   useEffect(() => {
     if (customPlan?.schedule?.length) {
+      // Edit existing custom plan
       setDaysPerWeek(customPlan.daysPerWeek);
       setDays(
         customPlan.schedule.map((s) => ({
@@ -99,10 +107,13 @@ export default function WorkoutBuilder() {
         }))
       );
       setStep(2);
+    } else if (defaultPlan?.schedule?.length) {
+      // Pre-select day count from default plan
+      setDaysPerWeek(defaultPlan.daysPerWeek);
     }
   }, []);
 
-  // Adjust days array when daysPerWeek changes
+  // Adjust days array when daysPerWeek changes (populate new days from default plan)
   const handleDaysSelect = (count) => {
     setDaysPerWeek(count);
     setDays((prev) => {
@@ -111,7 +122,7 @@ export default function WorkoutBuilder() {
         return [
           ...prev,
           ...Array.from({ length: count - prev.length }, (_, i) =>
-            buildEmptyDay(prev.length + i)
+            buildDayFromDefault(defaultPlan, prev.length + i)
           ),
         ];
       }
@@ -122,7 +133,12 @@ export default function WorkoutBuilder() {
   const handleContinue = () => {
     if (!daysPerWeek) return;
     if (days.length === 0) {
-      setDays(Array.from({ length: daysPerWeek }, (_, i) => buildEmptyDay(i)));
+      // Pre-populate with default plan exercises so users can edit them
+      setDays(
+        Array.from({ length: daysPerWeek }, (_, i) =>
+          buildDayFromDefault(defaultPlan, i)
+        )
+      );
     }
     setStep(2);
   };

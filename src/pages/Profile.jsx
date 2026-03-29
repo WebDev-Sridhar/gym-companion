@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Edit3, Trophy, Flame, TrendingUp, Dumbbell, RotateCcw, Save, X, LogOut, Mail, Sparkles, Crown, Check, Lock, Medal, Zap, ChevronDown, ChevronUp, AlertTriangle, ArrowRight } from 'lucide-react';
+import { User, Trophy, Flame, TrendingUp, Dumbbell, RotateCcw, X, LogOut, Mail, Sparkles, Crown, Check, Lock, Medal, Zap, ChevronDown, ChevronUp, AlertTriangle, ArrowRight } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { showCoach } from '../components/ui/CoachPopup';
 import { showUpgradeModal } from '../components/ui/PaymentModal';
@@ -12,20 +12,15 @@ import { TRANSFORMATION_LEVELS, computeTransformationStats, getCurrentTransforma
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { profile, isOnboarded, transformationLevel, xp, currentStreak, longestStreak, totalWorkouts, weightLogs, workoutLogs, foodLogs, nutritionTargets, resetAll, updateProfile, plan, subscription, deactivatePro } = useUserStore();
+  const { profile, isOnboarded, transformationLevel, xp, currentStreak, longestStreak, totalWorkouts, weightLogs, workoutLogs, foodLogs, nutritionTargets, resetAll, plan, subscription, deactivatePro } = useUserStore();
   const isPro = plan === 'pro';
   const { user, signOut } = useAuthStore();
-  const [editing, setEditing] = useState(false);
-  const [editData, setEditData] = useState({});
   const [showWeightHistory, setShowWeightHistory] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
 
   // Compute stats with fallbacks for post-reset state (no profile)
   const stats = profile ? computeTransformationStats(workoutLogs, weightLogs, foodLogs, currentStreak, longestStreak, nutritionTargets) : null;
   const currentLevel = stats ? getCurrentTransformationLevel(stats) : { id: 0, name: 'Just Starting', rewardMessage: '' };
-
-  const startEdit = () => { if (!profile) return; setEditData({ name: profile.name, age: profile.age, height: profile.height, weight: profile.weight, workoutDays: profile.workoutDays }); setEditing(true); };
-  const saveEdit = () => { updateProfile(editData); setEditing(false); };
   const handleReset = () => setShowResetModal(true);
   const confirmReset = () => { setShowResetModal(false); resetAll(); showCoach('resetData'); };
   const handleSignOut = async () => { await signOut(); navigate('/'); };
@@ -208,70 +203,24 @@ export default function Profile() {
       {/* Personal Info — only when profile exists */}
       {profile && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="border border-white/[0.06] rounded-xl p-5 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-sm text-text-secondary">Personal Info</h3>
-            {!editing ? (
-              <button onClick={startEdit} className="text-accent text-xs font-medium flex items-center gap-1 hover:underline"><Edit3 size={12} /> Edit</button>
-            ) : (
-              <div className="flex gap-2">
-                <button onClick={saveEdit} className="text-accent text-xs font-medium flex items-center gap-1"><Save size={12} /> Save</button>
-                <button onClick={() => setEditing(false)} className="text-text-muted text-xs flex items-center gap-1"><X size={12} /> Cancel</button>
+          <h3 className="font-bold text-sm text-text-secondary mb-4">Personal Info</h3>
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              { label: 'Age', value: `${profile.age} years` },
+              { label: 'Gender', value: profile.gender },
+              { label: 'Height', value: `${profile.height} cm` },
+              { label: 'Weight', value: `${profile.weight} kg` },
+              { label: 'Activity', value: actLabel[profile.activityLevel] },
+              { label: 'Goal', value: goalLabel[profile.goal] },
+              { label: 'Diet', value: profile.dietType === 'veg' ? 'Vegetarian' : 'Non-Veg' },
+              { label: 'Workout Days', value: `${profile.workoutDays}/week` },
+            ].map((item) => (
+              <div key={item.label} className="bg-white/[0.03] rounded-lg p-3">
+                <div className="text-[10px] text-text-muted uppercase tracking-wider">{item.label}</div>
+                <div className="text-sm font-medium text-text-primary capitalize mt-0.5">{item.value}</div>
               </div>
-            )}
+            ))}
           </div>
-          {editing ? (
-            <div className="space-y-3">
-              {[
-                { key: 'name', label: 'Name', type: 'text' },
-                { key: 'age', label: 'Age', type: 'number' },
-                { key: 'height', label: 'Height (cm)', type: 'number' },
-                { key: 'weight', label: 'Weight (kg)', type: 'number' },
-              ].map((f) => (
-                <div key={f.key}>
-                  <label className="text-[11px] text-text-muted uppercase tracking-wider">{f.label}</label>
-                  <input type={f.type} value={editData[f.key] || ''} onChange={(e) => setEditData({ ...editData, [f.key]: f.type === 'number' ? parseFloat(e.target.value) : e.target.value })} className="w-full px-3 py-2.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-text-primary focus:outline-none focus:border-white/20 mt-1 text-sm" />
-                </div>
-              ))}
-              <div>
-                <label className="text-[11px] text-text-muted uppercase tracking-wider block mb-2">Workout Days / Week</label>
-                <div className="flex gap-2">
-                  {[3, 4, 5, 6].map((d) => (
-                    <button
-                      key={d}
-                      type="button"
-                      onClick={() => setEditData({ ...editData, workoutDays: d })}
-                      className={`w-12 h-10 rounded-lg font-bold text-sm transition-all ${
-                        editData.workoutDays === d
-                          ? 'bg-accent text-black'
-                          : 'border border-white/[0.08] text-text-muted hover:border-white/[0.20]'
-                      }`}
-                    >
-                      {d}
-                    </button>
-                  ))}
-                </div>
-                <p className="text-[10px] text-text-muted mt-1">Changing days will regenerate your workout split.</p>
-              </div>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                { label: 'Age', value: `${profile.age} years` },
-                { label: 'Gender', value: profile.gender },
-                { label: 'Height', value: `${profile.height} cm` },
-                { label: 'Weight', value: `${profile.weight} kg` },
-                { label: 'Activity', value: actLabel[profile.activityLevel] },
-                { label: 'Goal', value: goalLabel[profile.goal] },
-                { label: 'Diet', value: profile.dietType === 'veg' ? 'Vegetarian' : 'Non-Veg' },
-                { label: 'Workout Days', value: `${profile.workoutDays}/week` },
-              ].map((item) => (
-                <div key={item.label} className="bg-white/[0.03] rounded-lg p-3">
-                  <div className="text-[10px] text-text-muted uppercase tracking-wider">{item.label}</div>
-                  <div className="text-sm font-medium text-text-primary capitalize mt-0.5">{item.value}</div>
-                </div>
-              ))}
-            </div>
-          )}
         </motion.div>
       )}
 
