@@ -42,15 +42,17 @@ const useAuthStore = create((set, get) => ({
       set({ loading: false });
 
       supabase.auth.onAuthStateChange(async (event, session) => {
-        set({ session, user: session?.user ?? null });
-
         if (event === 'SIGNED_IN' && session) {
+          set({ session, user: session.user, loading: true });
           try {
             await get().hydrateProfile(session.user.id);
             sessionStorage.setItem('gymthozhan-hydrated', 'true');
           } catch (e) {
             console.warn('Auth change hydration failed:', e.message);
           }
+          set({ loading: false });
+        } else {
+          set({ session, user: session?.user ?? null });
         }
       });
 
