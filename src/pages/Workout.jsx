@@ -33,7 +33,9 @@ const EMPTY_OBJ = {};
 
 export default function Workout() {
   const navigate = useNavigate();
-  const { workoutPlan, logWorkout, deleteWorkoutLog, plan, swapExercise, resetExerciseSwap, currentWorkoutDay, setActiveWorkoutLog, clearActiveWorkoutLog } = useUserStore();
+  const { workoutPlan, logWorkout, deleteWorkoutLog, plan, swapExercise, resetExerciseSwap, currentWorkoutDay, setActiveWorkoutLog, clearActiveWorkoutLog, switchPlan } = useUserStore();
+  const customPlan = useUserStore((s) => s.customPlan);
+  const activePlanType = useUserStore((s) => s.activePlanType);
   const exerciseSwaps = useUserStore((s) => s.exerciseSwaps);
   const activeWorkoutLog = useUserStore((s) => s.activeWorkoutLog);
   const transformationLevel = useUserStore((s) => s.transformationLevel);
@@ -264,6 +266,33 @@ export default function Workout() {
           </button>
         </div>
       </div>
+
+      {/* Plan Toggle */}
+      {!showHistory && (customPlan || activePlanType === 'custom') && (
+        <div className="flex items-center gap-1 p-1 bg-white/[0.03] border border-white/[0.06] rounded-xl mb-6 w-fit">
+          <button
+            onClick={() => switchPlan('default')}
+            className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              activePlanType === 'default'
+                ? 'bg-white/10 text-text-primary'
+                : 'text-text-muted hover:text-text-secondary'
+            }`}
+          >
+            Default Plan
+          </button>
+          <button
+            onClick={() => switchPlan('custom')}
+            disabled={!customPlan}
+            className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              activePlanType === 'custom'
+                ? 'bg-accent/10 text-accent border border-accent/20'
+                : 'text-text-muted hover:text-text-secondary disabled:opacity-30 disabled:cursor-not-allowed'
+            }`}
+          >
+            Custom Plan
+          </button>
+        </div>
+      )}
 
       {showHistory ? (
         <div className="space-y-3">

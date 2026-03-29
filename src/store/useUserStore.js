@@ -81,8 +81,11 @@ const useUserStore = create(
       isOnboarded: false,
       hasOnboardedBefore: false,
 
-      // Plans
-      workoutPlan: null,
+      // Plans (dual-plan system: default + custom coexist)
+      defaultPlan: null,         // Auto-generated plan (never touched by builder)
+      customPlan: null,          // User-built plan (null until created)
+      activePlanType: 'default', // 'default' | 'custom'
+      workoutPlan: null,         // Active plan pointer (always equals default or custom)
       dietPlan: null,
       nutritionTargets: null,
 
@@ -214,16 +217,18 @@ const useUserStore = create(
       // Actions
       preparePlan: (profile) => {
         const nutritionTargets = calculateNutritionTargets(profile);
-        const workoutPlan = generateWorkoutPlan(profile);
+        const generatedPlan = generateWorkoutPlan(profile);
         const dietPlan = generateDietPlan(profile);
 
         const currentPlan = get().workoutPlan;
-        const planChanged = currentPlan?.daysPerWeek !== workoutPlan.daysPerWeek;
+        const planChanged = currentPlan?.daysPerWeek !== generatedPlan.daysPerWeek;
 
         set({
           profile,
           nutritionTargets,
-          workoutPlan,
+          defaultPlan: generatedPlan,
+          workoutPlan: generatedPlan,
+          activePlanType: 'default',
           dietPlan,
           ...(planChanged ? { currentWorkoutDay: 0 } : {}),
         });
@@ -259,11 +264,29 @@ const useUserStore = create(
       // Custom Workout Plan (PRO Builder)
       setCustomWorkoutPlan: (plan) => {
         set({
+          customPlan: plan,
           workoutPlan: plan,
+          activePlanType: 'custom',
           currentWorkoutDay: 0,
           exerciseSwaps: {},
         });
         syncToSupabase((userId) => saveWorkoutPlan(userId, plan));
+      },
+
+      // Switch between default and custom plans
+      switchPlan: (type) => {
+        const { defaultPlan, customPlan } = get();
+        if (type === 'custom' && !customPlan) return false;
+        const target = type === 'custom' ? customPlan : defaultPlan;
+        if (!target) return false;
+        set({
+          activePlanType: type,
+          workoutPlan: target,
+          currentWorkoutDay: 0,
+          exerciseSwaps: {},
+        });
+        syncToSupabase((userId) => saveWorkoutPlan(userId, target));
+        return true;
       },
 
       // Workout Logging
@@ -589,7 +612,7 @@ const useUserStore = create(
 
       // Hydrate from Supabase (called after login)
       hydrateFromSupabase: (data) => {
-        const { profile, workoutPlan: savedWorkoutPlan, dietPlan: savedDietPlan, gamification, exerciseLogs, progressLogs, foodLogs, subscription } = data;
+        const { profile, defaultPlan: savedDefault, customPlan: savedCustom, dietPlan: savedDietPlan, gamification, exerciseLogs, progressLogs, foodLogs, subscription } = data;
 
         if (!profile) return;
 
@@ -618,11 +641,16 @@ const useUserStore = create(
 
         const nutritionTargets = calculateNutritionTargets(profile);
 
-        // Use saved plan from Supabase if it exists (preserves custom Builder plans),
-        // otherwise regenerate from profile
-        const workoutPlan = savedWorkoutPlan?.schedule
-          ? savedWorkoutPlan
+        // Restore dual-plan system from Supabase
+        const defaultPlan = savedDefault?.schedule
+          ? savedDefault
           : generateWorkoutPlan(profile);
+        const customPlan = savedCustom?.schedule ? savedCustom : null;
+
+        // Determine which plan was active (custom takes priority if it exists)
+        const activePlanType = customPlan ? 'custom' : 'default';
+        const workoutPlan = activePlanType === 'custom' ? customPlan : defaultPlan;
+
         const dietPlan = savedDietPlan?.meals
           ? savedDietPlan
           : generateDietPlan(profile);
@@ -649,6 +677,9 @@ const useUserStore = create(
           isOnboarded: true,
           hasOnboardedBefore: profile.hasOnboardedBefore || false,
           nutritionTargets,
+          defaultPlan,
+          customPlan,
+          activePlanType,
           workoutPlan,
           dietPlan,
           workoutLogs: wLogs,
@@ -698,6 +729,9 @@ const useUserStore = create(
         set({
           profile: null,
           isOnboarded: false,
+          defaultPlan: null,
+          customPlan: null,
+          activePlanType: 'default',
           workoutPlan: null,
           dietPlan: null,
           nutritionTargets: null,
@@ -730,6 +764,9 @@ const useUserStore = create(
           profile: null,
           isOnboarded: false,
           hasOnboardedBefore, // preserve — stored in DB, survives reset
+          defaultPlan: null,
+          customPlan: null,
+          activePlanType: 'default',
           workoutPlan: null,
           dietPlan: null,
           nutritionTargets: null,
@@ -760,6 +797,23 @@ const useUserStore = create(
     }),
     {
       name: 'gym-companion-storage',
+      version: 2,
+      migrate: (persisted, version) => {
+        // v1 → v2: migrate single workoutPlan to dual-plan system
+        if (version < 2 && persisted.workoutPlan && !persisted.defaultPlan) {
+          if (persisted.workoutPlan.splitKey === 'custom') {
+            persisted.customPlan = persisted.workoutPlan;
+            persisted.activePlanType = 'custom';
+            // defaultPlan will be regenerated on next hydration from profile
+            persisted.defaultPlan = null;
+          } else {
+            persisted.defaultPlan = persisted.workoutPlan;
+            persisted.customPlan = null;
+            persisted.activePlanType = 'default';
+          }
+        }
+        return persisted;
+      },
     }
   )
 );

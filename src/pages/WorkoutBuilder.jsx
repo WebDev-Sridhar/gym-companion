@@ -80,7 +80,7 @@ function validatePlan(days) {
 export default function WorkoutBuilder() {
   const navigate = useNavigate();
   const plan = useUserStore((s) => s.plan);
-  const workoutPlan = useUserStore((s) => s.workoutPlan);
+  const customPlan = useUserStore((s) => s.customPlan);
   const setCustomWorkoutPlan = useUserStore((s) => s.setCustomWorkoutPlan);
 
   const [step, setStep] = useState(1); // 1 = days, 2 = editor
@@ -88,12 +88,12 @@ export default function WorkoutBuilder() {
   const [days, setDays] = useState([]);
   const [saving, setSaving] = useState(false);
 
-  // Load existing custom plan on mount
+  // Load existing custom plan on mount (always edits customPlan, not active plan)
   useEffect(() => {
-    if (workoutPlan?.splitKey === 'custom' && workoutPlan.schedule?.length) {
-      setDaysPerWeek(workoutPlan.daysPerWeek);
+    if (customPlan?.schedule?.length) {
+      setDaysPerWeek(customPlan.daysPerWeek);
       setDays(
-        workoutPlan.schedule.map((s) => ({
+        customPlan.schedule.map((s) => ({
           title: s.day.replace(/^Day \d+\s*-?\s*/, ''),
           exercises: s.exercises.map((ex) => ({ ...ex })),
         }))

@@ -70,32 +70,55 @@ export async function saveWorkoutPlan(userId, plan) {
     tips: plan.tips,
   };
 
-  // Delete old plan, insert new
-  await supabase.from('workout_plans').delete().eq('user_id', userId);
+  // Delete only the same type (custom vs default) to preserve the other
+  const isCustom = plan.splitKey === 'custom';
+  if (isCustom) {
+    await supabase.from('workout_plans').delete()
+      .eq('user_id', userId).eq('split_key', 'custom');
+  } else {
+    await supabase.from('workout_plans').delete()
+      .eq('user_id', userId).neq('split_key', 'custom');
+  }
   return supabase.from('workout_plans').insert(data).select().single();
 }
 
-export async function fetchWorkoutPlan(userId) {
+function rowToPlan(row) {
+  return {
+    splitName: row.split_name,
+    splitKey: row.split_key,
+    level: row.level,
+    daysPerWeek: row.days_per_week,
+    schedule: row.schedule,
+    tips: row.tips,
+  };
+}
+
+export async function fetchWorkoutPlans(userId) {
   const { data, error } = await supabase
     .from('workout_plans')
     .select('*')
     .eq('user_id', userId)
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .order('created_at', { ascending: false });
 
-  if (!data) return { data: null, error: null };
-  return {
-    data: {
-      splitName: data.split_name,
-      splitKey: data.split_key,
-      level: data.level,
-      daysPerWeek: data.days_per_week,
-      schedule: data.schedule,
-      tips: data.tips,
-    },
-    error,
-  };
+  let defaultPlan = null;
+  let customPlan = null;
+
+  for (const row of (data || [])) {
+    const plan = rowToPlan(row);
+    if (row.split_key === 'custom') {
+      if (!customPlan) customPlan = plan;
+    } else {
+      if (!defaultPlan) defaultPlan = plan;
+    }
+  }
+
+  return { defaultPlan, customPlan, error };
+}
+
+// Backward-compatible alias (returns single plan — used by legacy callers)
+export async function fetchWorkoutPlan(userId) {
+  const { defaultPlan, customPlan, error } = await fetchWorkoutPlans(userId);
+  return { data: customPlan || defaultPlan || null, error };
 }
 
 // =====================
