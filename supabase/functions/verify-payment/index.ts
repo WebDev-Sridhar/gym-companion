@@ -135,6 +135,37 @@ serve(async (req) => {
       });
     }
 
+    // --- Referral reward on first subscription ---
+    const { data: referral } = await supabase
+      .from('referrals')
+      .select('*')
+      .eq('referred_user_id', user.id)
+      .eq('subscription_reward_given', false)
+      .maybeSingle();
+
+    if (referral) {
+      // CAS guard: only update if still not rewarded
+      const { data: rewarded } = await supabase
+        .from('referrals')
+        .update({
+          status: 'subscribed',
+          subscription_reward_given: true,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', referral.id)
+        .eq('subscription_reward_given', false)
+        .select('id')
+        .maybeSingle();
+
+      if (rewarded) {
+        // Award referrer: +100 points, +1 successful_referral (with 5-milestone check)
+        await supabase.rpc('increment_referral_rewards', {
+          p_user_id: referral.referrer_id,
+          p_points: 100,
+        });
+      }
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
@@ -149,7 +180,7 @@ serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), {
+    return new Response(JSON.stringify({ error: (err as Error).message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

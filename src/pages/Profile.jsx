@@ -83,6 +83,25 @@ export default function Profile() {
         ))}
       </div>
 
+      {/* Refer & Earn CTA */}
+      <Link
+        to="/rewards"
+        className="block border border-accent/20 bg-accent/[0.04] rounded-xl p-4 mb-6 hover:bg-accent/[0.08] transition-colors"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center">
+              <Sparkles size={16} className="text-accent" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-text-primary">Refer & Earn</p>
+              <p className="text-xs text-text-muted">Invite friends, earn PRO for free</p>
+            </div>
+          </div>
+          <ArrowRight size={16} className="text-accent" />
+        </div>
+      </Link>
+
       {/* Transformation Journey */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="border border-white/[0.06] rounded-xl p-5 mb-6">
         <h3 className="font-bold mb-5 flex items-center gap-2 text-sm text-text-secondary">

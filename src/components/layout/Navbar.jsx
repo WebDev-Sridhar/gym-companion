@@ -15,6 +15,7 @@ import {
   Zap,
   LogOut,
   HelpCircle,
+  Gift,
 } from 'lucide-react';
 import useUserStore from '../../store/useUserStore';
 import useAuthStore from '../../store/useAuthStore';
@@ -34,6 +35,7 @@ const desktopItems = [
   { path: '/progress', label: 'Progress', icon: TrendingUp },
   { path: '/explore', label: 'Explore', icon: Search },
   { path: '/knowledge', label: 'Learn', icon: BookOpen },
+  { path: '/rewards', label: 'Rewards', icon: Gift },
   { path: '/profile', label: 'Profile', icon: User },
 ];
 
@@ -159,6 +161,18 @@ export default function Navbar() {
                 >
                   <BookOpen size={18} />
                   Knowledge Hub
+                </Link>
+                <Link
+                  to="/rewards"
+                  onClick={() => setIsOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+                    location.pathname === '/rewards'
+                      ? 'bg-white/10 text-text-primary'
+                      : 'text-text-secondary hover:text-text-primary hover:bg-white/[0.04]'
+                  }`}
+                >
+                  <Gift size={18} />
+                  Rewards
                 </Link>
                 <Link
                   to="/faq"

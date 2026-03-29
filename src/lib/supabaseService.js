@@ -372,6 +372,50 @@ export async function cancelSubscription(subscriptionId) {
 }
 
 // =====================
+// Referrals
+// =====================
+export async function fetchReferralData(userId) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('referral_code, reward_points, successful_referrals')
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  return {
+    data: data ? {
+      referralCode: data.referral_code,
+      rewardPoints: data.reward_points || 0,
+      successfulReferrals: data.successful_referrals || 0,
+    } : null,
+    error,
+  };
+}
+
+export async function fetchMyReferrals(userId) {
+  const { data, error } = await supabase
+    .from('referrals')
+    .select('*')
+    .eq('referrer_id', userId)
+    .order('created_at', { ascending: false });
+
+  return {
+    data: (data || []).map((r) => ({
+      id: r.id,
+      referredUserId: r.referred_user_id,
+      status: r.status,
+      signupRewardGiven: r.signup_reward_given,
+      subscriptionRewardGiven: r.subscription_reward_given,
+      createdAt: r.created_at,
+    })),
+    error,
+  };
+}
+
+export async function redeemRewardPoints() {
+  return supabase.functions.invoke('redeem-points');
+}
+
+// =====================
 // Delete All User Data (for Reset)
 // =====================
 export async function deleteAllUserData(userId) {

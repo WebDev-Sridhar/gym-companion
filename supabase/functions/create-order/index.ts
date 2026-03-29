@@ -43,14 +43,39 @@ serve(async (req) => {
     }
 
     const { planType } = await req.json();
-    const amount = PLAN_AMOUNTS[planType];
+    const baseAmount = PLAN_AMOUNTS[planType];
 
-    if (!amount) {
+    if (!baseAmount) {
       return new Response(JSON.stringify({ error: 'Invalid plan type' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
+
+    // Check referral discount eligibility (₹30 off first subscription)
+    let discount = 0;
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('referred_by')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (profile?.referred_by) {
+      // Check if user has any previous active/expired subscription (first-time only)
+      const { data: prevSubs } = await supabase
+        .from('subscriptions')
+        .select('id')
+        .eq('user_id', user.id)
+        .in('status', ['active'])
+        .eq('source', 'payment')
+        .limit(1);
+
+      if (!prevSubs || prevSubs.length === 0) {
+        discount = 3000; // ₹30 in paise
+      }
+    }
+
+    const amount = baseAmount - discount;
 
     // Create Razorpay order
     const razorpayResponse = await fetch('https://api.razorpay.com/v1/orders', {
@@ -88,12 +113,14 @@ serve(async (req) => {
       plan_type: planType,
       status: 'pending',
       amount,
+      original_amount: baseAmount,
+      discount,
       currency: 'INR',
       razorpay_order_id: order.id,
     });
 
     return new Response(
-      JSON.stringify({ orderId: order.id, amount, currency: 'INR' }),
+      JSON.stringify({ orderId: order.id, amount, originalAmount: baseAmount, discount, currency: 'INR' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (err) {

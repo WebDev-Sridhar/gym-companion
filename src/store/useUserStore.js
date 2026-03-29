@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import supabase from '../lib/supabase';
 import { generateWorkoutPlan, generateDietPlan } from '../utils/planGenerator';
 import { calculateNutritionTargets } from '../utils/tdee';
 import {
@@ -126,6 +127,11 @@ const useUserStore = create(
       plan: 'free', // 'free' | 'pro'
       subscription: null, // { id, planType, status, startsAt, expiresAt }
 
+      // Referral
+      referralCode: null,
+      rewardPoints: 0,
+      successfulReferrals: 0,
+
       // Stats
       totalWorkouts: 0,
       weightLogsCount: 0,
@@ -215,6 +221,15 @@ const useUserStore = create(
         }
       },
 
+      // Referral Actions
+      updateReferralData: ({ rewardPoints, successfulReferrals, referralCode }) => {
+        set({
+          ...(referralCode !== undefined && { referralCode }),
+          ...(rewardPoints !== undefined && { rewardPoints }),
+          ...(successfulReferrals !== undefined && { successfulReferrals }),
+        });
+      },
+
       // Actions
       preparePlan: (profile) => {
         const nutritionTargets = calculateNutritionTargets(profile);
@@ -246,6 +261,18 @@ const useUserStore = create(
             saveDietPlan(userId, state.dietPlan),
             saveGamification(userId, buildGamSaveData(state)),
           ]);
+
+          // Process pending referral (if user signed up via referral link)
+          const refCode = localStorage.getItem('gymthozhan-ref');
+          if (refCode) {
+            supabase.functions.invoke('process-referral-signup', {
+              body: { referralCode: refCode },
+            }).then(() => {
+              localStorage.removeItem('gymthozhan-ref');
+            }).catch((e) => {
+              console.warn('Referral processing failed:', e.message);
+            });
+          }
         });
       },
 
@@ -711,6 +738,9 @@ const useUserStore = create(
           exerciseSwaps: gamification?.exerciseSwaps || {},
           plan,
           subscription: subData,
+          referralCode: profile.referralCode || null,
+          rewardPoints: profile.rewardPoints || 0,
+          successfulReferrals: profile.successfulReferrals || 0,
         });
       },
 
@@ -767,6 +797,9 @@ const useUserStore = create(
           activeWorkoutLog: null,
           plan: 'free',
           subscription: null,
+          referralCode: null,
+          rewardPoints: 0,
+          successfulReferrals: 0,
         });
         localStorage.removeItem('gym-companion-storage');
       },
@@ -802,6 +835,9 @@ const useUserStore = create(
           activeWorkoutLog: null,
           plan,
           subscription,
+          referralCode: null,
+          rewardPoints: 0,
+          successfulReferrals: 0,
         });
 
         syncToSupabase(async (userId) => {

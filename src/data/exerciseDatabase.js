@@ -3202,37 +3202,7 @@ export const allExercises = [
     "priorityScore": 4
   },
 
-  {
-    "id": "pec-deck-machine",
-    "key": null,
-    "name": "Pec Deck Machine",
-    "muscle": "Chest",
-    "difficulty": "beginner",
-    "equipment": "Machine & Cable",
-    "movementType": "isolation",
-    "sets": 3,
-    "reps": "10-12",
-    "rest": "60s",
-    "videoId": "Z57CtFmRMxA",
-    "gifUrl": null,
-    "instructions": "Sit with your back against the pad. Place forearms on the pads or grip the handles. Squeeze the pads together in front of your chest.",
-    "donts": [],
-    "alternatives": [],
-    "keywords": [
-      "pec",
-      "deck",
-      "machine",
-      "chest"
-    ],
-    "aliases": [
-      "chest workout",
-      "chest exercise",
-      "how to do pec deck machine"
-    ],
-    "isPlanEligible": false,
-    "isCustomAllowed": true,
-    "priorityScore": 4
-  },
+
   {
     "id": "incline-barbell-bench-press",
     "key": null,
@@ -3299,41 +3269,7 @@ export const allExercises = [
     "isCustomAllowed": true,
     "priorityScore": 4
   },
-  {
-    "id": "barbell-bicep-curl",
-    "key": null,
-    "name": "Barbell Bicep Curl",
-    "muscle": "Biceps",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "movementType": "isolation",
-    "sets": 3,
-    "reps": "10-12",
-    "rest": "60s",
-    "videoId": "QZEqB6wUPxQ",
-    "gifUrl": null,
-    "instructions": "Grip the weight with palms facing up or in a neutral position. Curl the weight up, keeping your elbows stationary. Lower the weight slowly, fully extending your arms.",
-    "donts": [],
-    "alternatives": [],
-    "keywords": [
-      "barbell",
-      "bicep",
-      "curl",
-      "biceps",
-      "free weight",
-      "pull",
-      "isolation"
-    ],
-    "aliases": [
-      "bb bicep curl",
-      "biceps workout",
-      "biceps exercise",
-      "how to do barbell bicep curl"
-    ],
-    "isPlanEligible": false,
-    "isCustomAllowed": true,
-    "priorityScore": 4
-  },
+
   {
     "id": "dumbbell-rear-fly-20",
     "key": null,
@@ -3995,43 +3931,7 @@ export const allExercises = [
     "isCustomAllowed": true,
     "priorityScore": 4
   },
-  {
-    "id": "incline-dumbbell-fly-hit-your-chest-hard",
-    "key": null,
-    "name": "Incline Dumbbell Fly || Hit Your Chest HARD",
-    "muscle": "Chest",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "movementType": "isolation",
-    "sets": 3,
-    "reps": "10-12",
-    "rest": "60s",
-    "videoId": "bDaIL_zKbGs",
-    "gifUrl": null,
-    "instructions": "Position yourself and grip the handles/bar at chest height. Press forward or upward, squeezing your chest at the top. Lower slowly with control back to the starting position.",
-    "donts": [],
-    "alternatives": [],
-    "keywords": [
-      "incline",
-      "dumbbell",
-      "fly",
-      "hit",
-      "your",
-      "chest",
-      "hard",
-      "free weight",
-      "isolation"
-    ],
-    "aliases": [
-      "incline db fly || hit your chest hard",
-      "chest workout",
-      "chest exercise",
-      "how to do incline dumbbell fly || hit your chest hard"
-    ],
-    "isPlanEligible": false,
-    "isCustomAllowed": true,
-    "priorityScore": 4
-  },
+
   {
     "id": "barbell-drag-curl",
     "key": null,
@@ -4410,41 +4310,7 @@ export const allExercises = [
     "isCustomAllowed": true,
     "priorityScore": 4
   },
-  {
-    "id": "standing-barbell-calf-raise",
-    "key": null,
-    "name": "Standing Barbell Calf Raise",
-    "muscle": "Calves",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "movementType": "isolation",
-    "sets": 3,
-    "reps": "10-12",
-    "rest": "60s",
-    "videoId": "3UWi44yN-wM",
-    "gifUrl": null,
-    "instructions": "Position the balls of your feet on the edge of the platform. Rise up onto your toes, squeezing the calves at the top. Lower your heels below the platform for a full stretch.",
-    "donts": [],
-    "alternatives": [],
-    "keywords": [
-      "standing",
-      "barbell",
-      "calf",
-      "raise",
-      "calves",
-      "free weight",
-      "isolation"
-    ],
-    "aliases": [
-      "standing bb calf raise",
-      "calves workout",
-      "calves exercise",
-      "how to do standing barbell calf raise"
-    ],
-    "isPlanEligible": false,
-    "isCustomAllowed": true,
-    "priorityScore": 4
-  },
+
   {
     "id": "good-mornings",
     "key": null,
@@ -4817,41 +4683,6 @@ export const allExercises = [
       "back workout",
       "back exercise",
       "how to do barbell bent-over row"
-    ],
-    "isPlanEligible": false,
-    "isCustomAllowed": true,
-    "priorityScore": 4
-  },
-  {
-    "id": "standing-straight-bar-military-overhead-press",
-    "key": null,
-    "name": "Standing Straight-Bar Military / Overhead Press",
-    "muscle": "Shoulders",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "movementType": "compound",
-    "sets": 3,
-    "reps": "10-12",
-    "rest": "60s",
-    "videoId": "2yjwXTZQDDI",
-    "gifUrl": null,
-    "instructions": "Grip the bar or handle with the appropriate grip width. Pull toward your body, squeezing your shoulder blades together. Return to the starting position with a controlled negative.",
-    "donts": [],
-    "alternatives": [],
-    "keywords": [
-      "standing",
-      "straight",
-      "bar",
-      "military",
-      "overhead",
-      "press",
-      "back",
-      "push"
-    ],
-    "aliases": [
-      "back workout",
-      "back exercise",
-      "how to do standing straight-bar military / overhead press"
     ],
     "isPlanEligible": false,
     "isCustomAllowed": true,
@@ -6498,40 +6329,7 @@ export const allExercises = [
     "priorityScore": 4
   },
 
-  {
-    "id": "dumbbell-shoulder-press-1",
-    "key": null,
-    "name": "Dumbbell Shoulder Press",
-    "muscle": "Shoulders",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "movementType": "isolation",
-    "sets": 3,
-    "reps": "10-12",
-    "rest": "60s",
-    "videoId": "GFblCmuEE18",
-    "gifUrl": null,
-    "instructions": "Hold the weight at shoulder height with proper grip. Press or raise the weight in a controlled motion. Lower back to the starting position slowly.",
-    "donts": [],
-    "alternatives": [],
-    "keywords": [
-      "dumbbell",
-      "shoulder",
-      "press",
-      "shoulders",
-      "free weight",
-      "push"
-    ],
-    "aliases": [
-      "db shoulder press",
-      "shoulders workout",
-      "shoulders exercise",
-      "how to do dumbbell shoulder press"
-    ],
-    "isPlanEligible": false,
-    "isCustomAllowed": true,
-    "priorityScore": 4
-  },
+
   {
     "id": "dumbbell-shrugs",
     "key": null,
@@ -9864,37 +9662,7 @@ export const allExercises = [
     "isCustomAllowed": true,
     "priorityScore": 4
   },
-  {
-    "id": "push-up",
-    "key": null,
-    "name": "Push Up",
-    "muscle": "Chest",
-    "difficulty": "beginner",
-    "equipment": "Bodyweight",
-    "movementType": "isolation",
-    "sets": 3,
-    "reps": "10-12",
-    "rest": "60s",
-    "videoId": "vh72hbUqqfs",
-    "gifUrl": null,
-    "instructions": "Position yourself and grip the handles/bar at chest height. Press forward or upward, squeezing your chest at the top. Lower slowly with control back to the starting position.",
-    "donts": [],
-    "alternatives": [],
-    "keywords": [
-      "push",
-      "chest",
-      "bodyweight",
-      "no equipment"
-    ],
-    "aliases": [
-      "chest workout",
-      "chest exercise",
-      "how to do push up"
-    ],
-    "isPlanEligible": false,
-    "isCustomAllowed": true,
-    "priorityScore": 4
-  },
+
   {
     "id": "3",
     "key": null,

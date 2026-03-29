@@ -102,6 +102,35 @@ serve(async (req) => {
       })
       .eq('id', subscription.id);
 
+    // --- Referral reward on first subscription (backup path) ---
+    const { data: referral } = await supabase
+      .from('referrals')
+      .select('*')
+      .eq('referred_user_id', subscription.user_id)
+      .eq('subscription_reward_given', false)
+      .maybeSingle();
+
+    if (referral) {
+      const { data: rewarded } = await supabase
+        .from('referrals')
+        .update({
+          status: 'subscribed',
+          subscription_reward_given: true,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', referral.id)
+        .eq('subscription_reward_given', false)
+        .select('id')
+        .maybeSingle();
+
+      if (rewarded) {
+        await supabase.rpc('increment_referral_rewards', {
+          p_user_id: referral.referrer_id,
+          p_points: 100,
+        });
+      }
+    }
+
     return new Response(JSON.stringify({ received: true, activated: true }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },

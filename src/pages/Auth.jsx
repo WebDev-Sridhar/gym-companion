@@ -1,12 +1,20 @@
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import useAuthStore from '../store/useAuthStore';
 import { LoginAgreement } from '../components/layout/Footer';
 
 export default function Auth() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { signInWithGoogle, error: authError, loading, clearError } = useAuthStore();
+
+  // Capture referral code from URL before Google OAuth redirect navigates away
+  useEffect(() => {
+    const ref = searchParams.get('ref');
+    if (ref) localStorage.setItem('gymthozhan-ref', ref);
+  }, [searchParams]);
 
   const handleGoogleSignIn = () => {
     clearError();
