@@ -20,8 +20,6 @@ const toCamelCase = (obj) => mapKeys(obj, toCamel);
 // Profiles
 // =====================
 export async function saveProfile(userId, profileData) {
-  // Explicit field mapping — only include columns that exist in the profiles table.
-  // Fields like gymExperience and bodyFat are app-only and must NOT be sent to Supabase.
   const data = {
     user_id: userId,
     name: profileData.name,
@@ -36,6 +34,8 @@ export async function saveProfile(userId, profileData) {
     workout_duration: profileData.workoutDuration,
     use_supplements: profileData.useSupplements,
     has_onboarded_before: profileData.hasOnboardedBefore || false,
+    gym_experience: profileData.gymExperience || null,
+    body_fat: profileData.bodyFat || null,
     updated_at: new Date().toISOString(),
   };
 
