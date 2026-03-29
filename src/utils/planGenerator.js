@@ -89,21 +89,23 @@ export function generateWorkoutPlan(profile) {
     workoutDuration,
   } = profile;
 
-  const isBeginner = gymExperience === 'never' || gymExperience === 'beginner';
+ const isNewbie = gymExperience === 'never';
+const isBeginner = gymExperience === 'beginner';
+const isIntermediate = gymExperience === 'intermediate'; // future
 
   // -------------------------------
   // 1. SPLIT SELECTION (same logic improved)
   // -------------------------------
   let splitKey;
-  if (isBeginner || workoutDays <= 3) {
-    splitKey = 'fullBody3';
-  } else if (workoutDays === 4) {
-    splitKey = 'upperLower4';
-  } else if (workoutDays === 5) {
-    splitKey = 'ppl5';
-  } else {
-    splitKey = 'ppl6';
-  }
+if (workoutDays <= 3) {
+  splitKey = 'fullBody3';
+} else if (workoutDays === 4) {
+  splitKey = isNewbie ? 'fullBody3' : 'upperLower4';
+} else if (workoutDays === 5) {
+  splitKey = isNewbie ? 'upperLower4' : 'ppl5';
+} else {
+  splitKey = isNewbie ? 'upperLower4' : 'ppl6';
+}
 
   const split = workoutSplits[splitKey];
 
@@ -165,21 +167,30 @@ export function generateWorkoutPlan(profile) {
       let sets = ex.sets;
       let reps = ex.reps;
 
-      // Beginner adjustments
-      if (isBeginner) {
-        sets = Math.min(3, sets);
-        reps = '12-15';
-      }
+if (isNewbie) {
+  sets = 2;
 
-      // Weight loss → higher reps
-      if (goal === 'weightLoss') {
-        reps = '12-15';
-      }
+  if (goal === 'weightLoss') reps = '12-15';
+  else if (goal === 'muscleGain') reps = '10-12';
+  else reps = '10-12';
+} 
 
-      // Muscle gain → strength focus
-      if (goal === 'muscleGain') {
-        reps = '6-10';
-      }
+else if (isBeginner) {
+  sets = 3;
+
+  if (goal === 'weightLoss') reps = '12-15';
+  else if (goal === 'muscleGain') reps = '8-12';
+  else reps = '8-12';
+} 
+
+else {
+  // future: intermediate/advanced
+  sets = 4;
+
+  if (goal === 'weightLoss') reps = '12-15';
+  else if (goal === 'muscleGain') reps = '6-10';
+  else reps = '8-12';
+}
 
       // Apply intensity scaling
       sets = Math.round(sets * totalIntensity);
