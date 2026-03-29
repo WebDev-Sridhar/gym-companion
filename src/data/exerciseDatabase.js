@@ -607,7 +607,7 @@ export const allExercises = [
     "sets": 3,
     "reps": "10-12",
     "rest": "60s",
-    "videoId": "pYcpY20QaE8",
+    "videoId": "KRN38chlkds",
     "gifUrl": "https://v2.exercisedb.io/image/A5f-4j7bhc2q2C",
     "instructions": "Place one knee and hand on a bench for support. Hold a dumbbell in the other hand, arm hanging straight. Pull the dumbbell to your hip, driving your elbow back and squeezing your lat. Lower slowly.",
     "donts": [
@@ -674,45 +674,7 @@ export const allExercises = [
     "isCustomAllowed": true,
     "priorityScore": 10
   },
-  {
-    "id": "cable-row",
-    "key": "cableRow",
-    "name": "Cable Row",
-    "muscle": "Back",
-    "difficulty": "beginner",
-    "equipment": "Machine & Cable",
-    "movementType": "compound",
-    "sets": 3,
-    "reps": "10-12",
-    "rest": "60s",
-    "videoId": "GZbfZ033f74",
-    "gifUrl": "https://v2.exercisedb.io/image/XFUMbBBKWnWAhf",
-    "instructions": "Stand or sit at a cable station. Pull the handle to your torso, squeezing your shoulder blades together. Return to the start under control.",
-    "donts": [
-      "Don't lean too far back",
-      "Don't shrug your shoulders",
-      "Don't use momentum"
-    ],
-    "alternatives": [
-      "seatedCableRow",
-      "dumbbellRow"
-    ],
-    "keywords": [
-      "cable",
-      "row",
-      "back",
-      "machine",
-      "pull"
-    ],
-    "aliases": [
-      "back workout",
-      "back exercise",
-      "how to do cable row"
-    ],
-    "isPlanEligible": true,
-    "isCustomAllowed": true,
-    "priorityScore": 10
-  },
+
   {
     "id": "machine-row",
     "key": "machineRow",
@@ -1549,7 +1511,7 @@ export const allExercises = [
     "sets": 3,
     "reps": "10-12",
     "rest": "60s",
-    "videoId": "2-LAMcpzODU",
+    "videoId": "_w-HpW70nSQ",
     "gifUrl": "https://v2.exercisedb.io/image/QHMR7SQXkLwDJN",
     "instructions": "Stand at a cable station with a straight bar or V-bar attachment. Keep your elbows pinned to your sides and push the bar down until your arms are fully extended. Squeeze your triceps hard at the bottom, then let the bar come up slowly to about chest level.",
     "donts": [
@@ -3033,38 +2995,7 @@ export const allExercises = [
     "isCustomAllowed": true,
     "priorityScore": 4
   },
-  {
-    "id": "cable-triceps-pushdown",
-    "key": null,
-    "name": "Cable Triceps Pushdown",
-    "muscle": "Triceps",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "movementType": "isolation",
-    "sets": 3,
-    "reps": "10-12",
-    "rest": "60s",
-    "videoId": "_w-HpW70nSQ",
-    "gifUrl": null,
-    "instructions": "Grip the bar or handle with the appropriate grip width. Pull toward your body, squeezing your shoulder blades together. Return to the starting position with a controlled negative.",
-    "donts": [],
-    "alternatives": [],
-    "keywords": [
-      "cable",
-      "triceps",
-      "pushdown",
-      "back",
-      "push"
-    ],
-    "aliases": [
-      "back workout",
-      "back exercise",
-      "how to do cable triceps pushdown"
-    ],
-    "isPlanEligible": false,
-    "isCustomAllowed": true,
-    "priorityScore": 4
-  },
+
   {
     "id": "cable-fly-high-to-low",
     "key": null,
@@ -3270,40 +3201,7 @@ export const allExercises = [
     "isCustomAllowed": true,
     "priorityScore": 4
   },
-  {
-    "id": "single-arm-bent-over-row",
-    "key": null,
-    "name": "Single-Arm Bent Over Row",
-    "muscle": "Back",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "movementType": "compound",
-    "sets": 3,
-    "reps": "10-12",
-    "rest": "60s",
-    "videoId": "sUqz6oaISkQ",
-    "gifUrl": null,
-    "instructions": "Grip the bar or handle with the appropriate grip width. Pull toward your body, squeezing your shoulder blades together. Return to the starting position with a controlled negative.",
-    "donts": [],
-    "alternatives": [],
-    "keywords": [
-      "single",
-      "arm",
-      "bent",
-      "over",
-      "row",
-      "back",
-      "pull"
-    ],
-    "aliases": [
-      "back workout",
-      "back exercise",
-      "how to do single-arm bent over row"
-    ],
-    "isPlanEligible": false,
-    "isCustomAllowed": true,
-    "priorityScore": 4
-  },
+
   {
     "id": "pec-deck-machine",
     "key": null,
@@ -3606,7 +3504,7 @@ export const allExercises = [
     "id": "mercy-30s",
     "key": null,
     "name": "MERCY 30s",
-    "muscle": "Back",
+    "muscle": "Biceps",
     "difficulty": "intermediate",
     "equipment": "Barbell & Dumbbell",
     "movementType": "isolation",
@@ -3768,43 +3666,7 @@ export const allExercises = [
     "isCustomAllowed": true,
     "priorityScore": 4
   },
-  {
-    "id": "tricep-tricks-overcome-the-heavy-weight-stack-on-pushdowns",
-    "key": null,
-    "name": "Tricep Tricks- Overcome The Heavy Weight Stack On Pushdowns",
-    "muscle": "Triceps",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "movementType": "isolation",
-    "sets": 3,
-    "reps": "10-12",
-    "rest": "60s",
-    "videoId": "La60VkEPUMk",
-    "gifUrl": null,
-    "instructions": "Position your arms with elbows close to your body. Extend your arms fully, squeezing the triceps at lockout. Return to the starting position with control.",
-    "donts": [],
-    "alternatives": [],
-    "keywords": [
-      "tricep",
-      "tricks",
-      "overcome",
-      "the",
-      "heavy",
-      "weight",
-      "stack",
-      "pushdowns",
-      "triceps",
-      "push"
-    ],
-    "aliases": [
-      "triceps workout",
-      "triceps exercise",
-      "how to do tricep tricks- overcome the heavy weight stack on pushdowns"
-    ],
-    "isPlanEligible": false,
-    "isCustomAllowed": true,
-    "priorityScore": 4
-  },
+
   {
     "id": "rack-pull",
     "key": null,
@@ -4682,43 +4544,7 @@ export const allExercises = [
     "isCustomAllowed": true,
     "priorityScore": 4
   },
-  {
-    "id": "dumbbell-single-arm-row-on-bench",
-    "key": null,
-    "name": "Dumbbell Single-Arm Row (On Bench)",
-    "muscle": "Back",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "movementType": "compound",
-    "sets": 3,
-    "reps": "10-12",
-    "rest": "60s",
-    "videoId": "KRN38chlkds",
-    "gifUrl": null,
-    "instructions": "Grip the bar or handle with the appropriate grip width. Pull toward your body, squeezing your shoulder blades together. Return to the starting position with a controlled negative.",
-    "donts": [],
-    "alternatives": [],
-    "keywords": [
-      "dumbbell",
-      "single",
-      "arm",
-      "row",
-      "(on",
-      "bench)",
-      "back",
-      "free weight",
-      "pull"
-    ],
-    "aliases": [
-      "db single-arm row (on bench)",
-      "back workout",
-      "back exercise",
-      "how to do dumbbell single-arm row (on bench)"
-    ],
-    "isPlanEligible": false,
-    "isCustomAllowed": true,
-    "priorityScore": 4
-  },
+
   {
     "id": "single-arm-dumbbell-overhead-extension",
     "key": null,
@@ -6336,43 +6162,7 @@ export const allExercises = [
     "isCustomAllowed": true,
     "priorityScore": 4
   },
-  {
-    "id": "single-leg-neutral-grip-dumbbell-row",
-    "key": null,
-    "name": "Single-Leg Neutral-Grip Dumbbell Row",
-    "muscle": "Back",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "movementType": "compound",
-    "sets": 3,
-    "reps": "10-12",
-    "rest": "60s",
-    "videoId": "_ZEIwijWYUA",
-    "gifUrl": null,
-    "instructions": "Grip the bar or handle with the appropriate grip width. Pull toward your body, squeezing your shoulder blades together. Return to the starting position with a controlled negative.",
-    "donts": [],
-    "alternatives": [],
-    "keywords": [
-      "single",
-      "leg",
-      "neutral",
-      "grip",
-      "dumbbell",
-      "row",
-      "back",
-      "free weight",
-      "pull"
-    ],
-    "aliases": [
-      "single-leg neutral-grip db row",
-      "back workout",
-      "back exercise",
-      "how to do single-leg neutral-grip dumbbell row"
-    ],
-    "isPlanEligible": false,
-    "isCustomAllowed": true,
-    "priorityScore": 4
-  },
+
   {
     "id": "one-handed-wrist-curl",
     "key": null,
@@ -6601,36 +6391,7 @@ export const allExercises = [
     "isCustomAllowed": true,
     "priorityScore": 4
   },
-  {
-    "id": "skull-crushers",
-    "key": null,
-    "name": "Skull Crushers",
-    "muscle": "Triceps",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "movementType": "isolation",
-    "sets": 3,
-    "reps": "10-12",
-    "rest": "60s",
-    "videoId": "d_KZxkY_0cM",
-    "gifUrl": null,
-    "instructions": "Position your arms with elbows close to your body. Extend your arms fully, squeezing the triceps at lockout. Return to the starting position with control.",
-    "donts": [],
-    "alternatives": [],
-    "keywords": [
-      "skull",
-      "crushers",
-      "triceps"
-    ],
-    "aliases": [
-      "triceps workout",
-      "triceps exercise",
-      "how to do skull crushers"
-    ],
-    "isPlanEligible": false,
-    "isCustomAllowed": true,
-    "priorityScore": 4
-  },
+
   {
     "id": "barbell-bench-press-1",
     "key": null,
@@ -6736,43 +6497,7 @@ export const allExercises = [
     "isCustomAllowed": true,
     "priorityScore": 4
   },
-  {
-    "id": "dumbbell-bent-over-row-single-arm",
-    "key": null,
-    "name": "Dumbbell Bent-Over Row (Single-Arm)",
-    "muscle": "Back",
-    "difficulty": "intermediate",
-    "equipment": "Barbell & Dumbbell",
-    "movementType": "compound",
-    "sets": 3,
-    "reps": "10-12",
-    "rest": "60s",
-    "videoId": "pYcpY20QaE8",
-    "gifUrl": null,
-    "instructions": "Grip the bar or handle with the appropriate grip width. Pull toward your body, squeezing your shoulder blades together. Return to the starting position with a controlled negative.",
-    "donts": [],
-    "alternatives": [],
-    "keywords": [
-      "dumbbell",
-      "bent",
-      "over",
-      "row",
-      "(single",
-      "arm)",
-      "back",
-      "free weight",
-      "pull"
-    ],
-    "aliases": [
-      "db bent-over row (single-arm)",
-      "back workout",
-      "back exercise",
-      "how to do dumbbell bent-over row (single-arm)"
-    ],
-    "isPlanEligible": false,
-    "isCustomAllowed": true,
-    "priorityScore": 4
-  },
+
   {
     "id": "dumbbell-shoulder-press-1",
     "key": null,
@@ -7739,38 +7464,7 @@ export const allExercises = [
     "isCustomAllowed": true,
     "priorityScore": 4
   },
-  {
-    "id": "rope-push-down",
-    "key": null,
-    "name": "Rope Push-Down",
-    "muscle": "Triceps",
-    "difficulty": "beginner",
-    "equipment": "Machine & Cable",
-    "movementType": "isolation",
-    "sets": 3,
-    "reps": "10-12",
-    "rest": "60s",
-    "videoId": "vB5OHsJ3EME",
-    "gifUrl": null,
-    "instructions": "Position your arms with elbows close to your body. Extend your arms fully, squeezing the triceps at lockout. Return to the starting position with control.",
-    "donts": [],
-    "alternatives": [],
-    "keywords": [
-      "rope",
-      "push",
-      "down",
-      "triceps",
-      "machine"
-    ],
-    "aliases": [
-      "triceps workout",
-      "triceps exercise",
-      "how to do rope push-down"
-    ],
-    "isPlanEligible": false,
-    "isCustomAllowed": true,
-    "priorityScore": 4
-  },
+
   {
     "id": "resistance-crunch-on-exercise-ball",
     "key": null,
@@ -9460,39 +9154,7 @@ export const allExercises = [
     "isCustomAllowed": true,
     "priorityScore": 4
   },
-  {
-    "id": "seated-low-row",
-    "key": null,
-    "name": "Seated Low Row",
-    "muscle": "Back",
-    "difficulty": "beginner",
-    "equipment": "Machine & Cable",
-    "movementType": "compound",
-    "sets": 3,
-    "reps": "10-12",
-    "rest": "60s",
-    "videoId": "GZbfZ033f74",
-    "gifUrl": null,
-    "instructions": "Grip the bar or handle with the appropriate grip width. Pull toward your body, squeezing your shoulder blades together. Return to the starting position with a controlled negative.",
-    "donts": [],
-    "alternatives": [],
-    "keywords": [
-      "seated",
-      "low",
-      "row",
-      "back",
-      "machine",
-      "pull"
-    ],
-    "aliases": [
-      "back workout",
-      "back exercise",
-      "how to do seated low row"
-    ],
-    "isPlanEligible": false,
-    "isCustomAllowed": true,
-    "priorityScore": 4
-  },
+
   {
     "id": "seated-lat-pulldown",
     "key": null,

@@ -589,7 +589,7 @@ const useUserStore = create(
 
       // Hydrate from Supabase (called after login)
       hydrateFromSupabase: (data) => {
-        const { profile, gamification, exerciseLogs, progressLogs, foodLogs, subscription } = data;
+        const { profile, workoutPlan: savedWorkoutPlan, dietPlan: savedDietPlan, gamification, exerciseLogs, progressLogs, foodLogs, subscription } = data;
 
         if (!profile) return;
 
@@ -618,6 +618,15 @@ const useUserStore = create(
 
         const nutritionTargets = calculateNutritionTargets(profile);
 
+        // Use saved plan from Supabase if it exists (preserves custom Builder plans),
+        // otherwise regenerate from profile
+        const workoutPlan = savedWorkoutPlan?.schedule
+          ? savedWorkoutPlan
+          : generateWorkoutPlan(profile);
+        const dietPlan = savedDietPlan?.meals
+          ? savedDietPlan
+          : generateDietPlan(profile);
+
         // Recompute stats from actual logs (not gamification table, which may be stale)
         const wLogs = exerciseLogs || [];
         const weLogs = progressLogs || [];
@@ -640,8 +649,8 @@ const useUserStore = create(
           isOnboarded: true,
           hasOnboardedBefore: profile.hasOnboardedBefore || false,
           nutritionTargets,
-          workoutPlan: generateWorkoutPlan(profile),
-          dietPlan: generateDietPlan(profile),
+          workoutPlan,
+          dietPlan,
           workoutLogs: wLogs,
           weightLogs: weLogs,
           foodLogs: fLogs,
