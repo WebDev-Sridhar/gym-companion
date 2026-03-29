@@ -14,68 +14,68 @@ const CARDIO_BY_GOAL = {
   maintenance: { type: 'treadmill', targetDuration: 20, targetDistance: 2, note: 'Comfortable pace 7–9 km/h' },
 };
 
-// export function generateWorkoutPlan(profile) {
-//   const { workoutDays, goal, gymExperience } = profile;
-//   const isNever = gymExperience === 'never';
+export function generateWorkoutPlan(profile) {
+  const { workoutDays, goal, gymExperience } = profile;
+  const isNever = gymExperience === 'never';
 
-//   // First-timers always get a full-body 3-day split regardless of workoutDays
-//   let splitKey;
-//   if (isNever || workoutDays <= 3) {
-//     splitKey = 'fullBody3';
-//   } else if (workoutDays === 4) {
-//     splitKey = 'upperLower4';
-//   } else if (workoutDays === 5) {
-//     splitKey = 'ppl5';
-//   } else {
-//     splitKey = 'ppl6';
-//   }
+  // First-timers always get a full-body 3-day split regardless of workoutDays
+  let splitKey;
+  if (isNever || workoutDays <= 3) {
+    splitKey = 'fullBody3';
+  } else if (workoutDays === 4) {
+    splitKey = 'upperLower4';
+  } else if (workoutDays === 5) {
+    splitKey = 'ppl5';
+  } else {
+    splitKey = 'ppl6';
+  }
 
-//   const split = workoutSplits[splitKey];
-//   const cardio = CARDIO_BY_GOAL[goal] || CARDIO_BY_GOAL.maintenance;
+  const split = workoutSplits[splitKey];
+  const cardio = CARDIO_BY_GOAL[goal] || CARDIO_BY_GOAL.maintenance;
 
-//   // Build detailed schedule with full exercise data
-//   const detailedSchedule = split.schedule.map((day) => ({
-//     ...day,
-//     cardio,
-//     exercises: day.exercises.map((exKey) => {
-//       const ex = exercises[exKey];
-//       if (!ex) return null;
+  // Build detailed schedule with full exercise data
+  const detailedSchedule = split.schedule.map((day) => ({
+    ...day,
+    cardio,
+    exercises: day.exercises.map((exKey) => {
+      const ex = exercises[exKey];
+      if (!ex) return null;
 
-//       // Adjust sets/reps based on experience and goal
-//       let sets = ex.sets;
-//       let reps = ex.reps;
+      // Adjust sets/reps based on experience and goal
+      let sets = ex.sets;
+      let reps = ex.reps;
 
-//       if (isNever) {
-//         // First-timers: 3 sets, higher reps, focus on form
-//         sets = Math.min(3, sets);
-//         reps = '12-15';
-//       } else if (goal === 'weightLoss') {
-//         // Weight loss: higher reps for more calorie burn
-//         sets = Math.max(3, sets);
-//         reps = ex.reps.includes('-') ? ex.reps.split('-').map(r => {
-//           const n = parseInt(r);
-//           return isNaN(n) ? r : n + 2;
-//         }).join('-') : ex.reps;
-//       }
+      if (isNever) {
+        // First-timers: 3 sets, higher reps, focus on form
+        sets = Math.min(3, sets);
+        reps = '12-15';
+      } else if (goal === 'weightLoss') {
+        // Weight loss: higher reps for more calorie burn
+        sets = Math.max(3, sets);
+        reps = ex.reps.includes('-') ? ex.reps.split('-').map(r => {
+          const n = parseInt(r);
+          return isNaN(n) ? r : n + 2;
+        }).join('-') : ex.reps;
+      }
 
-//       return {
-//         ...ex,
-//         exerciseKey: exKey,
-//         sets,
-//         reps,
-//       };
-//     }).filter(Boolean),
-//   }));
+      return {
+        ...ex,
+        exerciseKey: exKey,
+        sets,
+        reps,
+      };
+    }).filter(Boolean),
+  }));
 
-//   return {
-//     splitName: isNever ? 'Beginner Foundation (3 days)' : split.name,
-//     splitKey,
-//     level: isNever ? 'starter' : split.level,
-//     daysPerWeek: isNever ? 3 : split.days,
-//     schedule: detailedSchedule,
-//     tips: getWorkoutTips(goal, isNever),
-//   };
-// }
+  return {
+    splitName: isNever ? 'Beginner Foundation (3 days)' : split.name,
+    splitKey,
+    level: isNever ? 'starter' : split.level,
+    daysPerWeek: isNever ? 3 : split.days,
+    schedule: detailedSchedule,
+    tips: getWorkoutTips(goal, isNever),
+  };
+}
 
 export function generateWorkoutPlan(profile) {
   const {
