@@ -7,14 +7,14 @@ import { calculateNutritionTargets, calculateMacros } from './tdee';
  * @param {object} profile - User profile from onboarding
  * @returns {object} Complete workout plan
  */
-// Cardio config per goal — added to every workout day
-const CARDIO_BY_GOAL = {
-  weightLoss: { type: 'treadmill', targetDuration: 30, targetDistance: 3, note: 'Walk/jog at 6–8 km/h' },
-  muscleGain: { type: 'cycling', targetDuration: 15, targetDistance: null, note: 'Low intensity warmup/cooldown' },
-  maintenance: { type: 'treadmill', targetDuration: 20, targetDistance: 2, note: 'Comfortable pace 7–9 km/h' },
-};
-
-
+// Shift each number in a rep range string (e.g. "8-12") by delta
+function adjustReps(reps, delta) {
+  if (!reps || typeof reps !== 'string') return reps;
+  return reps.split('-').map((r) => {
+    const n = parseInt(r);
+    return isNaN(n) ? r : String(Math.max(1, n + delta));
+  }).join('-');
+}
 
 export function generateWorkoutPlan(profile) {
   const {
@@ -36,7 +36,6 @@ export function generateWorkoutPlan(profile) {
   let splitKey;
 
   if (isNewbie) {
-    // ALWAYS safe for new users
     splitKey = 'fullBody3';
   } else if (workoutDays <= 3) {
     splitKey = 'fullBody3';
@@ -112,50 +111,44 @@ export function generateWorkoutPlan(profile) {
   // -------------------------------
   const detailedSchedule = split.schedule.map((day) => {
     let exerciseList = day.exercises
-      .map((key) => exercises[key])
-      .filter(Boolean);
+      .map((key) => ({ key, data: exercises[key] }))
+      .filter((e) => e.data);
 
-    // Adjust number of exercises
+    // Adjust number of exercises based on duration
     const maxExercises = Math.max(
       3,
       Math.round(exerciseList.length * durationFactor)
     );
     exerciseList = exerciseList.slice(0, maxExercises);
 
-    const updatedExercises = exerciseList.map((ex) => {
-      // ✅ Always start from base exercise config
+    const updatedExercises = exerciseList.map(({ key, data: ex }) => {
       let sets = ex.sets;
       let reps = ex.reps;
 
-      // -------------------------------
       // EXPERIENCE LOGIC
-      // -------------------------------
       if (isNewbie) {
         sets = 2;
-        reps = '12-15'; // form learning
+        reps = '12-15';
       } else if (isBeginner) {
         sets = Math.max(3, sets);
       } else {
-        sets = Math.max(4, sets); // future intermediate
+        sets = Math.max(4, sets);
       }
 
-      // -------------------------------
       // GOAL-BASED REP ADJUSTMENT
-      // -------------------------------
       if (goal === 'weightLoss') {
         reps = adjustReps(reps, +2);
       } else if (goal === 'muscleGain') {
         reps = adjustReps(reps, -2);
       }
 
-      // -------------------------------
       // INTENSITY SCALING
-      // -------------------------------
       sets = Math.round(sets * totalIntensity);
       sets = Math.max(2, Math.min(5, sets));
 
       return {
         ...ex,
+        exerciseKey: key,
         sets,
         reps,
       };
@@ -177,19 +170,12 @@ export function generateWorkoutPlan(profile) {
       : split.name,
     splitKey,
     level: isNewbie ? 'starter' : split.level,
-    daysPerWeek: split.days,
-
+    daysPerWeek: isNewbie ? 3 : split.days,
     schedule: detailedSchedule,
-
-    meta: {
-      intensity: totalIntensity,
-      ageFactor,
-      activityFactor,
-      bodyFatFactor,
-      durationFactor,
-    },
+    tips: getWorkoutTips(goal, isNewbie),
   };
 }
+
 
 /**
  * Generate a personalized diet plan based on user profile
