@@ -43,7 +43,7 @@ serve(async (req) => {
       p_cost: REDEEM_COST,
     });
 
-    if (deductResult === false) {
+    if (!deductResult) {
       return new Response(JSON.stringify({ error: 'Insufficient points' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
