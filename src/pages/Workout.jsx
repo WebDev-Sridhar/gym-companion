@@ -482,7 +482,7 @@ export default function Workout() {
                     <div className="flex items-center gap-3">
                       {/* GIF Thumbnail */}
                       <div className="w-9 h-9 rounded-lg bg-white/[0.04] flex items-center justify-center shrink-0 overflow-hidden">
-                        {exercise.gifUrl ? (
+                        {/* {exercise.gifUrl ? (
                           <img
                             src={exercise.gifUrl}
                             alt={exercise.name}
@@ -490,8 +490,8 @@ export default function Workout() {
                             loading="lazy"
                             onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
                           />
-                        ) : null}
-                        <Dumbbell size={16} className="text-text-muted" style={{ display: exercise.gifUrl ? 'none' : 'block' }} />
+                        ) : null} */}
+                        <Dumbbell size={16} className="text-text-muted block"  />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
