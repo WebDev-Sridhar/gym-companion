@@ -14,13 +14,92 @@ const CARDIO_BY_GOAL = {
   maintenance: { type: 'treadmill', targetDuration: 20, targetDistance: 2, note: 'Comfortable pace 7–9 km/h' },
 };
 
-export function generateWorkoutPlan(profile) {
-  const { workoutDays, goal, gymExperience } = profile;
-  const isNever = gymExperience === 'never';
+// export function generateWorkoutPlan(profile) {
+//   const { workoutDays, goal, gymExperience } = profile;
+//   const isNever = gymExperience === 'never';
 
-  // First-timers always get a full-body 3-day split regardless of workoutDays
+//   // First-timers always get a full-body 3-day split regardless of workoutDays
+//   let splitKey;
+//   if (isNever || workoutDays <= 3) {
+//     splitKey = 'fullBody3';
+//   } else if (workoutDays === 4) {
+//     splitKey = 'upperLower4';
+//   } else if (workoutDays === 5) {
+//     splitKey = 'ppl5';
+//   } else {
+//     splitKey = 'ppl6';
+//   }
+
+//   const split = workoutSplits[splitKey];
+//   const cardio = CARDIO_BY_GOAL[goal] || CARDIO_BY_GOAL.maintenance;
+
+//   // Build detailed schedule with full exercise data
+//   const detailedSchedule = split.schedule.map((day) => ({
+//     ...day,
+//     cardio,
+//     exercises: day.exercises.map((exKey) => {
+//       const ex = exercises[exKey];
+//       if (!ex) return null;
+
+//       // Adjust sets/reps based on experience and goal
+//       let sets = ex.sets;
+//       let reps = ex.reps;
+
+//       if (isNever) {
+//         // First-timers: 3 sets, higher reps, focus on form
+//         sets = Math.min(3, sets);
+//         reps = '12-15';
+//       } else if (goal === 'weightLoss') {
+//         // Weight loss: higher reps for more calorie burn
+//         sets = Math.max(3, sets);
+//         reps = ex.reps.includes('-') ? ex.reps.split('-').map(r => {
+//           const n = parseInt(r);
+//           return isNaN(n) ? r : n + 2;
+//         }).join('-') : ex.reps;
+//       }
+
+//       return {
+//         ...ex,
+//         exerciseKey: exKey,
+//         sets,
+//         reps,
+//       };
+//     }).filter(Boolean),
+//   }));
+
+//   return {
+//     splitName: isNever ? 'Beginner Foundation (3 days)' : split.name,
+//     splitKey,
+//     level: isNever ? 'starter' : split.level,
+//     daysPerWeek: isNever ? 3 : split.days,
+//     schedule: detailedSchedule,
+//     tips: getWorkoutTips(goal, isNever),
+//   };
+// }
+
+export function generateWorkoutPlan(profile) {
+  const {
+    workoutDays,
+    goal,
+    gymExperience,
+    age,
+    bodyFat,
+    activityLevel,
+    workoutDuration,
+  } = profile;
+
+  const isNewbie = gymExperience === 'never';
+  const isBeginner = gymExperience === 'beginner';
+
+  // -------------------------------
+  // 1. SAFE SPLIT SELECTION
+  // -------------------------------
   let splitKey;
-  if (isNever || workoutDays <= 3) {
+
+  if (isNewbie) {
+    // ALWAYS safe for new users
+    splitKey = 'fullBody3';
+  } else if (workoutDays <= 3) {
     splitKey = 'fullBody3';
   } else if (workoutDays === 4) {
     splitKey = 'upperLower4';
@@ -31,198 +110,147 @@ export function generateWorkoutPlan(profile) {
   }
 
   const split = workoutSplits[splitKey];
-  const cardio = CARDIO_BY_GOAL[goal] || CARDIO_BY_GOAL.maintenance;
 
-  // Build detailed schedule with full exercise data
-  const detailedSchedule = split.schedule.map((day) => ({
-    ...day,
-    cardio,
-    exercises: day.exercises.map((exKey) => {
-      const ex = exercises[exKey];
-      if (!ex) return null;
+  // -------------------------------
+  // 2. INTENSITY SYSTEM
+  // -------------------------------
+  const ageFactor = age > 40 ? 0.85 : age > 30 ? 0.9 : 1;
 
-      // Adjust sets/reps based on experience and goal
+  const activityMap = {
+    sedentary: 0.85,
+    light: 0.95,
+    moderate: 1,
+    active: 1.1,
+    veryActive: 1.15,
+  };
+  const activityFactor = activityMap[activityLevel] || 1;
+
+  const bodyFatMap = {
+    lean: 0.95,
+    fit: 1,
+    average: 1.05,
+    aboveAvg: 1.1,
+    high: 1.15,
+  };
+  const bodyFatFactor = bodyFatMap[bodyFat] || 1;
+
+  const totalIntensity = ageFactor * activityFactor * bodyFatFactor;
+
+  // -------------------------------
+  // 3. DURATION CONTROL
+  // -------------------------------
+  const durationFactor =
+    workoutDuration < 45 ? 0.7 :
+    workoutDuration > 75 ? 1.2 : 1;
+
+  // -------------------------------
+  // 4. SMART CARDIO
+  // -------------------------------
+  let cardio;
+
+  if (goal === 'weightLoss' || bodyFat === 'high') {
+    cardio = {
+      type: 'treadmill',
+      duration: 25 + Math.round((bodyFatFactor - 1) * 20),
+      note: 'Fat loss focus',
+    };
+  } else if (goal === 'muscleGain') {
+    cardio = {
+      type: 'cycling',
+      duration: 10,
+      note: 'Light recovery cardio',
+    };
+  } else {
+    cardio = {
+      type: 'treadmill',
+      duration: 15,
+      note: 'General fitness',
+    };
+  }
+
+  // -------------------------------
+  // 5. BUILD WORKOUT
+  // -------------------------------
+  const detailedSchedule = split.schedule.map((day) => {
+    let exerciseList = day.exercises
+      .map((key) => exercises[key])
+      .filter(Boolean);
+
+    // Adjust number of exercises
+    const maxExercises = Math.max(
+      3,
+      Math.round(exerciseList.length * durationFactor)
+    );
+    exerciseList = exerciseList.slice(0, maxExercises);
+
+    const updatedExercises = exerciseList.map((ex) => {
+      // ✅ Always start from base exercise config
       let sets = ex.sets;
       let reps = ex.reps;
 
-      if (isNever) {
-        // First-timers: 3 sets, higher reps, focus on form
-        sets = Math.min(3, sets);
-        reps = '12-15';
-      } else if (goal === 'weightLoss') {
-        // Weight loss: higher reps for more calorie burn
+      // -------------------------------
+      // EXPERIENCE LOGIC
+      // -------------------------------
+      if (isNewbie) {
+        sets = 2;
+        reps = '12-15'; // form learning
+      } else if (isBeginner) {
         sets = Math.max(3, sets);
-        reps = ex.reps.includes('-') ? ex.reps.split('-').map(r => {
-          const n = parseInt(r);
-          return isNaN(n) ? r : n + 2;
-        }).join('-') : ex.reps;
+      } else {
+        sets = Math.max(4, sets); // future intermediate
       }
+
+      // -------------------------------
+      // GOAL-BASED REP ADJUSTMENT
+      // -------------------------------
+      if (goal === 'weightLoss') {
+        reps = adjustReps(reps, +2);
+      } else if (goal === 'muscleGain') {
+        reps = adjustReps(reps, -2);
+      }
+
+      // -------------------------------
+      // INTENSITY SCALING
+      // -------------------------------
+      sets = Math.round(sets * totalIntensity);
+      sets = Math.max(2, Math.min(5, sets));
 
       return {
         ...ex,
-        exerciseKey: exKey,
         sets,
         reps,
       };
-    }).filter(Boolean),
-  }));
+    });
 
+    return {
+      ...day,
+      cardio,
+      exercises: updatedExercises,
+    };
+  });
+
+  // -------------------------------
+  // 6. FINAL OUTPUT
+  // -------------------------------
   return {
-    splitName: isNever ? 'Beginner Foundation (3 days)' : split.name,
+    splitName: isNewbie
+      ? 'Beginner Foundation Plan'
+      : split.name,
     splitKey,
-    level: isNever ? 'starter' : split.level,
-    daysPerWeek: isNever ? 3 : split.days,
+    level: isNewbie ? 'starter' : split.level,
+    daysPerWeek: split.days,
+
     schedule: detailedSchedule,
-    tips: getWorkoutTips(goal, isNever),
+
+    meta: {
+      intensity: totalIntensity,
+      ageFactor,
+      activityFactor,
+      bodyFatFactor,
+      durationFactor,
+    },
   };
 }
-
-// export function generateWorkoutPlan(profile) {
-//   const {
-//     workoutDays,
-//     goal,
-//     gymExperience,
-//     age,
-//     weight,
-//     bodyFat,
-//     activityLevel,
-//     workoutDuration,
-//   } = profile;
-
-//  const isNewbie = gymExperience === 'never';
-// const isBeginner = gymExperience === 'beginner';
-// const isIntermediate = gymExperience === 'intermediate'; // future
-
-//   // -------------------------------
-//   // 1. SPLIT SELECTION (same logic improved)
-//   // -------------------------------
-//   let splitKey;
-// if (workoutDays <= 3) {
-//   splitKey = 'fullBody3';
-// } else if (workoutDays === 4) {
-//   splitKey = isNewbie ? 'fullBody3' : 'upperLower4';
-// } else if (workoutDays === 5) {
-//   splitKey = isNewbie ? 'upperLower4' : 'ppl5';
-// } else {
-//   splitKey = isNewbie ? 'upperLower4' : 'ppl6';
-// }
-
-//   const split = workoutSplits[splitKey];
-
-//   // -------------------------------
-//   // 2. INTENSITY & VOLUME FACTORS
-//   // -------------------------------
-
-//   // Age factor (older = lower intensity)
-//   const ageFactor = age > 40 ? 0.85 : age > 30 ? 0.9 : 1;
-
-//   // Activity level factor
-//   const activityMap = {
-//     sedentary: 0.8,
-//     light: 0.9,
-//     moderate: 1,
-//     active: 1.1,
-//     veryActive: 1.2,
-//   };
-//   const activityFactor = activityMap[activityLevel] || 1;
-
-//   // Body fat factor (higher fat → more reps/cardio)
-//   const bodyFatMap = {
-//     lean: 0.9,
-//     fit: 1,
-//     average: 1.05,
-//     aboveAvg: 1.1,
-//     high: 1.15,
-//   };
-//   const bodyFatFactor = bodyFatMap[bodyFat] || 1;
-
-//   // Duration factor (controls number of exercises)
-//   const durationFactor = workoutDuration < 45 ? 0.7 : workoutDuration > 75 ? 1.2 : 1;
-
-//   const totalIntensity = ageFactor * activityFactor;
-
-//   // -------------------------------
-//   // 3. CARDIO INTELLIGENCE
-//   // -------------------------------
-//   let cardio;
-//   if (goal === 'weightLoss' || bodyFat === 'high') {
-//     cardio = { type: 'treadmill', duration: 30 };
-//   } else if (goal === 'muscleGain') {
-//     cardio = { type: 'cycling', duration: 10 };
-//   } else {
-//     cardio = { type: 'treadmill', duration: 20 };
-//   }
-
-//   // -------------------------------
-//   // 4. BUILD SCHEDULE
-//   // -------------------------------
-//   const detailedSchedule = split.schedule.map((day) => {
-//     let exerciseList = day.exercises.map((key) => exercises[key]).filter(Boolean);
-
-//     // Adjust number of exercises based on duration
-//     const maxExercises = Math.round(exerciseList.length * durationFactor);
-//     exerciseList = exerciseList.slice(0, maxExercises);
-
-//     const updatedExercises = exerciseList.map((ex) => {
-//       let sets = ex.sets;
-//       let reps = ex.reps;
-
-// if (isNewbie) {
-//   sets = 2;
-
-//   if (goal === 'weightLoss') reps = '12-15';
-//   else if (goal === 'muscleGain') reps = '10-12';
-//   else reps = '10-12';
-// } 
-
-// else if (isBeginner) {
-//   sets = 3;
-
-//   if (goal === 'weightLoss') reps = '12-15';
-//   else if (goal === 'muscleGain') reps = '8-12';
-//   else reps = '8-12';
-// } 
-
-// else {
-//   // future: intermediate/advanced
-//   sets = 4;
-
-//   if (goal === 'weightLoss') reps = '12-15';
-//   else if (goal === 'muscleGain') reps = '6-10';
-//   else reps = '8-12';
-// }
-
-//       // Apply intensity scaling
-//       sets = Math.round(sets * totalIntensity);
-//       sets = Math.max(2, Math.min(5, sets));
-
-//       return {
-//         ...ex,
-//         sets,
-//         reps,
-//       };
-//     });
-
-//     return {
-//       ...day,
-//       cardio,
-//       exercises: updatedExercises,
-//     };
-//   });
-
-//   return {
-//     splitName: isBeginner ? 'Smart Beginner Plan' : split.name,
-//     level: isBeginner ? 'starter' : split.level,
-//     daysPerWeek: workoutDays,
-//     schedule: detailedSchedule,
-//     meta: {
-//       intensity: totalIntensity,
-//       activityFactor,
-//       ageFactor,
-//       bodyFatFactor,
-//     },
-//   };
-// }
 /**
  * Generate a personalized diet plan based on user profile
  * @param {object} profile - User profile from onboarding

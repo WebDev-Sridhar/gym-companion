@@ -616,7 +616,7 @@ export default function Workout() {
                                               {/* Alt GIF thumbnail */}
                                               <div className="w-12 h-12 rounded-lg bg-white/[0.04] shrink-0 overflow-hidden flex items-center justify-center">
                                       
-                                                <div className="w-full h-full items-center justify-center" style={{ display: alt.gifUrl ? 'none' : 'flex' }}>
+                                                <div className="w-full h-full items-center justify-center flex" >
                                                   <Dumbbell size={14} className="text-text-muted" />
                                                 </div>
                                               </div>
