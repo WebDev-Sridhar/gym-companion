@@ -8,6 +8,7 @@ import {
   AlertTriangle,
   CheckCircle2,
   Loader2,
+  Trash2,
 } from 'lucide-react';
 import useUserStore from '../store/useUserStore';
 import ProLock from '../components/ui/ProLock';
@@ -89,11 +90,13 @@ export default function WorkoutBuilder() {
   const customPlan = useUserStore((s) => s.customPlan);
   const defaultPlan = useUserStore((s) => s.defaultPlan);
   const setCustomWorkoutPlan = useUserStore((s) => s.setCustomWorkoutPlan);
+  const deleteCustomWorkoutPlan = useUserStore((s) => s.deleteCustomWorkoutPlan);
 
   const [step, setStep] = useState(1); // 1 = days, 2 = editor
   const [daysPerWeek, setDaysPerWeek] = useState(null);
   const [days, setDays] = useState([]);
   const [saving, setSaving] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Load existing custom plan on mount, or pre-select default plan's day count
   useEffect(() => {
@@ -302,6 +305,44 @@ export default function WorkoutBuilder() {
                 <br />
                 Your workout history will not be affected.
               </p>
+
+              {/* Delete Custom Plan */}
+              {customPlan && (
+                <div className="mt-6 pt-5 border-t border-white/[0.06]">
+                  {!showDeleteConfirm ? (
+                    <button
+                      onClick={() => setShowDeleteConfirm(true)}
+                      className="w-full py-2.5 rounded-xl text-xs font-medium text-red-400/70 border border-red-500/10 bg-red-500/[0.03] hover:bg-red-500/[0.06] transition-colors flex items-center justify-center gap-2"
+                    >
+                      <Trash2 size={13} /> Delete Custom Plan
+                    </button>
+                  ) : (
+                    <div className="p-3 rounded-xl bg-red-500/5 border border-red-500/15">
+                      <p className="text-xs text-red-400/80 mb-3 text-center">
+                        Delete your custom plan and revert to the default plan?
+                      </p>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setShowDeleteConfirm(false)}
+                          className="flex-1 py-2 rounded-lg text-xs font-medium border border-white/[0.06] text-text-muted hover:text-text-secondary"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() => {
+                            deleteCustomWorkoutPlan();
+                            showToast('Custom plan deleted', 'success');
+                            navigate('/workout');
+                          }}
+                          className="flex-1 py-2 rounded-lg text-xs font-bold bg-red-500/15 border border-red-500/20 text-red-400 hover:bg-red-500/25"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

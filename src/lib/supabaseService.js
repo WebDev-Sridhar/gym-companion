@@ -121,6 +121,11 @@ export async function fetchWorkoutPlan(userId) {
   return { data: customPlan || defaultPlan || null, error };
 }
 
+export async function deleteCustomPlan(userId) {
+  return supabase.from('workout_plans').delete()
+    .eq('user_id', userId).eq('split_key', 'custom');
+}
+
 // =====================
 // Diet Plans
 // =====================

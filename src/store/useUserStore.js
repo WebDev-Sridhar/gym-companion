@@ -22,6 +22,7 @@ import {
   deleteExerciseLog,
   deleteProgressLog,
   deleteAllUserData,
+  deleteCustomPlan,
 } from '../lib/supabaseService';
 
 // Lazy reference to auth store to avoid circular dependency at import time
@@ -271,6 +272,19 @@ const useUserStore = create(
           exerciseSwaps: {},
         });
         syncToSupabase((userId) => saveWorkoutPlan(userId, plan));
+      },
+
+      // Delete custom plan and revert to default
+      deleteCustomWorkoutPlan: () => {
+        const { defaultPlan } = get();
+        set({
+          customPlan: null,
+          activePlanType: 'default',
+          workoutPlan: defaultPlan,
+          currentWorkoutDay: 0,
+          exerciseSwaps: {},
+        });
+        syncToSupabase((userId) => deleteCustomPlan(userId));
       },
 
       // Switch between default and custom plans
