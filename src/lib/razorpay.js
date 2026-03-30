@@ -33,8 +33,10 @@ const { data, error } = await supabase.functions.invoke('create-order', {
   body: { planType },
   headers: {
     Authorization: `Bearer ${session.access_token}`, // 🔥 THIS IS CRITICAL
+    
   },
 });
+console.log(session?.access_token);
 
   if (error) throw new Error(error.message || 'Failed to create order');
   return data;
