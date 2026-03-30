@@ -61,12 +61,11 @@ serve(async (req) => {
       .maybeSingle();
 
     if (profile?.referred_by) {
-      // Check if user has any previous active/expired subscription (first-time only)
+      // One-time only: check if user ever had a paid subscription (any status)
       const { data: prevSubs } = await supabase
         .from('subscriptions')
         .select('id')
         .eq('user_id', user.id)
-        .in('status', ['active'])
         .eq('source', 'payment')
         .limit(1);
 

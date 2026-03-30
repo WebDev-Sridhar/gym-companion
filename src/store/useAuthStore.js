@@ -43,14 +43,21 @@ const useAuthStore = create((set, get) => ({
 
       supabase.auth.onAuthStateChange(async (event, session) => {
         if (event === 'SIGNED_IN' && session) {
-          set({ session, user: session.user, loading: true });
-          try {
-            await get().hydrateProfile(session.user.id);
-            sessionStorage.setItem('gymthozhan-hydrated', 'true');
-          } catch (e) {
-            console.warn('Auth change hydration failed:', e.message);
+          // Only show loading + full hydration for genuine new sign-ins,
+          // not session replays that Supabase fires on every page load.
+          const isNewSignIn = !get().session;
+          if (isNewSignIn) {
+            set({ session, user: session.user, loading: true });
+            try {
+              await get().hydrateProfile(session.user.id);
+              sessionStorage.setItem('gymthozhan-hydrated', 'true');
+            } catch (e) {
+              console.warn('Auth change hydration failed:', e.message);
+            }
+            set({ loading: false });
+          } else {
+            set({ session, user: session.user });
           }
-          set({ loading: false });
         } else {
           set({ session, user: session?.user ?? null });
         }
