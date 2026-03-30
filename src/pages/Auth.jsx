@@ -43,12 +43,12 @@ export default function Auth() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', stiffness: 200, delay: 0.1 }}
-            className="inline-flex items-center justify-center w-14 h-14 rounded-xl overflow-hidden mb-5"
+            className="inline-flex items-center justify-center w-14 h-14 rounded-xl overflow-hidden mb-0.5"
           >
-            <img src="/logo.jpeg" alt="GymThozhan" className="w-full h-full object-cover" />
+            <img src="/logo2.png" alt="OwnGainz" className="w-full h-full object-cover" />
           </motion.div>
           <h1 className="text-2xl font-bold text-text-primary tracking-tight">
-            Welcome to GymThozhan
+            Welcome to OwnGainz
           </h1>
           <p className="text-text-muted text-sm mt-1">
             Sign in to start your fitness journey
