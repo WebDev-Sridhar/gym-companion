@@ -17,24 +17,15 @@ const PLAN_AMOUNTS: Record<string, number> = {
   yearly: 99900, // ₹999 in paise
 };
 
+
+
 serve(async (req) => {
+  console.log("FUNCTION STARTED");
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
   try {
-    // Verify JWT
-    // const authHeader = req.headers.get('Authorization');
-    // if (!authHeader) {
-    //   return new Response(JSON.stringify({ error: 'Missing authorization' }), {
-    //     status: 401,
-    //     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    //   });
-    // }
-
-    // const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-    // const token = authHeader.replace('Bearer ', '');
-    // const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     const authHeader = req.headers.get("Authorization");
 
     if (!authHeader) {

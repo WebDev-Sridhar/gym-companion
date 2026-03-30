@@ -104,8 +104,8 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
           <div className="flex items-center justify-between h-14 sm:h-16">
             <Link to="/" className="flex items-center gap-2.5">
-              <img src="/logo.jpeg" alt="GymThozhan" className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg object-cover" />
-              <span className="text-base font-bold tracking-tight text-text-primary">GymThozhan</span>
+              <img src="/logo.png" alt="GymThozhan" className="w-10 h-auto md:w-12" />
+              <span className="text-base font-bold tracking-tight text-text-primary">OwnGainz</span>
             </Link>
             <Link
               to="/auth"
