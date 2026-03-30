@@ -23,17 +23,34 @@ serve(async (req) => {
 
   try {
     // Verify JWT
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: 'Missing authorization' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
+    // const authHeader = req.headers.get('Authorization');
+    // if (!authHeader) {
+    //   return new Response(JSON.stringify({ error: 'Missing authorization' }), {
+    //     status: 401,
+    //     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    //   });
+    // }
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-    const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    // const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    // const token = authHeader.replace('Bearer ', '');
+    const authHeader = req.headers.get('Authorization');
+
+if (!authHeader) {
+  return new Response(JSON.stringify({ error: 'Missing auth' }), { status: 401 });
+}
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+  global: {
+    headers: {
+      Authorization: authHeader,
+    },
+  },
+});
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+    if (!user) {
+  return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+}
 
     if (authError || !user) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {

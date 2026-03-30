@@ -24,9 +24,17 @@ export function loadRazorpayScript() {
 }
 
 export async function createOrder(planType) {
-  const { data, error } = await supabase.functions.invoke('create-order', {
-    body: { planType },
-  });
+  // const { data, error } = await supabase.functions.invoke('create-order', {
+  //   body: { planType },
+  // });
+  const { data: { session } } = await supabase.auth.getSession();
+
+const { data, error } = await supabase.functions.invoke('create-order', {
+  body: { planType },
+  headers: {
+    Authorization: `Bearer ${session.access_token}`, // 🔥 THIS IS CRITICAL
+  },
+});
 
   if (error) throw new Error(error.message || 'Failed to create order');
   return data;
