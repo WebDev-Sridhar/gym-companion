@@ -226,18 +226,11 @@ export function generateDietPlan(profile, calorieOverride) {
 
   const selectedPlan = mealPlan[dietType === 'veg' ? 'veg' : 'nonVeg'];
 
-  // Combine meal + supplement totals for display targets
+  // Actual calories from meals + supplements
   const actualCalories = selectedPlan.totalCalories + suppCalories;
-  const actualProtein = selectedPlan.totalProtein + suppProtein;
 
-  // Recalculate macros based on actual tier calories for consistency
+  // Use the body-weight-based macros as targets, recalculated for actual calorie tier
   const adjustedMacros = calculateMacros(actualCalories, profile.goal, profile.weight);
-  // Override protein with actual meal+supplement protein since that's what the food provides
-  adjustedMacros.protein = actualProtein;
-  // Recalculate carbs with the real protein value
-  const proteinCals = adjustedMacros.protein * 4;
-  const fatCals = adjustedMacros.fat * 9;
-  adjustedMacros.carbs = Math.round(Math.max(0, actualCalories - proteinCals - fatCals) / 4);
 
   return {
     ...nutritionTargets,

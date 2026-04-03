@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Check, Crown, Zap } from 'lucide-react';
 import usePayment from '../../hooks/usePayment';
-import useUserStore from '../../store/useUserStore';
+
 
 // Global listener pattern (same as Toast/Coach)
 let upgradeListeners = [];
@@ -15,9 +15,9 @@ export function PaymentModalContainer() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState('yearly');
   const { initiatePayment, isProcessing } = usePayment();
-  const referredBy = useUserStore((s) => s.profile?.referredBy);
-  const subscription = useUserStore((s) => s.subscription);
-  const showDiscount = !!referredBy && !subscription;
+  // Discount is computed server-side in create-order (one-time only for referred users).
+  // Don't show discount UI here — the user may have already used it on a previous subscription.
+  // The actual discounted amount will be reflected in the Razorpay checkout.
 
   useEffect(() => {
     const handler = (preselectedPlan) => {
@@ -89,19 +89,8 @@ export function PaymentModalContainer() {
                   }`}
                 >
                   <div className="text-xs text-text-muted mb-1">Monthly</div>
-                  {showDiscount ? (
-                    <>
-                      <div className="text-xl font-black text-text-primary">
-                        <span className="line-through text-text-muted text-sm mr-1">₹149</span>₹119
-                      </div>
-                      <div className="text-[10px] text-accent">₹30 off!</div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="text-xl font-black text-text-primary">₹149</div>
-                      <div className="text-[10px] text-text-muted">/month</div>
-                    </>
-                  )}
+                  <div className="text-xl font-black text-text-primary">₹149</div>
+                  <div className="text-[10px] text-text-muted">/month</div>
                   {selectedPlan === 'monthly' && (
                     <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-accent flex items-center justify-center">
                       <Check size={12} className="text-dark-bg" />
@@ -122,19 +111,8 @@ export function PaymentModalContainer() {
                     Save 44%
                   </div>
                   <div className="text-xs text-text-muted mb-1">Yearly</div>
-                  {showDiscount ? (
-                    <>
-                      <div className="text-xl font-black text-accent">
-                        <span className="line-through text-text-muted text-sm mr-1">₹999</span>₹969
-                      </div>
-                      <div className="text-[10px] text-accent">₹30 off!</div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="text-xl font-black text-accent">₹999</div>
-                      <div className="text-[10px] text-text-muted">₹83/month</div>
-                    </>
-                  )}
+                  <div className="text-xl font-black text-accent">₹999</div>
+                  <div className="text-[10px] text-text-muted">₹83/month</div>
                   {selectedPlan === 'yearly' && (
                     <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-accent flex items-center justify-center">
                       <Check size={12} className="text-dark-bg" />
@@ -183,10 +161,7 @@ export function PaymentModalContainer() {
                 ) : (
                   <>
                     <Zap size={16} />
-                    {selectedPlan === 'monthly'
-                      ? (showDiscount ? 'Pay ₹119/month (₹30 off!)' : 'Pay ₹149/month')
-                      : (showDiscount ? 'Pay ₹969/year (₹30 off!)' : 'Pay ₹999/year')
-                    }
+                    {selectedPlan === 'monthly' ? 'Pay ₹149/month' : 'Pay ₹999/year'}
                   </>
                 )}
               </button>
