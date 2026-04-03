@@ -31,10 +31,10 @@ export default function Contact() {
           </div>
 
           <a
-            href="mailto:support@gymthozhan.com"
+            href="mailto:support@owngainz.com"
             className="inline-flex items-center gap-2 text-accent hover:underline underline-offset-4 text-lg font-medium transition-colors"
           >
-            support@gymthozhan.com
+            support@owngainz.com
           </a>
 
           <div className="mt-8 pt-8 border-t border-white/[0.06]">

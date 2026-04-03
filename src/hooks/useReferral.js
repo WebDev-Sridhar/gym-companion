@@ -16,7 +16,7 @@ export default function useReferral() {
   const updateReferralData = useUserStore((s) => s.updateReferralData);
 
   const referralLink = referralCode
-    ? `https://gymthozhan.vercel.app/auth?ref=${referralCode}`
+    ? `https://owngainz.vercel.app/auth?ref=${referralCode}`
     : null;
 
   const loadReferrals = useCallback(async () => {
@@ -41,7 +41,7 @@ export default function useReferral() {
   const shareReferral = useCallback(async () => {
     if (!referralLink) return;
     const shareData = {
-      title: 'Join GymThozhan',
+      title: 'Join OwnGainz',
       text: 'Get your personalized workout & diet plan! Use my referral link and get \u20b930 off PRO.',
       url: referralLink,
     };

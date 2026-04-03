@@ -58,14 +58,14 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="text-xl font-semibold text-text-primary mt-6 mb-3">6. Your Rights</h2>
             <p className="text-text-secondary leading-relaxed">
-              You can request deletion of all your data at any time through the Profile page using the "Reset All Data" option, or by contacting us at support@gymthozhan.com. Upon request, we will permanently remove all your personal data from our servers.
+              You can request deletion of all your data at any time through the Profile page using the "Reset All Data" option, or by contacting us at support@owngainz.com. Upon request, we will permanently remove all your personal data from our servers.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-semibold text-text-primary mt-6 mb-3">7. Changes to This Policy</h2>
             <p className="text-text-secondary leading-relaxed">
-              We may update this privacy policy from time to time. We will notify users of any significant changes through the app. Continued use of GymThozhan after changes constitutes acceptance of the updated policy.
+              We may update this privacy policy from time to time. We will notify users of any significant changes through the app. Continued use of OwnGainz after changes constitutes acceptance of the updated policy.
             </p>
           </section>
         </div>

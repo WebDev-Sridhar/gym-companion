@@ -7,7 +7,7 @@ const values = [
   {
     icon: Dumbbell,
     title: 'Fitness Made Simple',
-    description: 'No more confusing workout splits or generic programs. GymThozhan generates a personalized plan based on your body, goals, and experience — so you know exactly what to do every time you walk into the gym.',
+    description: 'No more confusing workout splits or generic programs. OwnGainz generates a personalized plan based on your body, goals, and experience — so you know exactly what to do every time you walk into the gym.',
   },
   {
     icon: Target,
@@ -17,7 +17,7 @@ const values = [
   {
     icon: Sparkles,
     title: 'Personalized Experience',
-    description: 'From diet plans matched to your calorie needs and preferences, to a gamification system that keeps you motivated with XP, levels, and streaks — every part of GymThozhan adapts to you.',
+    description: 'From diet plans matched to your calorie needs and preferences, to a gamification system that keeps you motivated with XP, levels, and streaks — every part of OwnGainz adapts to you.',
   },
 ];
 
@@ -34,15 +34,15 @@ export default function About() {
           <ArrowLeft size={16} /> Back
         </Link>
 
-        <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-2">About GymThozhan</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-2">About OwnGainz</h1>
         <p className="text-text-muted text-sm mb-10">Your personal fitness companion</p>
 
         <div className="border border-white/[0.06] rounded-2xl p-8 sm:p-10 bg-white/[0.02] mb-10">
           <p className="text-text-secondary leading-relaxed text-lg">
-            GymThozhan was built with a single mission: make fitness accessible, personal, and rewarding for everyone — especially beginners who don't know where to start.
+            OwnGainz was built with a single mission: make fitness accessible, personal, and rewarding for everyone — especially beginners who don't know where to start.
           </p>
           <p className="text-text-secondary leading-relaxed mt-4">
-            We believe that the biggest barrier to fitness isn't motivation — it's confusion. What exercises should I do? How much should I eat? Am I making progress? GymThozhan answers all of these questions with smart, personalized plans and intuitive tracking.
+            We believe that the biggest barrier to fitness isn't motivation — it's confusion. What exercises should I do? How much should I eat? Am I making progress? OwnGainz answers all of these questions with smart, personalized plans and intuitive tracking.
           </p>
         </div>
 

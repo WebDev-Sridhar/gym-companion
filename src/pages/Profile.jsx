@@ -40,7 +40,7 @@ export default function Profile() {
       {/* CTA for non-onboarded users (after reset) */}
       {!isOnboarded && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="border border-accent/20 rounded-xl p-5 mb-6 bg-accent/[0.03] text-center">
-          <h3 className="text-lg font-bold text-text-primary mb-2">Welcome to GymThozhan</h3>
+          <h3 className="text-lg font-bold text-text-primary mb-2">Welcome to OwnGainz</h3>
           <p className="text-sm text-text-muted mb-4">Complete onboarding to get your personalized workout and diet plan.</p>
           <Link to="/onboarding" className="btn-primary px-6 py-2.5 rounded-lg text-sm font-bold inline-flex items-center gap-2">
             Complete Onboarding <ArrowRight size={14} />

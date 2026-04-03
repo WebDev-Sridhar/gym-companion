@@ -263,12 +263,12 @@ const useUserStore = create(
           ]);
 
           // Process pending referral (if user signed up via referral link)
-          const refCode = localStorage.getItem('gymthozhan-ref');
+          const refCode = localStorage.getItem('owngainz-ref');
           if (refCode) {
             supabase.functions.invoke('process-referral-signup', {
               body: { referralCode: refCode },
             }).then(() => {
-              localStorage.removeItem('gymthozhan-ref');
+              localStorage.removeItem('owngainz-ref');
             }).catch((e) => {
               console.warn('Referral processing failed:', e.message);
             });

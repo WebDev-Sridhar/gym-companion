@@ -16,7 +16,7 @@ export default function Footer() {
       {/* pb-20 on mobile clears the fixed bottom navigation bar */}
       <div className="max-w-6xl mx-auto pt-6 pb-20 md:pb-6 px-5 sm:px-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center justify-center md:justify-start shrink-0">
-          <img src="/logo2.png" alt="OwnGainz" className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg object-cover" />
+          <img src="/logo.png" alt="OwnGainz" className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg object-cover" />
           <span className="font-semibold text-text-secondary text-xs">OwnGainz</span>
         </div>
 
@@ -33,7 +33,7 @@ export default function Footer() {
         </nav>
 
         <p className="text-[11px] text-text-muted/50 text-center md:text-right shrink-0">
-          &copy; {new Date().getFullYear()} GymThozhan. All rights reserved.
+          &copy; {new Date().getFullYear()} OwnGainz. All rights reserved.
         </p>
       </div>
     </footer>

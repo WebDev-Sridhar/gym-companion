@@ -70,7 +70,7 @@ export function openCheckout({
     amount,
     currency: "INR",
     order_id: orderId,
-    name: "GymThozhan",
+    name: "OwnGainz",
     description:
       planType === "monthly" ? "Pro Monthly Plan" : "Pro Yearly Plan",
     prefill: {
