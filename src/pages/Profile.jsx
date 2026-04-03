@@ -17,13 +17,26 @@ export default function Profile() {
   const { user, signOut } = useAuthStore();
   const [showWeightHistory, setShowWeightHistory] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
+  const [showSignOutModal, setShowSignOutModal] = useState(false);
+  const [showCancelSubModal, setShowCancelSubModal] = useState(false);
+  const [cancellingSubscription, setCancellingSubscription] = useState(false);
 
   // Compute stats with fallbacks for post-reset state (no profile)
   const stats = profile ? computeTransformationStats(workoutLogs, weightLogs, foodLogs, currentStreak, longestStreak, nutritionTargets) : null;
   const currentLevel = stats ? getCurrentTransformationLevel(stats) : { id: 0, name: 'Just Starting', rewardMessage: '' };
   const handleReset = () => setShowResetModal(true);
   const confirmReset = () => { setShowResetModal(false); resetAll(); showCoach('resetData'); };
-  const handleSignOut = async () => { await signOut(); navigate('/'); };
+  const handleSignOut = async () => { setShowSignOutModal(false); await signOut(); navigate('/'); };
+  const handleCancelSubscription = async () => {
+    setCancellingSubscription(true);
+    try {
+      await cancelSubscription(subscription.id);
+      deactivatePro();
+      setShowCancelSubModal(false);
+    } finally {
+      setCancellingSubscription(false);
+    }
+  };
 
   const goalLabel = { weightLoss: 'Weight Loss', muscleGain: 'Muscle Gain', maintenance: 'Maintenance' };
   const actLabel = { sedentary: 'Sedentary', light: 'Light', moderate: 'Moderate', active: 'Active', veryActive: 'Very Active' };
@@ -267,12 +280,7 @@ export default function Profile() {
               </div>
             </div>
             <button
-              onClick={async () => {
-                if (confirm('Are you sure you want to cancel your Pro subscription? You will lose access to Pro features.')) {
-                  await cancelSubscription(subscription.id);
-                  deactivatePro();
-                }
-              }}
+              onClick={() => setShowCancelSubModal(true)}
               className="px-5 py-2.5 rounded-lg text-sm font-medium text-text-muted border border-white/[0.06] hover:border-white/[0.12] hover:text-text-secondary transition-all inline-flex items-center gap-2"
             >
               Cancel Subscription
@@ -328,7 +336,7 @@ export default function Profile() {
           </div>
         )}
         <div className="space-y-2 gap-2">
-          <button onClick={handleSignOut} className="px-5 py-3 rounded-lg text-sm font-medium text-text-muted border border-white/[0.06] hover:border-white/[0.12] hover:text-text-secondary transition-all inline-flex items-center gap-2">
+          <button onClick={() => setShowSignOutModal(true)} className="px-5 py-3 rounded-lg text-sm font-medium text-text-muted border border-white/[0.06] hover:border-white/[0.12] hover:text-text-secondary transition-all inline-flex items-center gap-2">
             <LogOut size={14} /> Sign Out
           </button>
           <button onClick={handleReset} className="px-5 py-3 rounded-lg text-sm font-medium text-accent/50 border border-accent/10 hover:bg-accent/5 hover:text-accent transition-all inline-flex items-center gap-2">
@@ -391,6 +399,92 @@ export default function Profile() {
                 className="flex-1 py-2.5 rounded-lg text-sm font-bold bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all"
               >
                 Delete Everything
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+      {/* Sign Out Confirmation Modal */}
+      {showSignOutModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-[#111] border border-white/[0.08] rounded-2xl p-6 w-full max-w-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-white/[0.06] flex items-center justify-center shrink-0">
+                <LogOut size={18} className="text-text-secondary" />
+              </div>
+              <h3 className="text-lg font-bold text-text-primary">Sign Out?</h3>
+            </div>
+            <p className="text-sm text-text-muted mb-5">
+              Are you sure you want to sign out? Your data is saved and will be here when you come back.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowSignOutModal(false)}
+                className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-white/[0.08] text-text-muted hover:text-text-primary transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSignOut}
+                className="flex-1 py-2.5 rounded-lg text-sm font-bold bg-white/[0.06] text-text-primary border border-white/[0.08] hover:bg-white/[0.1] transition-all inline-flex items-center justify-center gap-2"
+              >
+                <LogOut size={14} /> Sign Out
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Cancel Subscription Confirmation Modal */}
+      {showCancelSubModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-[#111] border border-white/[0.08] rounded-2xl p-6 w-full max-w-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center shrink-0">
+                <AlertTriangle size={18} className="text-red-400" />
+              </div>
+              <h3 className="text-lg font-bold text-text-primary">Cancel Subscription?</h3>
+            </div>
+            <div className="mb-5 space-y-3">
+              <p className="text-sm text-text-muted">
+                Are you sure you want to cancel your Pro subscription?
+              </p>
+              <div className="bg-red-500/5 border border-red-500/10 rounded-lg p-3">
+                <p className="text-xs font-medium text-red-400 mb-2">You will lose access to:</p>
+                <ul className="space-y-1 text-xs text-text-muted">
+                  {['Advanced workout analytics & charts', 'Smart Coach AI recommendations', 'Custom workout builder', 'Priority features & updates'].map((item) => (
+                    <li key={item} className="flex items-center gap-2"><X size={10} className="text-red-400/60 shrink-0" />{item}</li>
+                  ))}
+                </ul>
+              </div>
+              <p className="text-xs text-text-muted text-center">
+                Your plan will remain active until{' '}
+                <span className="text-text-secondary font-medium">
+                  {subscription ? new Date(subscription.expiresAt).toLocaleDateString() : 'the end of your billing period'}
+                </span>.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowCancelSubModal(false)}
+                className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-white/[0.08] text-text-muted hover:text-text-primary transition-all"
+              >
+                Keep Pro
+              </button>
+              <button
+                onClick={handleCancelSubscription}
+                disabled={cancellingSubscription}
+                className="flex-1 py-2.5 rounded-lg text-sm font-bold bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all disabled:opacity-50"
+              >
+                {cancellingSubscription ? 'Cancelling...' : 'Cancel Subscription'}
               </button>
             </div>
           </motion.div>

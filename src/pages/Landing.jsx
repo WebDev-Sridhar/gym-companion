@@ -172,7 +172,7 @@ export default function Landing() {
             className="mt-10 flex justify-center gap-12 sm:gap-16"
           >
             {[
-              { value: '30+', label: 'Exercises' },
+              { value: '400+', label: 'Exercises' },
               { value: '7', label: 'Diet Tiers' },
               { value: 'Free', label: 'To Start' },
             ].map((stat) => (
@@ -495,7 +495,7 @@ export default function Landing() {
               <p className="text-xs text-text-muted mb-1">
                 Just <span className="text-accent font-bold">₹83/month</span> — save 44%
               </p>
-              <p className="text-xs text-accent font-medium mb-6">Transform your body at the cost of a movie ticket</p>
+              <p className="text-xs text-accent font-medium mb-6">Transform your body at a lower cost than a movie ticket</p>
               <ul className="space-y-2.5 mb-4">
                 <li className="text-[11px] text-text-muted font-medium uppercase tracking-wider mb-1">Everything in Pro, plus:</li>
                 {[

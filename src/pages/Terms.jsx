@@ -1,9 +1,11 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Footer from '../components/layout/Footer';
 
 export default function Terms() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-dark-bg flex flex-col">
       <motion.div
@@ -12,9 +14,9 @@ export default function Terms() {
         transition={{ duration: 0.4 }}
         className="max-w-4xl mx-auto w-full py-12 sm:py-16 px-5 sm:px-8 flex-1"
       >
-        <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-text-primary transition-colors mb-8">
+        <button onClick={() => navigate(-1)} className="inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-text-primary transition-colors mb-8">
           <ArrowLeft size={16} /> Back
-        </Link>
+        </button>
 
         <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-2">Terms & Conditions</h1>
         <p className="text-text-muted text-sm mb-10">Last updated: March 2026</p>
