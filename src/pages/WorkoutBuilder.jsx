@@ -16,17 +16,31 @@ import { showToast } from '../components/ui/Toast';
 import DaySelector from '../components/builder/DaySelector';
 import DayEditor from '../components/builder/DayEditor';
 import PageWrapper from '../components/layout/PageWrapper';
+import { workoutSplits, getExerciseByKey } from '../data/exerciseDatabase';
 
 function buildEmptyDay() {
   return { title: '', exercises: [] };
 }
 
-function buildDayFromDefault(defaultPlan, dayIndex) {
-  const defaultDay = defaultPlan?.schedule?.[dayIndex];
-  if (!defaultDay) return buildEmptyDay();
+// Pick the correct split template based on selected day count
+function getSplitForDays(count) {
+  if (count <= 3) return workoutSplits.fullBody3;
+  if (count === 4) return workoutSplits.upperLower4;
+  if (count === 5) return workoutSplits.ppl5;
+  return workoutSplits.ppl6;
+}
+
+function buildDayFromSplit(dayCount, dayIndex) {
+  const split = getSplitForDays(dayCount);
+  const templateDay = split.schedule[dayIndex];
+  if (!templateDay) return buildEmptyDay();
   return {
-    title: defaultDay.day.replace(/^Day \d+\s*-?\s*/, ''),
-    exercises: defaultDay.exercises.map((ex) => ({ ...ex })),
+    title: templateDay.day.replace(/^Day \d+\s*-?\s*/, ''),
+    exercises: templateDay.exercises.map((key) => {
+      const ex = getExerciseByKey(key);
+      if (!ex) return { id: key, exerciseKey: key, name: key, muscle: 'Unknown', sets: 3, reps: '10-12', rest: '60s', restSeconds: 60, difficulty: 'intermediate', alternatives: [], videoId: null, gifUrl: null, instructions: '', donts: [] };
+      return { ...ex };
+    }),
   };
 }
 
@@ -116,7 +130,7 @@ export default function WorkoutBuilder() {
     }
   }, []);
 
-  // Adjust days array when daysPerWeek changes (populate new days from default plan)
+  // Adjust days array when daysPerWeek changes (populate from matching split template)
   const handleDaysSelect = (count) => {
     setDaysPerWeek(count);
     setDays((prev) => {
@@ -125,7 +139,7 @@ export default function WorkoutBuilder() {
         return [
           ...prev,
           ...Array.from({ length: count - prev.length }, (_, i) =>
-            buildDayFromDefault(defaultPlan, prev.length + i)
+            buildDayFromSplit(count, prev.length + i)
           ),
         ];
       }
@@ -136,10 +150,10 @@ export default function WorkoutBuilder() {
   const handleContinue = () => {
     if (!daysPerWeek) return;
     if (days.length === 0) {
-      // Pre-populate with default plan exercises so users can edit them
+      // Pre-populate with correct split template exercises so users can edit them
       setDays(
         Array.from({ length: daysPerWeek }, (_, i) =>
-          buildDayFromDefault(defaultPlan, i)
+          buildDayFromSplit(daysPerWeek, i)
         )
       );
     }

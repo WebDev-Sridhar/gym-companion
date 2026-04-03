@@ -14554,7 +14554,7 @@ export const workoutSplits = {
       },
       {
         day: 'Day 3 - Full Body C',
-        exercises: ['romanianDeadlift', 'cableFly', 'seatedCableRow', 'facePull', 'hammerCurl', 'hangingLegRaise'],
+        exercises: ['lunges', 'cableFly', 'seatedCableRow', 'facePull', 'hammerCurl', 'hangingLegRaise'],
       },
     ],
   },
@@ -14569,7 +14569,7 @@ export const workoutSplits = {
       },
       {
         day: 'Day 2 - Lower Body',
-        exercises: ['squat', 'romanianDeadlift', 'legPress', 'legCurl', 'calfRaise', 'plank'],
+        exercises: ['squat', 'gobletSquat', 'legPress', 'legCurl', 'calfRaise', 'plank'],
       },
       {
         day: 'Day 3 - Upper Body',
@@ -14577,7 +14577,7 @@ export const workoutSplits = {
       },
       {
         day: 'Day 4 - Lower Body',
-        exercises: ['legPress', 'romanianDeadlift', 'legExtension', 'legCurl', 'calfRaise', 'cableCrunch'],
+        exercises: ['legPress', 'lunges', 'legExtension', 'legCurl', 'calfRaise', 'cableCrunch'],
       },
     ],
   },

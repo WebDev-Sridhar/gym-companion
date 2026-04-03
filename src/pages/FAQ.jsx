@@ -151,8 +151,8 @@ const faqData = [
         a: 'Go to the Progress page and enter your current weight in the "Log Weight" section. Your weight is tracked over time and displayed on a trend chart so you can see your transformation.',
       },
       {
-        q: 'Why can I only log weight on Mondays?',
-        a: 'Weight fluctuates daily due to water retention, food intake, and other factors. Logging once a week (on Mondays) gives a more accurate picture of your actual trend. This prevents anxiety from daily fluctuations and helps you focus on the long-term trajectory.',
+        q: 'Why can I only log weight once a week?',
+        a: 'Weight fluctuates daily due to water retention, food intake, and other factors. Logging once every 7 days gives a more accurate picture of your actual trend. You can log on any day, but the next log will be available after 7 days. This prevents anxiety from daily fluctuations and helps you focus on the long-term trajectory.',
       },
       {
         q: 'How is my streak calculated?',

@@ -364,7 +364,10 @@ const useUserStore = create(
 
         const workoutPlan = get().workoutPlan;
         const scheduleLength = workoutPlan?.schedule?.length || 0;
-        const newWorkoutDay = scheduleLength > 0 ? (get().currentWorkoutDay + 1) % scheduleLength : 0;
+        // Advance from the logged day (not always from currentWorkoutDay)
+        const loggedDayIndex = workoutPlan?.schedule?.findIndex(d => d.day === workout.dayName) ?? -1;
+        const baseDay = loggedDayIndex >= 0 ? loggedDayIndex : get().currentWorkoutDay;
+        const newWorkoutDay = scheduleLength > 0 ? (baseDay + 1) % scheduleLength : 0;
 
         set({
           workoutLogs: newLogs,
@@ -450,6 +453,10 @@ const useUserStore = create(
         const newLevel = getCurrentTransformationLevel(stats).id;
         const newXp = Math.max(0, state.xp - XP_REWARDS.workout);
 
+        // Revert active day to the deleted log's day so user can re-do it
+        const workoutPlan = get().workoutPlan;
+        const deletedDayIndex = workoutPlan?.schedule?.findIndex(d => d.day === logToRemove.dayName) ?? -1;
+
         set({
           workoutLogs: newLogs,
           totalWorkouts,
@@ -458,6 +465,7 @@ const useUserStore = create(
           transformationLevel: newLevel,
           level: newLevel,
           xp: newXp,
+          currentWorkoutDay: deletedDayIndex >= 0 ? deletedDayIndex : state.currentWorkoutDay,
         });
 
         syncToSupabase(async (userId) => {

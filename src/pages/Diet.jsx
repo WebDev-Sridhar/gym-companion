@@ -35,6 +35,7 @@ import { dietPlans } from '../data/dietPlans';
 // Build a flat searchable food index from all diet plan meals (cached once)
 // Indexes both meal names AND individual food items within meals
 let _foodIndex = null;
+let _foodMap = null; // name (lowercase) → { calories, protein }
 function getFoodIndex() {
   if (_foodIndex) return _foodIndex;
   const seen = new Map(); // name → { calories, protein }
@@ -49,27 +50,39 @@ function getFoodIndex() {
           if (!seen.has(key)) {
             seen.set(key, { name: meal.name, calories: meal.calories, protein: meal.protein });
           }
-          // Index individual items within the meal
+          // Index individual items with weighted nutrition estimates
           if (meal.items) {
-            for (const item of meal.items) {
+            const weights = meal.items.map(item => {
+              const l = item.toLowerCase();
+              if (/egg|chicken|fish|meen|prawn|mutton|paneer|dal|milk|curd|yogurt|soya|whey|casein/.test(l)) return 3;
+              if (/rice|roti|chapati|dosa|idli|parotta|bread|appam|idiyappam|poori|pongal|biryani|upma|oats|ragi/.test(l)) return 2;
+              if (/chutney|pickle|appalam|rasam|salt|masala|honey|jaggery|tea|coffee/.test(l)) return 0.5;
+              return 1;
+            });
+            const totalWeight = weights.reduce((a, b) => a + b, 0);
+            meal.items.forEach((item, i) => {
               const itemKey = item.toLowerCase();
               if (!seen.has(itemKey)) {
-                // Estimate per-item nutrition proportionally
-                const perItem = meal.items.length;
+                const share = weights[i] / totalWeight;
                 seen.set(itemKey, {
                   name: item,
-                  calories: Math.round(meal.calories / perItem),
-                  protein: Math.round(meal.protein / perItem),
+                  calories: Math.round(meal.calories * share),
+                  protein: Math.round(meal.protein * share),
                 });
               }
-            }
+            });
           }
         }
       }
     }
   }
+  _foodMap = seen;
   _foodIndex = Array.from(seen.values());
   return _foodIndex;
+}
+function getFoodMap() {
+  if (!_foodMap) getFoodIndex();
+  return _foodMap;
 }
 
 // Search food index by partial name match — returns up to 8 results
@@ -219,17 +232,28 @@ export default function Diet() {
     }));
   };
 
-  // Calculate adjusted calories/protein based on selected items
+  // Calculate adjusted calories/protein based on selected items (per-item lookup)
   const getAdjustedNutrition = (mealKey) => {
     const activeMeal = getActiveMeal(mealKey);
     const sel = getSelection(mealKey);
     const totalItems = activeMeal.items.length;
-    const selectedCount = sel.selected.size;
+    const foodMap = getFoodMap();
 
-    // Proportional calculation from meal items
-    const fraction = totalItems > 0 ? selectedCount / totalItems : 0;
-    let adjustedCalories = Math.round(activeMeal.calories * fraction);
-    let adjustedProtein = Math.round(activeMeal.protein * fraction);
+    let adjustedCalories = 0;
+    let adjustedProtein = 0;
+
+    for (const idx of sel.selected) {
+      const itemName = activeMeal.items[idx];
+      const match = itemName ? foodMap.get(itemName.toLowerCase()) : null;
+      if (match) {
+        adjustedCalories += match.calories;
+        adjustedProtein += match.protein;
+      } else {
+        // Fallback: equal share
+        adjustedCalories += Math.round(activeMeal.calories / totalItems);
+        adjustedProtein += Math.round(activeMeal.protein / totalItems);
+      }
+    }
 
     // Add custom items
     for (const ci of sel.customItems) {

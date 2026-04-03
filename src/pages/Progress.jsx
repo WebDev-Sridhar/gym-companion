@@ -15,9 +15,14 @@ export default function Progress() {
   const [showInput, setShowInput] = useState(false);
   const [appliedActions, setAppliedActions] = useState(new Set());
 
-  const isMonday = new Date().getDay() === 1;
   const today = new Date().toISOString().split('T')[0];
   const hasLoggedToday = weightLogs.some((l) => l.date === today);
+  const lastLog = weightLogs.length > 0 ? weightLogs[weightLogs.length - 1] : null;
+  const daysSinceLastLog = lastLog
+    ? Math.floor((new Date(today) - new Date(lastLog.date)) / (1000 * 60 * 60 * 24))
+    : 999;
+  const canLogWeight = daysSinceLastLog >= 7 || weightLogs.length === 0;
+  const daysUntilNextLog = Math.max(0, 7 - daysSinceLastLog);
 
   const weightData = weightLogs.map((l) => ({
     date: new Date(l.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
@@ -88,16 +93,16 @@ export default function Progress() {
         ))}
       </div>
 
-      {/* Log Weight — only on Mondays */}
-      {!isMonday ? (
-        <div className="flex items-center gap-2 mb-8 px-4 py-3 border border-white/[0.06] rounded-lg">
-          <Lock size={14} className="text-text-muted" />
-          <p className="text-sm text-text-muted">Weight logging is available on <span className="text-text-secondary font-medium">Mondays</span> for consistent weekly tracking.</p>
-        </div>
-      ) : hasLoggedToday ? (
+      {/* Log Weight — 7-day cooldown */}
+      {hasLoggedToday ? (
         <div className="flex items-center gap-2 mb-8 px-4 py-3 border border-accent/20 rounded-lg bg-accent/5">
           <Check size={14} className="text-accent" />
-          <p className="text-sm text-text-muted">Weight logged today. See you next Monday!</p>
+          <p className="text-sm text-text-muted">Weight logged today! Next log available in 7 days.</p>
+        </div>
+      ) : !canLogWeight ? (
+        <div className="flex items-center gap-2 mb-8 px-4 py-3 border border-white/[0.06] rounded-lg">
+          <Lock size={14} className="text-text-muted" />
+          <p className="text-sm text-text-muted">Next weight log available in <span className="text-text-secondary font-medium">{daysUntilNextLog} day{daysUntilNextLog !== 1 ? 's' : ''}</span>. Weekly tracking keeps your data consistent.</p>
         </div>
       ) : !showInput ? (
         <button onClick={() => setShowInput(true)} className="btn-primary px-6 py-3 rounded-lg text-sm font-bold inline-flex items-center gap-2 mb-8">
