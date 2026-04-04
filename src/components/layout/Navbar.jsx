@@ -49,7 +49,10 @@ export default function Navbar() {
 
   const activeTabIndex = Math.max(0, bottomTabs.findIndex((t) => t.path === location.pathname));
 
+  const [showSignOutModal, setShowSignOutModal] = useState(false);
+
   const handleLogout = async () => {
+    setShowSignOutModal(false);
     await signOut();
     navigate('/');
   };
@@ -103,7 +106,7 @@ export default function Navbar() {
                 Lv.{level}
               </div>
               <button
-                onClick={handleLogout}
+                onClick={() => setShowSignOutModal(true)}
                 className="hidden md:flex p-2 rounded-lg text-text-muted hover:text-text-secondary hover:bg-white/[0.04] transition-colors"
                 title="Sign Out"
               >
@@ -188,12 +191,59 @@ export default function Navbar() {
                 </Link>
                 <div className="border-t border-white/[0.06] my-1" />
                 <button
-                  onClick={() => { setIsOpen(false); handleLogout(); }}
+                  onClick={() => { setIsOpen(false); setShowSignOutModal(true); }}
                   className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-medium text-text-muted hover:text-text-primary hover:bg-white/[0.04] transition-all"
                 >
                   <LogOut size={18} />
                   Sign Out
                 </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Sign Out Confirmation Modal */}
+      <AnimatePresence>
+        {showSignOutModal && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm"
+              onClick={() => setShowSignOutModal(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="fixed inset-0 z-[60] flex items-center justify-center p-4 pointer-events-none"
+            >
+              <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-6 w-full max-w-sm pointer-events-auto">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-white/[0.06] flex items-center justify-center shrink-0">
+                    <LogOut size={18} className="text-text-secondary" />
+                  </div>
+                  <h3 className="text-lg font-bold text-text-primary">Sign Out?</h3>
+                </div>
+                <p className="text-sm text-text-muted mb-5">
+                  Are you sure you want to sign out? Your data is saved and will be here when you come back.
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowSignOutModal(false)}
+                    className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-white/[0.08] text-text-muted hover:text-text-primary transition-all"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="flex-1 py-2.5 rounded-lg text-sm font-bold bg-white/[0.06] text-text-primary border border-white/[0.08] hover:bg-white/[0.1] transition-all inline-flex items-center justify-center gap-2"
+                  >
+                    <LogOut size={14} /> Sign Out
+                  </button>
+                </div>
               </div>
             </motion.div>
           </>

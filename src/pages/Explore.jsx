@@ -56,7 +56,7 @@ export default function Explore() {
             </span>
           </h1>
           <p className="text-white/40 text-sm mt-1">
-            Search 411+ exercises with video demonstrations
+            Search 400+ exercises with video demonstrations
           </p>
         </div>
 
