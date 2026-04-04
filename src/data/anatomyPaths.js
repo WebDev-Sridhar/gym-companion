@@ -1,5 +1,5 @@
-import { bodyFront } from '../../muscle anatomy/dist/assets/bodyFront.js';
-import { bodyBack } from '../../muscle anatomy/dist/assets/bodyBack.js';
+import { bodyFront } from '../assets/bodyFront.js';
+import { bodyBack } from '../assets/bodyBack.js';
 
 // Combine all path arrays (common, left, right) into a single d-string
 function flattenPaths(pathObj) {
