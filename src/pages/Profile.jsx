@@ -460,7 +460,7 @@ export default function Profile() {
               <div className="bg-red-500/5 border border-red-500/10 rounded-lg p-3">
                 <p className="text-xs font-medium text-red-400 mb-2">You will lose access to:</p>
                 <ul className="space-y-1 text-xs text-text-muted">
-                  {['Advanced workout analytics & charts', 'Smart Coach AI recommendations', 'Custom workout builder', 'Priority features & updates'].map((item) => (
+                  {['Save & track workout logs', 'Custom workout builder & exercise swaps', 'Meal logging, swaps & supplements', 'Progress charts & Smart Coach AI'].map((item) => (
                     <li key={item} className="flex items-center gap-2"><X size={10} className="text-red-400/60 shrink-0" />{item}</li>
                   ))}
                 </ul>

@@ -90,7 +90,7 @@ const faqData = [
       },
       {
         q: 'Can I see video tutorials for exercises?',
-        a: 'Yes — Pro users get YouTube video tutorials for every exercise. Each exercise has a "Quick Form Guide" (short clip) and a "Full Tutorial" (detailed video). Tap "Show Video" when viewing an exercise to watch the tutorial.',
+        a: 'Yes — all users get free access to YouTube video tutorials and GIF form guides for every exercise. Tap "Show Video" when viewing an exercise to watch the tutorial. No Pro subscription needed for videos.',
       },
     ],
   },
@@ -175,19 +175,19 @@ const faqData = [
     questions: [
       {
         q: 'How does the XP system work?',
-        a: 'You earn XP (Experience Points) for actions like logging workouts (+50 XP), logging meals (+20 XP), maintaining your streak, and hitting your targets. XP accumulates over time and contributes to your medal tier and transformation level.',
+        a: 'You earn XP (Experience Points) for actions like logging workouts (+50 XP), logging meals (+20 XP), logging weight (+15 XP), and daily login (+10 XP). Streak milestones give bonus XP (7-day: +100, 14-day: +200, 30-day: +500). XP accumulates over time, determines your medal tier, and feeds into the weekly leaderboard rankings.',
       },
       {
         q: 'What are transformation levels?',
-        a: 'There are 7 transformation levels that represent your fitness journey: from Beginner all the way up to Elite. Levels are based on actual metrics — workout consistency, strength gains, body transformation, and adherence to your nutrition plan. Check your current level on your Profile page.',
+        a: 'There are 12 transformation levels that represent your fitness journey: from First Step all the way up to Transformed (Elite). Levels are based on actual metrics — workout consistency, streak milestones, strength gains, body weight changes, and protein adherence. Each level has specific tasks to complete. Check your current level on your Profile page.',
       },
       {
         q: 'How do I earn medals?',
-        a: 'Medals are based on your total XP: Bronze (starting), Silver (500 XP), Gold (2000 XP), Platinum (5000 XP), and Diamond (10000 XP). Keep logging workouts and meals consistently to climb the ranks.',
+        a: 'There are 8 medal tiers based on your total XP: Starter (0), Bronze (100 XP), Silver (500 XP), Gold (1500 XP), Platinum (3000 XP), Diamond (5000 XP), Master (8000 XP), and Champion (12000 XP). Keep logging workouts and meals consistently to climb the ranks.',
       },
       {
         q: 'What actions give XP?',
-        a: 'Logging a workout: +50 XP. Logging a meal: +20 XP. Maintaining a streak: bonus XP per day. Hitting protein target: +10 XP. Logging weight: +10 XP. The more consistent you are, the faster you level up.',
+        a: 'Logging a workout: +50 XP. Logging a meal: +20 XP. Logging weight: +15 XP. Daily login: +10 XP. Streak bonuses: +100 XP at 7 days, +200 XP at 14 days, +500 XP at 30 days. The more consistent you are, the faster you level up.',
       },
     ],
   },
@@ -198,15 +198,23 @@ const faqData = [
     questions: [
       {
         q: 'What features are free?',
-        a: 'Free users get: personalized workout plan with exercise details and form instructions, daily calorie and macro targets, basic workout logging (up to 3 history entries visible), and the gamification system (XP, streaks, levels).',
+        a: 'Free users get: personalized workout plan, video tutorials and GIF form guides for every exercise, diet plan with calorie and macro targets, weight logging (weekly), explore 400+ exercises, gamification (XP, streaks, 12 levels, 8 medals), leaderboard, Knowledge Hub guides, and referral rewards.',
       },
       {
         q: 'What do I get with Pro?',
-        a: 'Pro unlocks: full meal tracking with swaps and custom food logging, video tutorials for every exercise, complete workout history, progress charts and analytics, Smart Coach AI recommendations, supplement plans, and unlimited history access.',
+        a: 'Pro unlocks: save and track workout logs, custom workout builder, exercise swap alternatives, full meal tracking with swaps and custom food logging, supplements tracking, today\'s intake tracking, complete workout history, progress charts and analytics, and Smart Coach AI recommendations.',
       },
       {
         q: 'How do I upgrade to Pro?',
-        a: 'Tap the "Upgrade" banner on your Dashboard or look for the lock icon on Pro features. You\'ll be taken to the payment flow. Pro is a one-time or subscription purchase depending on the current plan options.',
+        a: 'Tap the "Upgrade" banner on your Dashboard or look for the lock icon on Pro features. Pro is available as a monthly (₹149/month) or yearly (₹999/year) subscription via Razorpay. You can cancel anytime from your Profile page.',
+      },
+      {
+        q: 'What is the leaderboard?',
+        a: 'The leaderboard lets you compete with other users across three categories: Weekly XP (resets every week), All-Time XP, and Streak (consecutive workout days). Top 5 users on the weekly leaderboard earn reward points every Sunday — 1st place gets 50 points, 2nd gets 40, 3rd gets 30, and so on. You need at least 300 weekly XP to qualify.',
+      },
+      {
+        q: 'How do referral rewards work?',
+        a: 'Share your unique referral link from the Rewards page. When a friend signs up, you earn 10 points. When they subscribe to Pro, you earn 100 points and they get ₹30 off. Accumulate 500 points to redeem 1 month of free Pro. Invite 5 friends who subscribe and you get free Pro!',
       },
     ],
   },

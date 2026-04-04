@@ -55,17 +55,17 @@ const features = [
   {
     icon: Dumbbell,
     title: 'Smart Workout Plans',
-    description: 'Personalized routines with video guides for every exercise. Beginner to intermediate.',
+    description: 'Personalized routines with video tutorials and form guides for every exercise. Free for all users.',
   },
   {
     icon: UtensilsCrossed,
     title: 'Indian Diet Plans',
-    description: 'Budget-friendly, practical Indian meals. Veg & Non-veg options with calorie tracking.',
+    description: 'Budget-friendly South Indian meals. Veg & Non-veg options with calorie and macro targets.',
   },
   {
     icon: TrendingUp,
     title: 'Progress Tracking',
-    description: 'Visual charts for weight and strength progress. Watch yourself transform over time.',
+    description: 'Log weight weekly, track streaks, and unlock Pro for visual charts and Smart Coach AI insights.',
   },
   {
     icon: Target,
@@ -74,8 +74,8 @@ const features = [
   },
   {
     icon: Trophy,
-    title: 'Gamification',
-    description: 'Earn XP medals and complete real transformation levels based on your actual progress.',
+    title: 'Gamification & Leaderboard',
+    description: 'Earn XP, climb 12 transformation levels, collect 8 medals, and compete on weekly leaderboards.',
   },
   {
     icon: BookOpen,
@@ -430,12 +430,12 @@ export default function Landing() {
               <ul className="space-y-2.5 mb-8">
                 {[
                   'Personalized workout plan',
-                  'Full diet plan with macros',
-                  'Workout logging',
-                  'Weight logging',
-                  'Transformation levels & streaks',
-                  'Daily dashboard',
-                  'All Knowledge Hub guides',
+                  'Video tutorials & form guides',
+                  'Diet plan with calorie targets',
+                  'Weight logging (weekly)',
+                  'Explore 400+ exercises',
+                  'XP, streaks & leaderboard',
+                  'Knowledge Hub guides',
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-text-secondary">
                     <Check size={14} className="text-accent flex-shrink-0 mt-0.5" />
@@ -463,14 +463,14 @@ export default function Landing() {
               <ul className="space-y-2.5 mb-4">
                 <li className="text-[11px] text-text-muted font-medium uppercase tracking-wider mb-1">Everything in Free, plus:</li>
                 {[
-                  'Video tutorials & form guides',
-                  'Common mistakes & alternatives',
+                  'Save & track workout logs',
+                  'Custom workout builder',
+                  'Exercise swap alternatives',
                   'Meal logging, swaps & supplements',
                   'Smart Coach AI insights',
                   'Progress charts & analytics',
                   'Full workout history',
                   'Today\'s intake tracking',
-                  'All 12 transformation levels',
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-text-secondary">
                     <Sparkles size={12} className="text-text-muted flex-shrink-0 mt-0.5" />

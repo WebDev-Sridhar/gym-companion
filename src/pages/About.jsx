@@ -7,17 +7,17 @@ const values = [
   {
     icon: Dumbbell,
     title: 'Fitness Made Simple',
-    description: 'No more confusing workout splits or generic programs. OwnGainz generates a personalized plan based on your body, goals, and experience — so you know exactly what to do every time you walk into the gym.',
+    description: 'No more confusing workout splits or generic programs. OwnGainz generates a personalized plan with free video tutorials for every exercise — so you know exactly what to do every time you walk into the gym.',
   },
   {
     icon: Target,
-    title: 'Smart Workout Discovery',
-    description: 'Our intelligent plan generator creates optimized workout splits tailored to your schedule. Swap exercises, track progressive overload, and watch your strength grow with real-time logging.',
+    title: 'Smart Workout System',
+    description: 'Auto-generated workout splits tailored to your schedule. Pro users can build custom plans, swap exercises, and track progressive overload with detailed logging.',
   },
   {
     icon: Sparkles,
-    title: 'Personalized Experience',
-    description: 'From diet plans matched to your calorie needs and preferences, to a gamification system that keeps you motivated with XP, levels, and streaks — every part of OwnGainz adapts to you.',
+    title: 'Compete & Stay Motivated',
+    description: 'From South Indian diet plans matched to your calorie needs, to a gamification system with 12 levels, 8 medals, weekly leaderboards, and referral rewards — OwnGainz keeps you coming back.',
   },
 ];
 

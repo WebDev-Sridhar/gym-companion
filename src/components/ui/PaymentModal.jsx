@@ -130,12 +130,12 @@ export function PaymentModalContainer() {
                 </p>
                 <ul className="space-y-2">
                   {[
-                    'Video tutorials & form guides',
+                    'Save & track workout logs',
+                    'Custom workout builder',
+                    'Exercise swap alternatives',
+                    'Meal logging, swaps & supplements',
                     'Smart Coach AI insights',
                     'Progress charts & analytics',
-                    'Full workout history',
-                    "Today's intake tracking",
-                    'Meal swaps & supplements',
                   ].map((f) => (
                     <li key={f} className="flex items-center gap-2 text-xs text-text-secondary">
                       <Sparkles size={10} className="text-accent flex-shrink-0" />
