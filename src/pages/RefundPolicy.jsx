@@ -59,8 +59,8 @@ export default function RefundPolicy() {
             <h2 className="text-xl font-semibold text-text-primary mt-6 mb-3">4. How to Request a Refund</h2>
             <p className="text-text-secondary leading-relaxed">
               To request a refund under the exceptions listed above, contact us at{' '}
-              <a href="mailto:support@owngainz.com" className="text-accent hover:underline underline-offset-2">
-                support@owngainz.com
+              <a href="mailto:support.owngainz@gamil.com" className="text-accent hover:underline underline-offset-2">
+                support.owngainz@gamil.com
               </a>{' '}
               with your account email and a description of the issue. We aim to respond within 3-5 business days.
             </p>
