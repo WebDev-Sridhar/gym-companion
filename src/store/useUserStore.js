@@ -24,6 +24,7 @@ import {
   deleteProgressLog,
   deleteAllUserData,
   deleteCustomPlan,
+  saveXpLog,
 } from '../lib/supabaseService';
 
 // Lazy reference to auth store to avoid circular dependency at import time
@@ -47,6 +48,13 @@ const syncToSupabase = async (fn) => {
   } catch (err) {
     console.warn('Supabase sync failed:', err.message);
   }
+};
+
+// Fire-and-forget XP log for leaderboard tracking
+const logXpEvent = (userId, xpAmount, source) => {
+  saveXpLog(userId, xpAmount, source).catch((err) =>
+    console.warn('XP log failed:', err.message)
+  );
 };
 
 // Helper: recompute transformation level from current state
@@ -392,6 +400,9 @@ const useUserStore = create(
               lastLoginDate: get().lastLoginDate,
             }),
           ]);
+          logXpEvent(userId, XP_REWARDS.workout, 'workout');
+          const streakBonus = xpGain - XP_REWARDS.workout;
+          if (streakBonus > 0) logXpEvent(userId, streakBonus, 'streak_bonus');
         });
       },
 
@@ -431,6 +442,7 @@ const useUserStore = create(
             saveProgressLog(userId, newLog),
             saveGamification(userId, buildGamSaveData({ ...state, weightLogsCount: count, transformationLevel: newLevel, xp: newXp })),
           ]);
+          logXpEvent(userId, XP_REWARDS.weight, 'weight');
         });
       },
 
@@ -548,6 +560,7 @@ const useUserStore = create(
               ),
             }));
           }
+          logXpEvent(userId, XP_REWARDS.meal, 'diet');
         });
       },
 
@@ -623,6 +636,7 @@ const useUserStore = create(
               xp: newXp,
               lastLoginDate: today,
             }));
+            logXpEvent(userId, XP_REWARDS.dailyLogin, 'login');
           });
         }
       },

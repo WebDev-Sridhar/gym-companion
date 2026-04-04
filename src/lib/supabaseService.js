@@ -421,7 +421,7 @@ export async function redeemRewardPoints() {
 export async function deleteAllUserData(userId) {
   // Delete dependent tables first, then profiles last (FK constraints)
   // Note: subscriptions are NOT deleted — they represent payment records and must persist across resets
-  const tables = ['exercise_logs', 'food_logs', 'progress', 'workout_plans', 'diet_plans', 'gamification'];
+  const tables = ['exercise_logs', 'food_logs', 'progress', 'workout_plans', 'diet_plans', 'gamification', 'xp_logs', 'weekly_rewards'];
   const results = await Promise.all(
     tables.map((table) => supabase.from(table).delete().eq('user_id', userId))
   );
@@ -439,4 +439,89 @@ export async function deleteAllUserData(userId) {
     updated_at: new Date().toISOString(),
   }).eq('user_id', userId);
   if (profileRes.error) console.error('Failed to reset profiles:', profileRes.error.message);
+}
+
+// =====================
+// XP Logs (Leaderboard)
+// =====================
+export async function saveXpLog(userId, xpEarned, source) {
+  return supabase.from('xp_logs').insert({
+    user_id: userId,
+    xp_earned: xpEarned,
+    source,
+  });
+}
+
+// =====================
+// Leaderboard Queries
+// =====================
+export async function fetchWeeklyLeaderboard(limit = 50) {
+  const { data, error } = await supabase.rpc('get_weekly_leaderboard', { p_limit: limit });
+  return {
+    data: (data || []).map((r) => ({
+      userId: r.user_id,
+      displayName: r.display_name,
+      xpEarned: r.xp_earned,
+      totalXp: r.total_xp,
+      currentStreak: r.current_streak,
+      level: r.level,
+      rank: r.rank,
+    })),
+    error,
+  };
+}
+
+export async function fetchAlltimeLeaderboard(limit = 50) {
+  const { data, error } = await supabase.rpc('get_alltime_leaderboard', { p_limit: limit });
+  return {
+    data: (data || []).map((r) => ({
+      userId: r.user_id,
+      displayName: r.display_name,
+      totalXp: r.total_xp,
+      currentStreak: r.current_streak,
+      level: r.level,
+      rank: r.rank,
+    })),
+    error,
+  };
+}
+
+export async function fetchStreakLeaderboard(limit = 50) {
+  const { data, error } = await supabase.rpc('get_streak_leaderboard', { p_limit: limit });
+  return {
+    data: (data || []).map((r) => ({
+      userId: r.user_id,
+      displayName: r.display_name,
+      currentStreak: r.current_streak,
+      totalXp: r.total_xp,
+      level: r.level,
+      rank: r.rank,
+    })),
+    error,
+  };
+}
+
+export async function fetchUserWeeklyRewards(userId) {
+  const { data, error } = await supabase
+    .from('weekly_rewards')
+    .select('*')
+    .eq('user_id', userId)
+    .order('week_start', { ascending: false })
+    .limit(10);
+
+  return {
+    data: (data || []).map((r) => ({
+      id: r.id,
+      weekStart: r.week_start,
+      weekEnd: r.week_end,
+      rank: r.rank,
+      xpEarned: r.xp_earned,
+      pointsAwarded: r.points_awarded,
+    })),
+    error,
+  };
+}
+
+export async function triggerWeeklyRewardProcessing() {
+  return supabase.functions.invoke('process-weekly-rewards');
 }

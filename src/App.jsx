@@ -17,6 +17,7 @@ import FAQ from './pages/FAQ';
 import Explore from './pages/Explore';
 import WorkoutBuilder from './pages/WorkoutBuilder';
 import Rewards from './pages/Rewards';
+import Leaderboard from './pages/Leaderboard';
 import PlanSummary from './pages/PlanSummary';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Terms from './pages/Terms';
@@ -142,6 +143,7 @@ export default function App() {
           <Route path="/explore" element={<ProtectedRoute><Explore /></ProtectedRoute>} />
           <Route path="/builder" element={<ProtectedRoute><WorkoutBuilder /></ProtectedRoute>} />
           <Route path="/rewards" element={<ProtectedRoute><Rewards /></ProtectedRoute>} />
+          <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
           <Route path="/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<Terms />} />

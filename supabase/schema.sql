@@ -192,3 +192,187 @@ CREATE INDEX idx_subscriptions_order ON subscriptions(razorpay_order_id);
 
 -- Delete policy for reset
 CREATE POLICY "Users can delete own subscriptions" ON subscriptions FOR DELETE USING (auth.uid() = user_id);
+
+-- ============================================
+-- XP Logs Table (for leaderboard tracking)
+-- ============================================
+CREATE TABLE xp_logs (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  xp_earned INTEGER NOT NULL,
+  source TEXT CHECK (source IN ('workout', 'diet', 'weight', 'login', 'streak_bonus')) NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE xp_logs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view own xp_logs" ON xp_logs FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can insert own xp_logs" ON xp_logs FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE INDEX idx_xp_logs_user_created ON xp_logs(user_id, created_at);
+CREATE INDEX idx_xp_logs_created ON xp_logs(created_at);
+
+-- ============================================
+-- Weekly Rewards Table (leaderboard rewards)
+-- ============================================
+CREATE TABLE weekly_rewards (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  week_start DATE NOT NULL,
+  week_end DATE NOT NULL,
+  rank INTEGER NOT NULL,
+  xp_earned INTEGER NOT NULL,
+  points_awarded INTEGER NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE weekly_rewards ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view own weekly_rewards" ON weekly_rewards FOR SELECT USING (auth.uid() = user_id);
+CREATE INDEX idx_weekly_rewards_user ON weekly_rewards(user_id);
+CREATE INDEX idx_weekly_rewards_week ON weekly_rewards(week_start);
+CREATE UNIQUE INDEX idx_weekly_rewards_unique ON weekly_rewards(user_id, week_start);
+
+-- ============================================
+-- Leaderboard RPC Functions (SECURITY DEFINER)
+-- ============================================
+
+-- Weekly Leaderboard: XP earned in last 7 days
+CREATE OR REPLACE FUNCTION get_weekly_leaderboard(p_limit INTEGER DEFAULT 50)
+RETURNS TABLE (
+  user_id UUID,
+  display_name TEXT,
+  xp_earned BIGINT,
+  total_xp INTEGER,
+  current_streak INTEGER,
+  level INTEGER,
+  rank BIGINT
+) LANGUAGE plpgsql SECURITY DEFINER AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    g.user_id,
+    COALESCE(p.name, 'Anonymous')::TEXT AS display_name,
+    COALESCE(SUM(xl.xp_earned), 0)::BIGINT AS xp_earned,
+    g.xp AS total_xp,
+    g.current_streak,
+    g.level,
+    ROW_NUMBER() OVER (
+      ORDER BY COALESCE(SUM(xl.xp_earned), 0) DESC,
+               g.current_streak DESC,
+               g.updated_at ASC,
+               g.user_id ASC
+    )::BIGINT AS rank
+  FROM gamification g
+  JOIN profiles p ON p.user_id = g.user_id AND p.name IS NOT NULL
+  LEFT JOIN xp_logs xl ON xl.user_id = g.user_id
+    AND xl.created_at >= NOW() - INTERVAL '7 days'
+  GROUP BY g.user_id, p.name, g.xp, g.current_streak, g.level, g.updated_at
+  HAVING COALESCE(SUM(xl.xp_earned), 0) > 0
+  ORDER BY xp_earned DESC, g.current_streak DESC, g.updated_at ASC, g.user_id ASC
+  LIMIT p_limit;
+END;
+$$;
+
+-- All-Time Leaderboard: Total XP
+CREATE OR REPLACE FUNCTION get_alltime_leaderboard(p_limit INTEGER DEFAULT 50)
+RETURNS TABLE (
+  user_id UUID,
+  display_name TEXT,
+  total_xp INTEGER,
+  current_streak INTEGER,
+  level INTEGER,
+  rank BIGINT
+) LANGUAGE plpgsql SECURITY DEFINER AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    g.user_id,
+    COALESCE(p.name, 'Anonymous')::TEXT AS display_name,
+    g.xp AS total_xp,
+    g.current_streak,
+    g.level,
+    ROW_NUMBER() OVER (
+      ORDER BY g.xp DESC,
+               g.current_streak DESC,
+               g.updated_at ASC,
+               g.user_id ASC
+    )::BIGINT AS rank
+  FROM gamification g
+  JOIN profiles p ON p.user_id = g.user_id AND p.name IS NOT NULL
+  WHERE g.xp > 0
+  ORDER BY g.xp DESC, g.current_streak DESC, g.updated_at ASC, g.user_id ASC
+  LIMIT p_limit;
+END;
+$$;
+
+-- Streak Leaderboard: Current streak
+CREATE OR REPLACE FUNCTION get_streak_leaderboard(p_limit INTEGER DEFAULT 50)
+RETURNS TABLE (
+  user_id UUID,
+  display_name TEXT,
+  current_streak INTEGER,
+  total_xp INTEGER,
+  level INTEGER,
+  rank BIGINT
+) LANGUAGE plpgsql SECURITY DEFINER AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    g.user_id,
+    COALESCE(p.name, 'Anonymous')::TEXT AS display_name,
+    g.current_streak,
+    g.xp AS total_xp,
+    g.level,
+    ROW_NUMBER() OVER (
+      ORDER BY g.current_streak DESC,
+               g.xp DESC,
+               g.updated_at ASC,
+               g.user_id ASC
+    )::BIGINT AS rank
+  FROM gamification g
+  JOIN profiles p ON p.user_id = g.user_id AND p.name IS NOT NULL
+  WHERE g.current_streak > 0
+  ORDER BY g.current_streak DESC, g.xp DESC, g.updated_at ASC, g.user_id ASC
+  LIMIT p_limit;
+END;
+$$;
+
+-- Process Weekly Rewards (called by edge function)
+CREATE OR REPLACE FUNCTION process_weekly_rewards(p_week_start DATE, p_week_end DATE)
+RETURNS VOID LANGUAGE plpgsql SECURITY DEFINER AS $$
+DECLARE
+  reward_amounts INTEGER[] := ARRAY[50, 40, 30, 20, 10];
+  r RECORD;
+  i INTEGER := 0;
+BEGIN
+  -- Idempotency: skip if already processed for this week
+  IF EXISTS (SELECT 1 FROM weekly_rewards WHERE week_start = p_week_start LIMIT 1) THEN
+    RETURN;
+  END IF;
+
+  FOR r IN
+    SELECT
+      xl.user_id,
+      SUM(xl.xp_earned)::INTEGER AS weekly_xp,
+      g.current_streak,
+      g.updated_at
+    FROM xp_logs xl
+    JOIN profiles p ON p.user_id = xl.user_id AND p.name IS NOT NULL
+    JOIN gamification g ON g.user_id = xl.user_id
+    WHERE xl.created_at >= p_week_start::TIMESTAMPTZ
+      AND xl.created_at < (p_week_end + 1)::TIMESTAMPTZ
+    GROUP BY xl.user_id, g.current_streak, g.updated_at
+    HAVING SUM(xl.xp_earned) >= 300
+    ORDER BY SUM(xl.xp_earned) DESC, g.current_streak DESC, g.updated_at ASC, xl.user_id ASC
+    LIMIT 5
+  LOOP
+    i := i + 1;
+
+    INSERT INTO weekly_rewards (user_id, week_start, week_end, rank, xp_earned, points_awarded)
+    VALUES (r.user_id, p_week_start, p_week_end, i, r.weekly_xp, reward_amounts[i]);
+
+    UPDATE profiles
+    SET reward_points = COALESCE(reward_points, 0) + reward_amounts[i],
+        updated_at = NOW()
+    WHERE user_id = r.user_id;
+  END LOOP;
+END;
+$$;
