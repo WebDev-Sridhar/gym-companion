@@ -122,7 +122,7 @@ export default function Explore() {
         </div>
 
         {/* Main Layout */}
-        <div className="grid md:grid-cols-[240px_1fr] gap-6">
+        <div className="grid md:grid-cols-[340px_1fr] gap-6">
           {/* Left: Muscle Selector */}
           <div>
             {/* Mobile toggle */}
