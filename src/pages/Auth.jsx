@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Loader2, ArrowLeft } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import useAuthStore from '../store/useAuthStore';
 import { LoginAgreement } from '../components/layout/Footer';
@@ -8,13 +8,7 @@ import { LoginAgreement } from '../components/layout/Footer';
 export default function Auth() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { signInWithGoogle, signInWithEmail, signUpWithEmail, error: authError, loading, clearError } = useAuthStore();
-
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [confirmMessage, setConfirmMessage] = useState('');
+  const { signInWithGoogle, error: authError, loading, clearError } = useAuthStore();
 
   // Capture referral code from URL before Google OAuth redirect navigates away
   useEffect(() => {
@@ -24,27 +18,7 @@ export default function Auth() {
 
   const handleGoogleSignIn = () => {
     clearError();
-    setConfirmMessage('');
     signInWithGoogle();
-  };
-
-  const handleEmailSubmit = async (e) => {
-    e.preventDefault();
-    clearError();
-    setConfirmMessage('');
-
-    if (!email.trim() || !password.trim()) return;
-
-    if (isSignUp) {
-      const result = await signUpWithEmail(email.trim(), password);
-      if (result === 'confirm') {
-        setConfirmMessage('Check your email for a confirmation link, then sign in.');
-        setIsSignUp(false);
-        setPassword('');
-      }
-    } else {
-      await signInWithEmail(email.trim(), password);
-    }
   };
 
   return (
@@ -95,20 +69,6 @@ export default function Auth() {
           )}
         </AnimatePresence>
 
-        {/* Confirmation message */}
-        <AnimatePresence>
-          {confirmMessage && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="bg-accent/10 border border-accent/20 rounded-lg px-4 py-3 text-accent text-sm mb-4"
-            >
-              {confirmMessage}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         {/* Google Sign In */}
         <motion.button
           onClick={handleGoogleSignIn}
@@ -143,69 +103,6 @@ export default function Auth() {
             </>
           )}
         </motion.button>
-
-        {/* Divider */}
-        <div className="flex items-center gap-3 my-6">
-          <div className="flex-1 h-px bg-white/[0.08]" />
-          <span className="text-xs text-text-muted">or continue with email</span>
-          <div className="flex-1 h-px bg-white/[0.08]" />
-        </div>
-
-        {/* Email/Password Form */}
-        <form onSubmit={handleEmailSubmit} className="space-y-3">
-          <div className="relative">
-            <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
-            <input
-              type="email"
-              placeholder="Email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg pl-10 pr-4 py-3 text-sm text-text-primary placeholder:text-text-muted/50 outline-none focus:border-accent/30 transition-colors"
-            />
-          </div>
-          <div className="relative">
-            <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
-            <input
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg pl-10 pr-10 py-3 text-sm text-text-primary placeholder:text-text-muted/50 outline-none focus:border-accent/30 transition-colors"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary transition-colors"
-            >
-              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-            </button>
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 rounded-lg text-sm font-bold border border-white/[0.1] text-text-primary hover:bg-white/[0.06] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-          >
-            {loading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              isSignUp ? 'Create Account' : 'Sign In'
-            )}
-          </button>
-        </form>
-
-        {/* Toggle Sign Up / Sign In */}
-        <p className="text-center text-xs text-text-muted mt-4">
-          {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
-          <button
-            onClick={() => { setIsSignUp(!isSignUp); clearError(); setConfirmMessage(''); }}
-            className="text-accent hover:underline underline-offset-2 font-medium"
-          >
-            {isSignUp ? 'Sign In' : 'Create Account'}
-          </button>
-        </p>
 
         <div className="mt-6">
           <LoginAgreement />

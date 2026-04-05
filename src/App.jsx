@@ -55,13 +55,11 @@ function ProtectedRoute({ children }) {
 
 function OnboardingRoute({ children }) {
   const session = useAuthStore((s) => s.session);
-  const user = useAuthStore((s) => s.user);
   const isOnboarded = useUserStore((s) => s.isOnboarded);
   const plan = useUserStore((s) => s.plan);
   const hasOnboardedBefore = useUserStore((s) => s.hasOnboardedBefore);
 
   if (!session) return <Navigate to="/auth" replace />;
-  if (user?.email === TEST_EMAIL) return <Navigate to="/dashboard" replace />;
   if (isOnboarded) return <Navigate to="/dashboard" replace />;
 
   // Block re-onboarding for free users — unlimited plan generation is PRO only
@@ -106,14 +104,10 @@ function PlanSummaryRoute({ children }) {
   return children;
 }
 
-const TEST_EMAIL = 'test@owngainz.com';
-
 function PublicRoute({ children }) {
   const session = useAuthStore((s) => s.session);
-  const user = useAuthStore((s) => s.user);
   const isOnboarded = useUserStore((s) => s.isOnboarded);
 
-  if (session && user?.email === TEST_EMAIL) return <Navigate to="/dashboard" replace />;
   if (session && isOnboarded) return <Navigate to="/dashboard" replace />;
   if (session && !isOnboarded) return <Navigate to="/onboarding" replace />;
   return children;

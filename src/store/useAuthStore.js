@@ -146,40 +146,6 @@ const useAuthStore = create((set, get) => ({
     if (error) set({ error: error.message });
   },
 
-  signInWithEmail: async (email, password) => {
-    set({ error: null, loading: true });
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      set({ error: error.message, loading: false });
-      return false;
-    }
-    set({ session: data.session, user: data.session.user });
-    try {
-      await get().hydrateProfile(data.session.user.id);
-      sessionStorage.setItem('owngainz-hydrated', 'true');
-    } catch (e) {
-      console.warn('Email login hydration failed:', e.message);
-    }
-    set({ loading: false });
-    return true;
-  },
-
-  signUpWithEmail: async (email, password) => {
-    set({ error: null, loading: true });
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-      set({ error: error.message, loading: false });
-      return false;
-    }
-    if (data.session) {
-      set({ session: data.session, user: data.session.user, loading: false });
-      return true;
-    }
-    // Email confirmation required
-    set({ loading: false });
-    return 'confirm';
-  },
-
   signOut: async () => {
     set({ loading: true, error: null });
     try {
