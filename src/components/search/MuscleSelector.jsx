@@ -90,10 +90,12 @@ export default function MuscleSelector({ selectedMuscle, onSelectMuscle }) {
         ))}
       </div>
 
-      {/* SVG Body Map */}
+      {/* SVG Body Map — fixed height so toggles don't resize container */}
+      <div className="w-full max-w-[360px]" style={{ height: 580 }}>
       <svg
         viewBox={viewBox}
-        className="w-full max-w-[360px] h-auto"
+        className="w-full h-full"
+        preserveAspectRatio="xMidYMid meet"
         xmlns="http://www.w3.org/2000/svg"
       >
         {/* Body outline silhouette (base layer) */}
@@ -138,6 +140,7 @@ export default function MuscleSelector({ selectedMuscle, onSelectMuscle }) {
           </text>
         ))}
       </svg>
+      </div>
 
       {/* Active muscle indicator */}
       {selectedMuscle && (
