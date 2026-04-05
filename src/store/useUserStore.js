@@ -258,6 +258,15 @@ const useUserStore = create(
         });
       },
 
+      regenerateDiet: () => {
+        const profile = get().profile;
+        if (!profile) return;
+        const dietPlan = generateDietPlan(profile);
+        const nutritionTargets = calculateNutritionTargets(profile);
+        set({ dietPlan, nutritionTargets });
+        syncToSupabase((userId) => saveDietPlan(userId, dietPlan));
+      },
+
       completeOnboarding: () => {
         set({ isOnboarded: true, hasOnboardedBefore: true });
 

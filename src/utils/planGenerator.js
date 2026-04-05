@@ -1,6 +1,5 @@
 import { exercises, workoutSplits } from '../data/exerciseDatabase';
-import { dietPlans, supplementPlans } from '../data/dietPlans';
-import { calculateNutritionTargets, calculateMacros } from './tdee';
+import { generateDynamicDietPlan } from '../services/dietGenerator';
 
 /**
  * Generate a personalized workout plan based on user profile
@@ -179,69 +178,12 @@ export function generateWorkoutPlan(profile) {
 
 /**
  * Generate a personalized diet plan based on user profile
+ * Now uses dynamic generation from food database + meal templates
  * @param {object} profile - User profile from onboarding
  * @returns {object} Complete diet plan
  */
 export function generateDietPlan(profile, calorieOverride) {
-  const nutritionTargets = calculateNutritionTargets(profile);
-  const targetCalories = calorieOverride || nutritionTargets.targetCalories;
-  const { dietType, useSupplements } = profile;
-
-  // Calculate supplement totals first so we can subtract from meal target
-  let suppCalories = 0;
-  let suppProtein = 0;
-  const supplements = useSupplements ? supplementPlans.withSupplements : null;
-  if (supplements) {
-    for (const supp of Object.values(supplements)) {
-      suppCalories += supp.calories || 0;
-      suppProtein += supp.protein || 0;
-    }
-  }
-
-  // When supplements are enabled, meals should cover (target - supplement contribution)
-  // so that meals + supplements ≈ targetCalories
-  const mealCalorieTarget = supplements
-    ? Math.max(1200, targetCalories - suppCalories)
-    : targetCalories;
-
-  // Find closest calorie tier
-  const tiers = [1500, 1800, 2000, 2200, 2500, 2800, 3000];
-  const closestTier = tiers.reduce((prev, curr) =>
-    Math.abs(curr - mealCalorieTarget) < Math.abs(prev - mealCalorieTarget) ? curr : prev
-  );
-
-  const mealPlan = dietPlans[closestTier];
-  if (!mealPlan) {
-    // Fallback to 2000 if something goes wrong
-    const fallback = dietPlans[2000];
-    return {
-      ...nutritionTargets,
-      calorieTier: 2000,
-      meals: fallback[dietType === 'veg' ? 'veg' : 'nonVeg'].meals,
-      totalCalories: fallback[dietType === 'veg' ? 'veg' : 'nonVeg'].totalCalories,
-      totalProtein: fallback[dietType === 'veg' ? 'veg' : 'nonVeg'].totalProtein,
-      supplements: useSupplements ? supplementPlans.withSupplements : null,
-    };
-  }
-
-  const selectedPlan = mealPlan[dietType === 'veg' ? 'veg' : 'nonVeg'];
-
-  // Actual calories from meals + supplements
-  const actualCalories = selectedPlan.totalCalories + suppCalories;
-
-  // Use the body-weight-based macros as targets, recalculated for actual calorie tier
-  const adjustedMacros = calculateMacros(actualCalories, profile.goal, profile.weight);
-
-  return {
-    ...nutritionTargets,
-    targetCalories: actualCalories,
-    macros: adjustedMacros,
-    calorieTier: closestTier,
-    meals: selectedPlan.meals,
-    totalCalories: selectedPlan.totalCalories,
-    totalProtein: selectedPlan.totalProtein,
-    supplements,
-  };
+  return generateDynamicDietPlan(profile, { calorieOverride });
 }
 
 /**

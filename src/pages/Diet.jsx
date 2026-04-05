@@ -30,66 +30,80 @@ import PageWrapper from '../components/layout/PageWrapper';
 import ProLock from '../components/ui/ProLock';
 import useUserStore from '../store/useUserStore';
 import { showCoach } from '../components/ui/CoachPopup';
-import { dietPlans } from '../data/dietPlans';
+import { foodDatabase } from '../data/foodDatabase';
 
-// Build a flat searchable food index from all diet plan meals (cached once)
-// Indexes both meal names AND individual food items within meals
+// Build a flat searchable food index from the food database (cached once)
+// Includes both database food items and current diet plan meals
 let _foodIndex = null;
 let _foodMap = null; // name (lowercase) → { calories, protein }
-function getFoodIndex() {
+function getFoodIndex(dietPlan) {
   if (_foodIndex) return _foodIndex;
-  const seen = new Map(); // name → { calories, protein }
-  for (const tier of Object.values(dietPlans)) {
-    for (const dietType of Object.values(tier)) {
-      if (!dietType.meals) continue;
-      for (const slot of Object.values(dietType.meals)) {
-        const options = Array.isArray(slot) ? slot : [slot];
-        for (const meal of options) {
-          // Index the meal itself
-          const key = meal.name.toLowerCase();
-          if (!seen.has(key)) {
-            seen.set(key, { name: meal.name, calories: meal.calories, protein: meal.protein });
-          }
-          // Index individual items with weighted nutrition estimates
-          if (meal.items) {
-            const weights = meal.items.map(item => {
-              const l = item.toLowerCase();
-              if (/egg|chicken|fish|meen|prawn|mutton|paneer|dal|milk|curd|yogurt|soya|whey|casein/.test(l)) return 3;
-              if (/rice|roti|chapati|dosa|idli|parotta|bread|appam|idiyappam|poori|pongal|biryani|upma|oats|ragi/.test(l)) return 2;
-              if (/chutney|pickle|appalam|rasam|salt|masala|honey|jaggery|tea|coffee/.test(l)) return 0.5;
-              return 1;
-            });
-            const totalWeight = weights.reduce((a, b) => a + b, 0);
-            meal.items.forEach((item, i) => {
-              const itemKey = item.toLowerCase();
-              if (!seen.has(itemKey)) {
-                const share = weights[i] / totalWeight;
-                seen.set(itemKey, {
-                  name: item,
-                  calories: Math.round(meal.calories * share),
-                  protein: Math.round(meal.protein * share),
-                });
-              }
-            });
-          }
+  const seen = new Map();
+
+  // Index all food database items with typical serving sizes
+  for (const food of Object.values(foodDatabase)) {
+    const key = food.name.toLowerCase();
+    if (!seen.has(key)) {
+      // Use a typical single-serving estimate for search results
+      const servingGrams = getTypicalServing(food);
+      seen.set(key, {
+        name: food.name,
+        calories: Math.round(food.calories_per_100g * servingGrams / 100),
+        protein: Math.round(food.protein_per_100g * servingGrams / 100),
+      });
+    }
+  }
+
+  // Also index meals from the current diet plan (for exact meal searches)
+  if (dietPlan?.meals) {
+    for (const slot of Object.values(dietPlan.meals)) {
+      const options = Array.isArray(slot) ? slot : [slot];
+      for (const meal of options) {
+        if (!meal?.name) continue;
+        const key = meal.name.toLowerCase();
+        if (!seen.has(key)) {
+          seen.set(key, { name: meal.name, calories: meal.calories, protein: meal.protein });
+        }
+        // Index individual items from meals
+        if (meal.items) {
+          const count = meal.items.length || 1;
+          meal.items.forEach((item) => {
+            const itemKey = item.toLowerCase();
+            if (!seen.has(itemKey)) {
+              seen.set(itemKey, {
+                name: item,
+                calories: Math.round(meal.calories / count),
+                protein: Math.round(meal.protein / count),
+              });
+            }
+          });
         }
       }
     }
   }
+
   _foodMap = seen;
   _foodIndex = Array.from(seen.values());
   return _foodIndex;
 }
-function getFoodMap() {
-  if (!_foodMap) getFoodIndex();
+function getFoodMap(dietPlan) {
+  if (!_foodMap) getFoodIndex(dietPlan);
   return _foodMap;
 }
 
+// Estimate a typical serving in grams based on the food's serving description
+function getTypicalServing(food) {
+  const desc = food.servingDescription || '';
+  const match = desc.match(/≈\s*(\d+)/);
+  if (match) return parseInt(match[1]);
+  return 100; // fallback to 100g
+}
+
 // Search food index by partial name match — returns up to 8 results
-function searchFoods(query) {
+function searchFoods(query, dietPlan) {
   if (!query || query.length < 2) return [];
   const q = query.toLowerCase();
-  return getFoodIndex()
+  return getFoodIndex(dietPlan)
     .filter((f) => f.name.toLowerCase().includes(q))
     .slice(0, 8);
 }
@@ -114,7 +128,7 @@ const mealLabels = {
 };
 
 export default function Diet() {
-  const { dietPlan, nutritionTargets, profile, logFood, unlogFood, getTodaysFoodLogs, getTodaysCalories, getTodaysProtein, plan, swapMeal, addPendingFoodLog, removePendingFoodLog, clearPendingFoodLogs } = useUserStore();
+  const { dietPlan, nutritionTargets, profile, logFood, unlogFood, getTodaysFoodLogs, getTodaysCalories, getTodaysProtein, plan, swapMeal, addPendingFoodLog, removePendingFoodLog, clearPendingFoodLogs, regenerateDiet } = useUserStore();
   const foodLogs = useUserStore((s) => s.foodLogs);
   const pendingFoodLogs = useUserStore((s) => s.pendingFoodLogs);
   const isPro = plan === 'pro';
@@ -237,7 +251,7 @@ export default function Diet() {
     const activeMeal = getActiveMeal(mealKey);
     const sel = getSelection(mealKey);
     const totalItems = activeMeal.items.length;
-    const foodMap = getFoodMap();
+    const foodMap = getFoodMap(dietPlan);
 
     let adjustedCalories = 0;
     let adjustedProtein = 0;
@@ -322,17 +336,31 @@ export default function Diet() {
             <span className="gradient-text-warm">Diet</span> <span className="text-text-primary">Plan</span>
           </h1>
           <p className="text-text-muted text-sm">
-            {profile?.dietType === 'veg' ? 'Vegetarian' : 'Non-Vegetarian'} · {dietPlan.calorieTier} cal tier
+            {profile?.dietType === 'veg' ? 'Vegetarian' : 'Non-Vegetarian'} · {dietPlan.targetCalories} cal target
           </p>
         </div>
-        <button
-          onClick={() => setShowHistory(!showHistory)}
-          className={`px-4 py-2 rounded-lg text-xs font-medium transition-all ${
-            showHistory ? 'bg-white text-black' : 'border border-white/[0.08] text-text-muted hover:text-text-secondary'
-          }`}
-        >
-          {showHistory ? 'Plan' : 'History'}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              // Clear cached food index so it rebuilds with new plan data
+              _foodIndex = null;
+              _foodMap = null;
+              regenerateDiet();
+            }}
+            className="px-3 py-2 rounded-lg text-xs font-medium border border-white/[0.08] text-text-muted hover:text-accent hover:border-accent/20 transition-all flex items-center gap-1.5"
+            title="Generate a new diet plan"
+          >
+            <RefreshCw size={12} /> Regenerate
+          </button>
+          <button
+            onClick={() => setShowHistory(!showHistory)}
+            className={`px-4 py-2 rounded-lg text-xs font-medium transition-all ${
+              showHistory ? 'bg-white text-black' : 'border border-white/[0.08] text-text-muted hover:text-text-secondary'
+            }`}
+          >
+            {showHistory ? 'Plan' : 'History'}
+          </button>
+        </div>
       </div>
 
       {/* History View */}
@@ -705,7 +733,7 @@ export default function Diet() {
                                 onChange={(e) => {
                                   const val = e.target.value;
                                   setCustomMeal((p) => ({ ...p, name: val }));
-                                  const results = searchFoods(val);
+                                  const results = searchFoods(val, dietPlan);
                                   setFoodSuggestions(results);
                                   if (results.length === 0 && val.length >= 2) {
                                     setManualEntry(true);
