@@ -4,6 +4,11 @@ import { bodyFemaleFront } from '../assets/bodyFemaleFront.js';
 import { bodyFemaleBack } from '../assets/bodyFemaleBack.js';
 export { BODY_OUTLINES } from './bodyOutlines.js';
 
+// Ensure each sub-path starts with absolute M so joining doesn't displace parts
+function toAbsoluteStart(d) {
+  return d.replace(/^m\s/, 'M ').replace(/^m(?=[-\d])/, 'M');
+}
+
 // Combine all path arrays (common, left, right) into a single d-string
 function flattenPaths(pathObj) {
   if (!pathObj) return '';
@@ -11,7 +16,7 @@ function flattenPaths(pathObj) {
     ...(pathObj.common || []),
     ...(pathObj.left || []),
     ...(pathObj.right || []),
-  ].join(' ');
+  ].map(toAbsoluteStart).join(' ');
 }
 
 // Slug → app muscle name mappings (interactive muscles only)

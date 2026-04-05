@@ -54,6 +54,13 @@ export default function Workout() {
   const [cardioLog, setCardioLog] = useState(() => activeWorkoutLog?.cardioLog || { duration: '', distance: '', speed: '' });
   const workoutLogs = useUserStore((s) => s.workoutLogs);
 
+  // Clamp activeDay when switching plans (e.g. 6-day default → 5-day custom)
+  useEffect(() => {
+    if (workoutPlan?.schedule && activeDay >= workoutPlan.schedule.length) {
+      setActiveDay(0);
+    }
+  }, [workoutPlan]);
+
   const today = new Date().toISOString().split('T')[0];
   const todaysLogs = workoutLogs.filter((l) => l.date === today);
   const hasLoggedToday = todaysLogs.length > 0;
