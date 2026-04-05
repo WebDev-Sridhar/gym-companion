@@ -13,7 +13,7 @@ const corsHeaders = {
 };
 
 const PLAN_AMOUNTS: Record<string, number> = {
-  monthly: 1000, // ₹149 in paise
+  monthly: 14900, // ₹149 in paise
   yearly: 99900, // ₹999 in paise
 };
 
@@ -101,7 +101,7 @@ serve(async (req) => {
       body: JSON.stringify({
         amount,
         currency: "INR",
-        receipt: `gym_${user.id.slice(0, 8)}_${Date.now()}`,
+        receipt: `og_${user.id.slice(0, 8)}_${Date.now()}`,
       }),
     });
 
