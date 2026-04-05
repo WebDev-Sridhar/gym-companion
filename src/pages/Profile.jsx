@@ -123,7 +123,7 @@ export default function Profile() {
         <div className="space-y-3">
           {TRANSFORMATION_LEVELS.map((tl) => {
             const isCompleted = tl.id <= currentLevel.id;
-            const isCurrent = tl.id === currentLevel.id + 1;
+            const isCurrent = tl.id === currentLevel.id;
             const progress = isCurrent ? getLevelProgress(tl.id, stats) : null;
 
             return (
