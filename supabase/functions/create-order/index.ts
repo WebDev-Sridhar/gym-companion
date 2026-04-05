@@ -13,7 +13,7 @@ const corsHeaders = {
 };
 
 const PLAN_AMOUNTS: Record<string, number> = {
-  monthly: 14900, // ₹149 in paise
+  monthly: 1000, // ₹149 in paise
   yearly: 99900, // ₹999 in paise
 };
 
