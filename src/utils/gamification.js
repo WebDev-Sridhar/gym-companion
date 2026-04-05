@@ -131,7 +131,7 @@ export function computeTransformationStats(workoutLogs, weightLogs, foodLogs, cu
 
 export const TRANSFORMATION_LEVELS = [
   {
-    id: 2,
+    id: 1,
     name: 'First Step',
     difficulty: 'Beginner',
     rewardMessage: "You showed up. That's more than most people ever do.",
@@ -140,7 +140,7 @@ export const TRANSFORMATION_LEVELS = [
     ],
   },
   {
-    id: 3,
+    id: 2,
     name: 'Building the Habit',
     difficulty: 'Beginner',
     rewardMessage: "Consistency beats intensity. You're proving it.",
@@ -150,7 +150,7 @@ export const TRANSFORMATION_LEVELS = [
     ],
   },
   {
-    id: 4,
+    id: 3,
     name: 'Tracking Matters',
     difficulty: 'Beginner',
     rewardMessage: "What gets measured gets managed. You're in control now.",
@@ -161,7 +161,7 @@ export const TRANSFORMATION_LEVELS = [
     ],
   },
   {
-    id: 5,
+    id: 4,
     name: 'One Week Strong',
     difficulty: 'Beginner',
     rewardMessage: 'One full week without excuses. Respect.',
@@ -171,7 +171,7 @@ export const TRANSFORMATION_LEVELS = [
     ],
   },
   {
-    id: 6,
+    id: 5,
     name: 'Getting Stronger',
     difficulty: 'Medium',
     rewardMessage: "The weights are getting heavier but you're not struggling. That's strength.",
@@ -181,7 +181,7 @@ export const TRANSFORMATION_LEVELS = [
     ],
   },
   {
-    id: 7,
+    id: 6,
     name: 'Nutrition Aware',
     difficulty: 'Medium',
     rewardMessage: "You finally understand — abs are made in the kitchen.",
@@ -192,7 +192,7 @@ export const TRANSFORMATION_LEVELS = [
     ],
   },
   {
-    id: 8,
+    id: 7,
     name: 'Two Weeks Unbreakable',
     difficulty: 'Medium',
     rewardMessage: 'Two weeks without breaking. Your discipline is becoming a weapon.',
@@ -203,7 +203,7 @@ export const TRANSFORMATION_LEVELS = [
     ],
   },
   {
-    id: 9,
+    id: 8,
     name: 'Body is Changing',
     difficulty: 'Medium',
     rewardMessage: 'Look closely — your body is not the same anymore.',
@@ -214,7 +214,7 @@ export const TRANSFORMATION_LEVELS = [
     ],
   },
   {
-    id: 10,
+    id: 9,
     name: 'Month Warrior',
     difficulty: 'High',
     rewardMessage: "30 days. Most people quit at 3. You're not most people.",
@@ -225,7 +225,7 @@ export const TRANSFORMATION_LEVELS = [
     ],
   },
   {
-    id: 11,
+    id: 10,
     name: 'Strength Milestone',
     difficulty: 'High',
     rewardMessage: 'Stronger than you were, smarter about food. This is real progress.',
@@ -236,7 +236,7 @@ export const TRANSFORMATION_LEVELS = [
     ],
   },
   {
-    id: 12,
+    id: 11,
     name: 'Complete Athlete',
     difficulty: 'High',
     rewardMessage: '100 workouts. You are no longer the person who started this journey.',
@@ -249,7 +249,7 @@ export const TRANSFORMATION_LEVELS = [
     ],
   },
   {
-    id: 13,
+    id: 12,
     name: 'Transformed',
     difficulty: 'Elite',
     rewardMessage: 'Go look at the mirror. This is your reward.',
@@ -302,7 +302,7 @@ export function isLevelCompleted(levelId, stats) {
  * @returns {object|null} Next level object, or null if at max
  */
 export function getNextLevel(currentLevelId) {
-  if (currentLevelId >= 13) return null;
+  if (currentLevelId >= 12) return null;
   return TRANSFORMATION_LEVELS.find((l) => l.id === currentLevelId + 1) || null;
 }
 
