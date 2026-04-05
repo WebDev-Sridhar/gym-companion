@@ -340,18 +340,20 @@ export default function Diet() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => {
-              // Clear cached food index so it rebuilds with new plan data
-              _foodIndex = null;
-              _foodMap = null;
-              regenerateDiet();
-            }}
-            className="px-3 py-2 rounded-lg text-xs font-medium border border-white/[0.08] text-text-muted hover:text-accent hover:border-accent/20 transition-all flex items-center gap-1.5"
-            title="Generate a new diet plan"
-          >
-            <RefreshCw size={12} /> Regenerate
-          </button>
+          {isPro && (
+            <button
+              onClick={() => {
+                // Clear cached food index so it rebuilds with new plan data
+                _foodIndex = null;
+                _foodMap = null;
+                regenerateDiet();
+              }}
+              className="px-3 py-2 rounded-lg text-xs font-medium border border-white/[0.08] text-text-muted hover:text-accent hover:border-accent/20 transition-all flex items-center gap-1.5"
+              title="Generate a new diet plan"
+            >
+              <RefreshCw size={12} /> Regenerate
+            </button>
+          )}
           <button
             onClick={() => setShowHistory(!showHistory)}
             className={`px-4 py-2 rounded-lg text-xs font-medium transition-all ${
