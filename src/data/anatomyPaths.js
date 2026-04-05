@@ -50,11 +50,13 @@ const DECORATIVE_SLUGS = new Set([
   'head', 'hair', 'neck', 'hands', 'feet', 'ankles', 'knees', 'adductors', 'abductors',
 ]);
 
-function buildMuscleData(bodyData, slugMap) {
+function buildMuscleData(bodyData, slugMap, skipSlugs) {
   const muscleMap = new Map(); // name → paths[]
   const decorativePaths = [];
 
   for (const part of bodyData) {
+    if (skipSlugs && skipSlugs.has(part.slug)) continue;
+
     const flat = flattenPaths(part.path);
     if (!flat) continue;
 
@@ -97,7 +99,7 @@ export const BACK_DECORATIVE_PATHS = maleBack.decorativePaths;
 // ─── FEMALE DATA ────────────────────────────────────────────────────
 
 const femaleFront = buildMuscleData(bodyFemaleFront, FRONT_SLUG_MAP);
-const femaleBack = buildMuscleData(bodyFemaleBack, BACK_SLUG_MAP);
+const femaleBack = buildMuscleData(bodyFemaleBack, BACK_SLUG_MAP, new Set(['neck']));
 
 export const FEMALE_FRONT_MUSCLES = femaleFront.muscles;
 export const FEMALE_BACK_MUSCLES = femaleBack.muscles;
