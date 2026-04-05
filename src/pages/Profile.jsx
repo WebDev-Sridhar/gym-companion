@@ -74,7 +74,7 @@ export default function Profile() {
             </span>
           )}
         </div>
-        <p className="text-accent text-sm font-medium">Level {currentLevel.id + 1} — {currentLevel.name}</p>
+        <p className="text-accent text-sm font-medium">Level {currentLevel.id} — {currentLevel.name}</p>
         {currentLevel.id > 0 && (
           <p className="text-xs text-text-muted italic mt-1">{currentLevel.rewardMessage}</p>
         )}
@@ -85,7 +85,7 @@ export default function Profile() {
         {[
           { icon: Dumbbell, value: totalWorkouts, label: 'Workouts' },
           { icon: Flame, value: currentStreak, label: 'Streak', accent: true },
-          { icon: TrendingUp, value: currentLevel.id + 1, label: 'Level' },
+          { icon: TrendingUp, value: currentLevel.id, label: 'Level' },
           { icon: Zap, value: xp, label: 'XP' },
         ].map((s) => (
           <div key={s.label} className="border border-white/[0.06] rounded-xl p-3 sm:p-4 text-center">

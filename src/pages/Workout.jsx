@@ -21,6 +21,7 @@ import {
   Timer,
   Zap,
   Wrench,
+  Sparkles,
 } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import ProLock from '../components/ui/ProLock';
@@ -704,7 +705,7 @@ export default function Workout() {
                               className="mt-4 flex items-center gap-3 p-4 rounded-xl border border-accent/20 bg-accent/[0.04] cursor-pointer hover:bg-accent/[0.08] transition-colors"
                             >
                               <div className="w-9 h-9 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center shrink-0">
-                                <Zap size={16} className="text-accent" />
+                                <Sparkles size={16} className="text-accent" />
                               </div>
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-bold text-text-primary">Upgrade to Pro</p>
