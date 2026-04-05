@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.bodyFemaleFront = void 0;
-exports.bodyFemaleFront = [
+export const bodyFemaleFront = [
     {
         slug: "neck",
         color: "#454545",

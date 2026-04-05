@@ -37,7 +37,7 @@ const desktopItems = [
   { path: '/explore', label: 'Explore', icon: Search },
   { path: '/knowledge', label: 'Learn', icon: BookOpen },
   { path: '/rewards', label: 'Rewards', icon: Gift },
-  { path: '/leaderboard', label: 'Leaderboard', icon: Trophy },
+  // { path: '/leaderboard', label: 'Leaderboard', icon: Trophy }, 
   { path: '/profile', label: 'Profile', icon: User },
 ];
 
@@ -179,7 +179,7 @@ export default function Navbar() {
                   <Gift size={18} />
                   Rewards
                 </Link>
-                <Link
+                {/* <Link
                   to="/leaderboard"
                   onClick={() => setIsOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
@@ -190,7 +190,7 @@ export default function Navbar() {
                 >
                   <Trophy size={18} />
                   Leaderboard
-                </Link>
+                </Link> */}
                 <Link
                   to="/faq"
                   onClick={() => setIsOpen(false)}

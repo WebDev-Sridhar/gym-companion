@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.bodyFront = void 0;
-exports.bodyFront = [
+export const bodyFront = [
     // Chest
     {
         slug: "chest",
