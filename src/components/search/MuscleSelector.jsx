@@ -13,6 +13,7 @@ import {
   BACK_LABELS,
   FEMALE_FRONT_LABELS,
   FEMALE_BACK_LABELS,
+  BODY_OUTLINES,
 } from '../../data/anatomyPaths';
 
 const DATA = {
@@ -95,6 +96,13 @@ export default function MuscleSelector({ selectedMuscle, onSelectMuscle }) {
         className="w-full max-w-[240px] h-auto"
         xmlns="http://www.w3.org/2000/svg"
       >
+        {/* Body outline silhouette (base layer) */}
+        <path
+          d={BODY_OUTLINES[gender][view]}
+          fill="none"
+          className="stroke-white/15 stroke-[2]"
+        />
+
         {/* Decorative body parts (non-interactive base layer) */}
         {decorative.map((d, i) => (
           <path

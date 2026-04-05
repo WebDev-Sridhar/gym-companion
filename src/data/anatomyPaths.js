@@ -2,6 +2,7 @@ import { bodyFront } from '../assets/bodyFront.js';
 import { bodyBack } from '../assets/bodyBack.js';
 import { bodyFemaleFront } from '../assets/bodyFemaleFront.js';
 import { bodyFemaleBack } from '../assets/bodyFemaleBack.js';
+export { BODY_OUTLINES } from './bodyOutlines.js';
 
 // Combine all path arrays (common, left, right) into a single d-string
 function flattenPaths(pathObj) {
