@@ -121,9 +121,9 @@ export default function Profile() {
           <Trophy size={16} /> Transformation Journey
         </h3>
         <div className="space-y-3">
-          {TRANSFORMATION_LEVELS.map((tl) => {
+          {TRANSFORMATION_LEVELS.map((tl, idx) => {
             const isCompleted = tl.id <= currentLevel.id;
-            const isCurrent = tl.id === currentLevel.id;
+            const isCurrent = tl.id === currentLevel.id + 1;
             const progress = isCurrent ? getLevelProgress(tl.id, stats) : null;
 
             return (
@@ -142,7 +142,7 @@ export default function Profile() {
                     <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
                       isCompleted ? 'bg-accent text-white' : isCurrent ? 'bg-white/[0.08] text-text-secondary' : 'bg-white/[0.04] text-text-muted'
                     }`}>
-                      {isCompleted ? <Check size={12} /> : tl.id}
+                      {isCompleted ? <Check size={12} /> : idx + 1}
                     </div>
                     <span className={`text-sm font-semibold ${isCompleted ? 'text-accent' : isCurrent ? 'text-text-primary' : 'text-text-muted'}`}>
                       {tl.name}
