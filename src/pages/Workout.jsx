@@ -54,13 +54,6 @@ export default function Workout() {
   const [cardioLog, setCardioLog] = useState(() => activeWorkoutLog?.cardioLog || { duration: '', distance: '', speed: '' });
   const workoutLogs = useUserStore((s) => s.workoutLogs);
 
-  // Clamp activeDay when switching plans (e.g. 6-day default → 5-day custom)
-  useEffect(() => {
-    if (workoutPlan?.schedule && activeDay >= workoutPlan.schedule.length) {
-      setActiveDay(0);
-    }
-  }, [workoutPlan]);
-
   const today = new Date().toISOString().split('T')[0];
   const todaysLogs = workoutLogs.filter((l) => l.date === today);
   const hasLoggedToday = todaysLogs.length > 0;
@@ -79,6 +72,13 @@ export default function Workout() {
   }
 
   const schedule = workoutPlan.schedule;
+
+  // Clamp activeDay immediately if out of bounds (e.g. 6-day default → 5-day custom)
+  if (activeDay >= schedule.length) {
+    setActiveDay(0);
+    return null; // re-render with clamped value
+  }
+
   const currentDay = schedule[activeDay];
 
   // Resolve exercise swaps (persistent — no date key)
