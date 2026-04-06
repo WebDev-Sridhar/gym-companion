@@ -13,8 +13,8 @@ const corsHeaders = {
 };
 
 const PLAN_AMOUNTS: Record<string, number> = {
-  monthly: 14900, // ₹149 in paise
-  yearly: 99900, // ₹999 in paise
+  monthly: 9900, // ₹99 in paise
+  yearly: 79900, // ₹799 in paise
 };
 
 
@@ -67,7 +67,7 @@ serve(async (req) => {
       });
     }
 
-    // Check referral discount eligibility (₹30 off first subscription)
+    // Check referral discount eligibility (₹20 off first subscription)
     let discount = 0;
     const { data: profile } = await supabase
       .from("profiles")
@@ -85,7 +85,7 @@ serve(async (req) => {
         .limit(1);
 
       if (!prevSubs || prevSubs.length === 0) {
-        discount = 3000; // ₹30 in paise
+        discount = 2000; // ₹20 in paise
       }
     }
 

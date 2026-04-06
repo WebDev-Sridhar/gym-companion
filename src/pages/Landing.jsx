@@ -267,7 +267,7 @@ export default function Landing() {
                 {[
                   { label: 'Personal Trainer', price: '₹5,000+/mo', crossed: true },
                   { label: 'Online Course', price: '₹8,000+', crossed: true },
-                  { label: 'OwnGainz Pro', price: '₹83/mo', highlight: true },
+                  { label: 'OwnGainz Pro', price: '₹67/mo', highlight: true },
                 ].map((item) => (
                   <div key={item.label} className={`px-5 py-3 rounded-xl border ${item.highlight ? 'border-accent/30 bg-accent/5' : 'border-white/[0.06]'}`}>
                     <span className="text-text-muted text-xs block">{item.label}</span>
@@ -456,7 +456,7 @@ export default function Landing() {
               <h3 className="text-lg font-bold text-text-primary mb-1">Pro Monthly</h3>
               <p className="text-text-muted text-xs mb-6">Unlock your full potential</p>
               <div className="mb-2">
-                <span className="text-4xl font-black text-text-primary">₹149</span>
+                <span className="text-4xl font-black text-text-primary">₹99</span>
                 <span className="text-text-muted text-sm ml-1">/ month</span>
               </div>
               <p className="text-xs text-text-muted font-medium mb-6">Build muscle at the cost of a haircut</p>
@@ -466,6 +466,7 @@ export default function Landing() {
                   'Save & track workout logs',
                   'Custom workout builder',
                   'Exercise swap alternatives',
+                  'Unlimited plan generation',
                   'Meal logging, swaps & supplements',
                   'Smart Coach AI insights',
                   'Progress charts & analytics',
@@ -489,18 +490,18 @@ export default function Landing() {
               <h3 className="text-lg font-bold text-text-primary mb-1">Pro Yearly</h3>
               <p className="text-text-muted text-xs mb-6">Maximum savings</p>
               <div className="mb-1">
-                <span className="text-4xl font-black text-accent">₹999</span>
+                <span className="text-4xl font-black text-accent">₹799</span>
                 <span className="text-text-muted text-sm ml-1">/ year</span>
               </div>
               <p className="text-xs text-text-muted mb-1">
-                Just <span className="text-accent font-bold">₹83/month</span> — save 44%
+                Just <span className="text-accent font-bold">₹67/month</span> — save ₹389
               </p>
               <p className="text-xs text-accent font-medium mb-6">Transform your body at a lower cost than a movie ticket</p>
               <ul className="space-y-2.5 mb-4">
                 <li className="text-[11px] text-text-muted font-medium uppercase tracking-wider mb-1">Everything in Pro, plus:</li>
                 {[
                   'All Pro features included',
-                  '5 months free vs monthly',
+                  '4 months free vs monthly',
                   'Lock in the lowest price',
                   'Priority support',
                 ].map((f) => (

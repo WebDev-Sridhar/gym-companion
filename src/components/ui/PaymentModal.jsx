@@ -89,7 +89,7 @@ export function PaymentModalContainer() {
                   }`}
                 >
                   <div className="text-xs text-text-muted mb-1">Monthly</div>
-                  <div className="text-xl font-black text-text-primary">₹149</div>
+                  <div className="text-xl font-black text-text-primary">₹99</div>
                   <div className="text-[10px] text-text-muted">/month</div>
                   {selectedPlan === 'monthly' && (
                     <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-accent flex items-center justify-center">
@@ -108,11 +108,11 @@ export function PaymentModalContainer() {
                   }`}
                 >
                   <div className="absolute -top-2 right-2 px-2 py-0.5 rounded-full bg-accent/15 border border-accent/25 text-accent text-[9px] font-bold uppercase">
-                    Save 44%
+                    Save ₹389
                   </div>
                   <div className="text-xs text-text-muted mb-1">Yearly</div>
-                  <div className="text-xl font-black text-accent">₹999</div>
-                  <div className="text-[10px] text-text-muted">₹83/month</div>
+                  <div className="text-xl font-black text-accent">₹799</div>
+                  <div className="text-[10px] text-text-muted">₹67/month</div>
                   {selectedPlan === 'yearly' && (
                     <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-accent flex items-center justify-center">
                       <Check size={12} className="text-dark-bg" />
@@ -161,7 +161,7 @@ export function PaymentModalContainer() {
                 ) : (
                   <>
                     <Zap size={16} />
-                    {selectedPlan === 'monthly' ? 'Pay ₹149/month' : 'Pay ₹999/year'}
+                    {selectedPlan === 'monthly' ? 'Pay ₹99/month' : 'Pay ₹799/year'}
                   </>
                 )}
               </button>

@@ -206,7 +206,7 @@ const faqData = [
       },
       {
         q: 'How do I upgrade to Pro?',
-        a: 'Tap the "Upgrade" banner on your Dashboard or look for the lock icon on Pro features. Pro is available as a monthly (₹149/month) or yearly (₹999/year) subscription via Razorpay. You can cancel anytime from your Profile page.',
+        a: 'Tap the "Upgrade" banner on your Dashboard or look for the lock icon on Pro features. Pro is available as a monthly (₹99/month) or yearly (₹799/year) subscription via Razorpay. You can cancel anytime from your Profile page.',
       },
       {
         q: 'What is the leaderboard?',
@@ -214,7 +214,7 @@ const faqData = [
       },
       {
         q: 'How do referral rewards work?',
-        a: 'Share your unique referral link from the Rewards page. When a friend signs up, you earn 10 points. When they subscribe to Pro, you earn 100 points and they get ₹30 off. Accumulate 500 points to redeem 1 month of free Pro. Invite 5 friends who subscribe and you get free Pro!',
+        a: 'Share your unique referral link from the Rewards page. When a friend signs up, you earn 10 points. When they subscribe to Pro, you earn 100 points and they get ₹20 off. Accumulate 500 points to redeem 1 month of free Pro. Invite 5 friends who subscribe and you get free Pro!',
       },
     ],
   },

@@ -42,7 +42,7 @@ export default function useReferral() {
     if (!referralLink) return;
     const shareData = {
       title: 'Join OwnGainz',
-      text: 'Get your personalized workout & diet plan! Use my referral link and get \u20b930 off PRO.',
+      text: 'Get your personalized workout & diet plan! Use my referral link and get \u20b920 off PRO.',
       url: referralLink,
     };
 

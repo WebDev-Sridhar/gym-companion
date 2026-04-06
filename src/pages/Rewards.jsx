@@ -97,7 +97,7 @@ export default function Rewards() {
             <Share2 size={16} className="text-accent" />
           </button>
         </div>
-        <p className="text-xs text-accent/70 mt-2.5">Your friend gets ₹30 off their first PRO subscription</p>
+        <p className="text-xs text-accent/70 mt-2.5">Your friend gets ₹20 off their first PRO subscription</p>
       </motion.div>
 
       {/* Progress to 5 Referrals */}
@@ -136,7 +136,7 @@ export default function Rewards() {
           {[
             { step: '1', title: 'Share your link', desc: 'Send your referral link to friends' },
             { step: '2', title: 'Friend signs up', desc: 'You earn +10 points' },
-            { step: '3', title: 'Friend subscribes', desc: 'You earn +100 points, they get ₹30 off' },
+            { step: '3', title: 'Friend subscribes', desc: 'You earn +100 points, they get ₹20 off' },
             { step: '4', title: 'Redeem points', desc: '500 points = 1 Month PRO' },
           ].map((item) => (
             <div key={item.step} className="flex items-start gap-3">
