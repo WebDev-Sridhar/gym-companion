@@ -14,6 +14,7 @@ export default function useReferral() {
   const rewardPoints = useUserStore((s) => s.rewardPoints);
   const successfulReferrals = useUserStore((s) => s.successfulReferrals);
   const updateReferralData = useUserStore((s) => s.updateReferralData);
+  const isProUser = useUserStore((s) => s.isProUser);
 
   const referralLink = referralCode
     ? `https://owngainz.vercel.app/auth?ref=${referralCode}`
@@ -67,7 +68,7 @@ export default function useReferral() {
   }, [referralLink]);
 
   const redeemPoints = useCallback(async () => {
-    if (rewardPoints < 500 || redeeming) return;
+    if (rewardPoints < 500 || redeeming || isProUser()) return;
     setRedeeming(true);
     try {
       const { data, error } = await redeemRewardPoints();
@@ -86,7 +87,7 @@ export default function useReferral() {
     }
   }, [rewardPoints, redeeming, updateReferralData]);
 
-  const canRedeem = rewardPoints >= 500;
+  const canRedeem = rewardPoints >= 500 && !isProUser();
   const progressTo5 = Math.min(successfulReferrals, 5);
 
   return {

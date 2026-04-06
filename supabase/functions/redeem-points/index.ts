@@ -37,6 +37,23 @@ serve(async (req) => {
       });
     }
 
+    // Block redemption if user already has an active, non-expired subscription
+    const { data: activeSub } = await supabase
+      .from('subscriptions')
+      .select('id, expires_at')
+      .eq('user_id', user.id)
+      .eq('status', 'active')
+      .gte('expires_at', new Date().toISOString())
+      .limit(1)
+      .maybeSingle();
+
+    if (activeSub) {
+      return new Response(JSON.stringify({ error: 'You already have an active PRO subscription' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     // Atomically deduct points — CAS guard prevents race conditions
     const { data: deductResult } = await supabase.rpc('deduct_reward_points', {
       p_user_id: user.id,
