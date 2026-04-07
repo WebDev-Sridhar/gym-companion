@@ -22,8 +22,8 @@ const faqData = [
     color: 'text-accent',
     questions: [
       {
-        q: 'What is OwnGainz?',
-        a: 'OwnGainz is your personal gym companion app. It generates a customized workout plan, a calorie-matched South Indian diet plan, tracks your progress, and keeps you motivated with XP, streaks, and transformation levels — all tailored to your body and goals.',
+        q: 'What is OwnGains?',
+        a: 'OwnGains is your personal gym companion app. It generates a customized workout plan, a calorie-matched South Indian diet plan, tracks your progress, and keeps you motivated with XP, streaks, and transformation levels — all tailored to your body and goals.',
       },
       {
         q: 'How do I create an account?',

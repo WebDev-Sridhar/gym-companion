@@ -13,7 +13,7 @@ export default function Auth() {
   // Capture referral code from URL before Google OAuth redirect navigates away
   useEffect(() => {
     const ref = searchParams.get('ref');
-    if (ref) localStorage.setItem('owngainz-ref', ref);
+    if (ref) localStorage.setItem('OwnGains-ref', ref);
   }, [searchParams]);
 
   const handleGoogleSignIn = () => {
@@ -45,10 +45,10 @@ export default function Auth() {
             transition={{ type: 'spring', stiffness: 200, delay: 0.1 }}
             className="inline-flex items-center justify-center w-20 h-14 rounded-xl overflow-hidden mb-0.5"
           >
-            <img src="/logo.png" alt="OwnGainz" className="w-full h-full object-cover" />
+            <img src="/logo.png" alt="OwnGains" className="w-full h-full object-cover" />
           </motion.div>
           <h1 className="text-2xl font-bold text-text-primary tracking-tight">
-            Welcome to OwnGainz
+            Welcome to OwnGains
           </h1>
           <p className="text-text-muted text-sm mt-1">
             Sign in to start your fitness journey

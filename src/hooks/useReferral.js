@@ -17,7 +17,7 @@ export default function useReferral() {
   const isProUser = useUserStore((s) => s.isProUser);
 
   const referralLink = referralCode
-    ? `https://owngainz.vercel.app/auth?ref=${referralCode}`
+    ? `https://OwnGains.vercel.app/auth?ref=${referralCode}`
     : null;
 
   const loadReferrals = useCallback(async () => {
@@ -42,7 +42,7 @@ export default function useReferral() {
   const shareReferral = useCallback(async () => {
     if (!referralLink) return;
     const shareData = {
-      title: 'Join OwnGainz',
+      title: 'Join OwnGains',
       text: 'Get your personalized workout & diet plan! Use my referral link and get \u20b920 off PRO.',
       url: referralLink,
     };

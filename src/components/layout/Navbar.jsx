@@ -67,9 +67,9 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-14 sm:h-16">
             {/* Logo */}
             <Link to="/dashboard" className="flex items-center group">
-              <img src="/logo.png" alt="OwnGainz" className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover group-hover:scale-105 transition-transform" />
+              <img src="/logo.png" alt="OwnGains" className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover group-hover:scale-105 transition-transform" />
               <span className="text-base font-bold hidden sm:block tracking-tight">
-                OwnGainz
+                OwnGains
               </span>
             </Link>
 

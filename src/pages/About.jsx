@@ -7,7 +7,7 @@ const values = [
   {
     icon: Dumbbell,
     title: 'Fitness Made Simple',
-    description: 'No more confusing workout splits or generic programs. OwnGainz generates a personalized plan with free video tutorials for every exercise — so you know exactly what to do every time you walk into the gym.',
+    description: 'No more confusing workout splits or generic programs. OwnGains generates a personalized plan with free video tutorials for every exercise — so you know exactly what to do every time you walk into the gym.',
   },
   {
     icon: Target,
@@ -17,7 +17,7 @@ const values = [
   {
     icon: Sparkles,
     title: 'Compete & Stay Motivated',
-    description: 'From South Indian diet plans matched to your calorie needs, to a gamification system with 12 levels, 8 medals, weekly leaderboards, and referral rewards — OwnGainz keeps you coming back.',
+    description: 'From South Indian diet plans matched to your calorie needs, to a gamification system with 12 levels, 8 medals, weekly leaderboards, and referral rewards — OwnGains keeps you coming back.',
   },
 ];
 
@@ -34,15 +34,15 @@ export default function About() {
           <ArrowLeft size={16} /> Back
         </Link>
 
-        <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-2">About OwnGainz</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-2">About OwnGains</h1>
         <p className="text-text-muted text-sm mb-10">Your personal fitness companion</p>
 
         <div className="border border-white/[0.06] rounded-2xl p-8 sm:p-10 bg-white/[0.02] mb-10">
           <p className="text-text-secondary leading-relaxed text-lg">
-            OwnGainz was built with a single mission: make fitness accessible, personal, and rewarding for everyone — especially beginners who don't know where to start.
+            OwnGains was built with a single mission: make fitness accessible, personal, and rewarding for everyone — especially beginners who don't know where to start.
           </p>
           <p className="text-text-secondary leading-relaxed mt-4">
-            We believe that the biggest barrier to fitness isn't motivation — it's confusion. What exercises should I do? How much should I eat? Am I making progress? OwnGainz answers all of these questions with smart, personalized plans and intuitive tracking.
+            We believe that the biggest barrier to fitness isn't motivation — it's confusion. What exercises should I do? How much should I eat? Am I making progress? OwnGains answers all of these questions with smart, personalized plans and intuitive tracking.
           </p>
         </div>
 

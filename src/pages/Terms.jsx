@@ -25,21 +25,21 @@ export default function Terms() {
           <section>
             <h2 className="text-xl font-semibold text-text-primary mt-6 mb-3">1. Eligibility</h2>
             <p className="text-text-secondary leading-relaxed">
-              You must be at least 13 years of age to use OwnGainz. By creating an account, you confirm that you meet this age requirement. Users under 18 should have parental or guardian consent before using the application.
+              You must be at least 13 years of age to use OwnGains. By creating an account, you confirm that you meet this age requirement. Users under 18 should have parental or guardian consent before using the application.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-semibold text-text-primary mt-6 mb-3">2. Account Responsibility</h2>
             <p className="text-text-secondary leading-relaxed">
-              You are responsible for maintaining the security of your account and all activities that occur under it. OwnGainz uses Google OAuth for authentication — ensure your Google account is secure. You agree to provide accurate information during onboarding.
+              You are responsible for maintaining the security of your account and all activities that occur under it. OwnGains uses Google OAuth for authentication — ensure your Google account is secure. You agree to provide accurate information during onboarding.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-semibold text-text-primary mt-6 mb-3">3. Subscriptions & Payments</h2>
             <p className="text-text-secondary leading-relaxed">
-              OwnGainz offers a free tier and a PRO subscription. PRO subscriptions are billed through Razorpay on a monthly or yearly basis. By subscribing, you authorize recurring charges until you cancel. Prices are displayed in INR and may be subject to applicable taxes.
+              OwnGains offers a free tier and a PRO subscription. PRO subscriptions are billed through Razorpay on a monthly or yearly basis. By subscribing, you authorize recurring charges until you cancel. Prices are displayed in INR and may be subject to applicable taxes.
             </p>
           </section>
 
@@ -53,7 +53,7 @@ export default function Terms() {
           <section>
             <h2 className="text-xl font-semibold text-text-primary mt-6 mb-3">5. Limitation of Liability</h2>
             <p className="text-text-secondary leading-relaxed">
-              OwnGainz is provided "as is" without warranties of any kind. We are not liable for any injuries, health issues, or damages arising from the use of workout plans, diet recommendations, or any other content provided through the application. Always consult a healthcare professional before starting any fitness program.
+              OwnGains is provided "as is" without warranties of any kind. We are not liable for any injuries, health issues, or damages arising from the use of workout plans, diet recommendations, or any other content provided through the application. Always consult a healthcare professional before starting any fitness program.
             </p>
           </section>
 
@@ -67,7 +67,7 @@ export default function Terms() {
           <section>
             <h2 className="text-xl font-semibold text-text-primary mt-6 mb-3">7. Changes to Terms</h2>
             <p className="text-text-secondary leading-relaxed">
-              We may modify these terms at any time. Continued use of OwnGainz after changes constitutes acceptance. We recommend reviewing these terms periodically.
+              We may modify these terms at any time. Continued use of OwnGains after changes constitutes acceptance. We recommend reviewing these terms periodically.
             </p>
           </section>
         </div>

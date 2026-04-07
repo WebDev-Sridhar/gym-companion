@@ -280,12 +280,12 @@ const useUserStore = create(
           ]);
 
           // Process pending referral (if user signed up via referral link)
-          const refCode = localStorage.getItem('owngainz-ref');
+          const refCode = localStorage.getItem('OwnGains-ref');
           if (refCode) {
             supabase.functions.invoke('process-referral-signup', {
               body: { referralCode: refCode },
             }).then(() => {
-              localStorage.removeItem('owngainz-ref');
+              localStorage.removeItem('OwnGains-ref');
             }).catch((e) => {
               console.warn('Referral processing failed:', e.message);
             });

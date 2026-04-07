@@ -68,7 +68,7 @@ function OnboardingRoute({ children }) {
       <div className="min-h-screen bg-black flex items-center justify-center px-5">
         <div className="max-w-sm w-full text-center">
           <div className="w-14 h-14 rounded-xl overflow-hidden mx-auto mb-6">
-            <img src="/logo.png" alt="OwnGainz" className="w-full h-full object-cover" />
+            <img src="/logo.png" alt="OwnGains" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-2xl font-bold text-text-primary mb-2">PRO Feature</h1>
           <p className="text-text-muted text-sm mb-6 leading-relaxed">

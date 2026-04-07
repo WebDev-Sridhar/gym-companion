@@ -104,8 +104,8 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
           <div className="flex items-center justify-between h-14 sm:h-16">
             <Link to="/" className="flex items-center ">
-              <img src="/logo.png" alt="OwnGainz" className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover" />
-              <span className="text-base font-bold tracking-tight text-text-primary">OwnGainz</span>
+              <img src="/logo.png" alt="OwnGains" className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover" />
+              <span className="text-base font-bold tracking-tight text-text-primary">OwnGains</span>
             </Link>
             <Link
               to="/auth"
@@ -242,7 +242,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Why OwnGainz */}
+      {/* Why OwnGains */}
       <section className="py-24 sm:py-32 px-5 sm:px-8 relative">
         <div className="max-w-4xl mx-auto">
           <motion.div
@@ -261,13 +261,13 @@ export default function Landing() {
                 Personal trainers charge <span className="text-text-primary font-bold">₹3,000–₹10,000/month</span>. Online fitness courses cost <span className="text-text-primary font-bold">₹5,000–₹15,000</span>. Most beginners can't afford either.
               </p>
               <p className="text-lg sm:text-xl text-text-secondary leading-relaxed mb-8">
-                <span className="text-accent font-black">OwnGainz is your solution.</span> The same personalized workout plans, Indian diet plans, and progress tracking — at a fraction of the cost. Or completely free.
+                <span className="text-accent font-black">OwnGains is your solution.</span> The same personalized workout plans, Indian diet plans, and progress tracking — at a fraction of the cost. Or completely free.
               </p>
               <div className="flex flex-wrap justify-center gap-4 text-sm">
                 {[
                   { label: 'Personal Trainer', price: '₹5,000+/mo', crossed: true },
                   { label: 'Online Course', price: '₹8,000+', crossed: true },
-                  { label: 'OwnGainz Pro', price: '₹67/mo', highlight: true },
+                  { label: 'OwnGains Pro', price: '₹67/mo', highlight: true },
                 ].map((item) => (
                   <div key={item.label} className={`px-5 py-3 rounded-xl border ${item.highlight ? 'border-accent/30 bg-accent/5' : 'border-white/[0.06]'}`}>
                     <span className="text-text-muted text-xs block">{item.label}</span>

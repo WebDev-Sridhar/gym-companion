@@ -1,7 +1,7 @@
 // Shared security utilities for all edge functions
 
 const ALLOWED_ORIGINS = [
-  'https://owngainz.vercel.app',
+  'https://OwnGains.vercel.app',
   'http://localhost:5173',
 ];
 

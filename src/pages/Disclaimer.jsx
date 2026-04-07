@@ -22,21 +22,21 @@ export default function Disclaimer() {
         <div className="space-y-8">
           <div className="border border-neon-green/20 bg-neon-green/[0.03] rounded-xl p-5">
             <p className="text-text-secondary leading-relaxed font-medium">
-              Please read this disclaimer carefully before using OwnGainz. By using the application, you acknowledge and agree to the following.
+              Please read this disclaimer carefully before using OwnGains. By using the application, you acknowledge and agree to the following.
             </p>
           </div>
 
           <section>
             <h2 className="text-xl font-semibold text-text-primary mt-6 mb-3">1. Not Medical Advice</h2>
             <p className="text-text-secondary leading-relaxed">
-              OwnGainz provides fitness and nutrition information for educational and general wellness purposes only. The workout plans, diet plans, and any other content provided through the application are not intended as medical advice, diagnosis, or treatment. This app is not a substitute for professional medical advice.
+              OwnGains provides fitness and nutrition information for educational and general wellness purposes only. The workout plans, diet plans, and any other content provided through the application are not intended as medical advice, diagnosis, or treatment. This app is not a substitute for professional medical advice.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-semibold text-text-primary mt-6 mb-3">2. Use at Your Own Risk</h2>
             <p className="text-text-secondary leading-relaxed">
-              All exercises, diet plans, and fitness recommendations are performed at your own risk. OwnGainz, its creators, and contributors are not responsible for any injuries, health complications, or adverse effects that may result from following the programs, exercises, or nutritional guidance provided.
+              All exercises, diet plans, and fitness recommendations are performed at your own risk. OwnGains, its creators, and contributors are not responsible for any injuries, health complications, or adverse effects that may result from following the programs, exercises, or nutritional guidance provided.
             </p>
           </section>
 
@@ -50,14 +50,14 @@ export default function Disclaimer() {
           <section>
             <h2 className="text-xl font-semibold text-text-primary mt-6 mb-3">4. No Guaranteed Results</h2>
             <p className="text-text-secondary leading-relaxed">
-              Individual results vary based on numerous factors including genetics, effort, consistency, diet, and overall health. OwnGainz does not guarantee any specific results from using the application. Progress depends on your individual commitment and circumstances.
+              Individual results vary based on numerous factors including genetics, effort, consistency, diet, and overall health. OwnGains does not guarantee any specific results from using the application. Progress depends on your individual commitment and circumstances.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-semibold text-text-primary mt-6 mb-3">5. Third-Party Services</h2>
             <p className="text-text-secondary leading-relaxed">
-              OwnGainz integrates with third-party services (Google, Razorpay, Supabase) and is not responsible for the practices, content, or availability of these services. Use of third-party services is governed by their respective terms and policies.
+              OwnGains integrates with third-party services (Google, Razorpay, Supabase) and is not responsible for the practices, content, or availability of these services. Use of third-party services is governed by their respective terms and policies.
             </p>
           </section>
         </div>

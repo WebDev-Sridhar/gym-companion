@@ -23,7 +23,7 @@ export default function RefundPolicy() {
           <section>
             <h2 className="text-xl font-semibold text-text-primary mt-6 mb-3">1. Digital Product</h2>
             <p className="text-text-secondary leading-relaxed">
-              OwnGainz PRO is a digital subscription service. Due to the nature of digital products, all sales are generally final. Once your subscription is activated and you have access to PRO features, a refund is not automatically provided.
+              OwnGains PRO is a digital subscription service. Due to the nature of digital products, all sales are generally final. Once your subscription is activated and you have access to PRO features, a refund is not automatically provided.
             </p>
           </section>
 
@@ -59,8 +59,8 @@ export default function RefundPolicy() {
             <h2 className="text-xl font-semibold text-text-primary mt-6 mb-3">4. How to Request a Refund</h2>
             <p className="text-text-secondary leading-relaxed">
               To request a refund under the exceptions listed above, contact us at{' '}
-              <a href="mailto:support.owngainz@gamil.com" className="text-accent hover:underline underline-offset-2">
-                support.owngainz@gamil.com
+              <a href="mailto:owngains.support@gmail.com" className="text-accent hover:underline underline-offset-2">
+                owngains.support@gmail.com
               </a>{' '}
               with your account email and a description of the issue. We aim to respond within 3-5 business days.
             </p>

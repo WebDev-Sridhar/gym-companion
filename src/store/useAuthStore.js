@@ -28,11 +28,11 @@ const useAuthStore = create((set, get) => ({
         set({ session, user: session.user });
         // Always hydrate from Supabase on boot to ensure cross-device sync.
         // Use sessionStorage flag to avoid redundant hydration within the same tab session.
-        const alreadyHydratedThisSession = sessionStorage.getItem('owngainz-hydrated');
+        const alreadyHydratedThisSession = sessionStorage.getItem('OwnGains-hydrated');
         if (!alreadyHydratedThisSession) {
           try {
             await get().hydrateProfile(session.user.id);
-            sessionStorage.setItem('owngainz-hydrated', 'true');
+            sessionStorage.setItem('OwnGains-hydrated', 'true');
           } catch (e) {
             console.warn('Initial hydration failed:', e.message);
           }
@@ -50,7 +50,7 @@ const useAuthStore = create((set, get) => ({
             set({ session, user: session.user, loading: true });
             try {
               await get().hydrateProfile(session.user.id);
-              sessionStorage.setItem('owngainz-hydrated', 'true');
+              sessionStorage.setItem('OwnGains-hydrated', 'true');
             } catch (e) {
               console.warn('Auth change hydration failed:', e.message);
             }
@@ -155,7 +155,7 @@ const useAuthStore = create((set, get) => ({
       // resetAll() is reserved for the explicit "Reset All Data" action in Profile.
       const userStore = useUserStore.getState();
       userStore.clearLocalState();
-      sessionStorage.removeItem('owngainz-hydrated');
+      sessionStorage.removeItem('OwnGains-hydrated');
       set({
         session: null,
         user: null,
