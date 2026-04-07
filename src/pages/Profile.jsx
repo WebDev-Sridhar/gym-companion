@@ -335,7 +335,7 @@ export default function Profile() {
             <div className="text-sm font-medium text-text-primary mt-0.5">{user.email}</div>
           </div>
         )}
-        <div className="space-y-2 gap-2">
+        <div className="space-y-2 gap-2.5">
           <button onClick={() => setShowSignOutModal(true)} className="px-5 py-3 rounded-lg text-sm font-medium text-text-muted border border-white/[0.06] hover:border-white/[0.12] hover:text-text-secondary transition-all inline-flex items-center gap-2">
             <LogOut size={14} /> Sign Out
           </button>
