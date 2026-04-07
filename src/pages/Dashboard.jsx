@@ -128,9 +128,9 @@ export default function Dashboard() {
         transition={{ delay: 0.15 }}
         className="mb-10 sm:mb-14 border border-white/[0.08] rounded-xl p-5 sm:p-6 bg-white/[0.02]"
       >
-        <p className="text-lg sm:text-xl font-black text-text-primary leading-snug tracking-tight">
+        <h3 className="sm:text-xl font-black text-text-primary leading-snug tracking-tight">
           Diet & Sleep are <span className="gradient-text">more important</span> than workouts.
-        </p>
+        </h3>
         <p className="text-sm text-text-muted mt-2 leading-relaxed">
           Without proper nutrition and 7-9 hours of sleep, your workouts won't deliver results. Eat right, sleep well, then train hard.
         </p>
