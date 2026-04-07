@@ -48,8 +48,19 @@ export async function verifyPayment({
   razorpay_payment_id,
   razorpay_signature,
 }) {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session?.access_token) {
+    throw new Error("Not authenticated. Please log in again.");
+  }
+
   const { data, error } = await supabase.functions.invoke("verify-payment", {
     body: { razorpay_order_id, razorpay_payment_id, razorpay_signature },
+    headers: {
+      Authorization: `Bearer ${session.access_token}`,
+    },
   });
 
   if (error) throw new Error(error.message || "Payment verification failed");

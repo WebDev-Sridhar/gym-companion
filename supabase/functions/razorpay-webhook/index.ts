@@ -1,5 +1,6 @@
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { timingSafeEqual } from '../_shared/security.ts';
 
 const RAZORPAY_WEBHOOK_SECRET = Deno.env.get('RAZORPAY_WEBHOOK_SECRET')!;
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
@@ -18,7 +19,8 @@ async function verifyWebhookSignature(body: string, signature: string): Promise<
   const expected = Array.from(new Uint8Array(signatureBuffer))
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('');
-  return expected === signature;
+  // Constant-time comparison to prevent timing attacks
+  return timingSafeEqual(expected, signature);
 }
 
 serve(async (req) => {
@@ -27,6 +29,12 @@ serve(async (req) => {
   }
 
   try {
+    // Reject oversized payloads (Razorpay webhooks are typically <5KB)
+    const contentLength = parseInt(req.headers.get('Content-Length') || '0', 10);
+    if (contentLength > 50_000) {
+      return new Response('Payload too large', { status: 413 });
+    }
+
     const signature = req.headers.get('X-Razorpay-Signature');
     if (!signature) {
       return new Response('Missing signature', { status: 400 });

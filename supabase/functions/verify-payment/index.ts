@@ -1,14 +1,10 @@
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { getCorsHeaders, timingSafeEqual, safeParseJson } from '../_shared/security.ts';
 
 const RAZORPAY_KEY_SECRET = Deno.env.get('RAZORPAY_KEY_SECRET')!;
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
 
 async function verifySignature(orderId: string, paymentId: string, signature: string): Promise<boolean> {
   const encoder = new TextEncoder();
@@ -24,12 +20,15 @@ async function verifySignature(orderId: string, paymentId: string, signature: st
   const expectedSignature = Array.from(new Uint8Array(signatureBuffer))
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('');
-  return expectedSignature === signature;
+  // Constant-time comparison to prevent timing attacks
+  return timingSafeEqual(expectedSignature, signature);
 }
 
 serve(async (req) => {
+  const cors = getCorsHeaders(req);
+
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return new Response('ok', { headers: cors });
   }
 
   try {
@@ -38,7 +37,7 @@ serve(async (req) => {
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'Missing authorization' }), {
         status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...cors, 'Content-Type': 'application/json' },
       });
     }
 
@@ -49,11 +48,46 @@ serve(async (req) => {
     if (authError || !user) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...cors, 'Content-Type': 'application/json' },
       });
     }
 
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = await req.json();
+    // Safe JSON parsing with size limit
+    const { data: body, error: parseError } = await safeParseJson(req);
+    if (parseError) {
+      return new Response(JSON.stringify({ error: parseError }), {
+        status: 400,
+        headers: { ...cors, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = body;
+
+    // Validate Razorpay field formats
+    if (
+      typeof razorpay_order_id !== 'string' || !/^order_\w{14,}$/.test(razorpay_order_id) ||
+      typeof razorpay_payment_id !== 'string' || !/^pay_\w{14,}$/.test(razorpay_payment_id) ||
+      typeof razorpay_signature !== 'string' || !/^[a-f0-9]{64}$/.test(razorpay_signature)
+    ) {
+      return new Response(JSON.stringify({ error: 'Invalid payment parameters' }), {
+        status: 400,
+        headers: { ...cors, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Rate limit check
+    const { data: allowed } = await supabase.rpc('check_rate_limit', {
+      p_user_id: user.id,
+      p_action: 'verify_payment',
+      p_max_requests: 10,
+      p_window_seconds: 60,
+    });
+    if (!allowed) {
+      return new Response(JSON.stringify({ error: 'Too many requests' }), {
+        status: 429,
+        headers: { ...cors, 'Content-Type': 'application/json', 'Retry-After': '60' },
+      });
+    }
 
     // Verify HMAC signature
     const isValid = await verifySignature(razorpay_order_id, razorpay_payment_id, razorpay_signature);
@@ -61,7 +95,7 @@ serve(async (req) => {
     if (!isValid) {
       return new Response(JSON.stringify({ error: 'Invalid payment signature' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...cors, 'Content-Type': 'application/json' },
       });
     }
 
@@ -76,7 +110,7 @@ serve(async (req) => {
     if (!subscription) {
       return new Response(JSON.stringify({ error: 'Subscription not found' }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...cors, 'Content-Type': 'application/json' },
       });
     }
 
@@ -93,14 +127,14 @@ serve(async (req) => {
             expiresAt: subscription.expires_at,
           },
         }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { headers: { ...cors, 'Content-Type': 'application/json' } }
       );
     }
 
     if (subscription.status !== 'pending') {
       return new Response(JSON.stringify({ error: 'Subscription is not in pending state' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...cors, 'Content-Type': 'application/json' },
       });
     }
 
@@ -131,7 +165,7 @@ serve(async (req) => {
     if (updateError) {
       return new Response(JSON.stringify({ error: 'Failed to activate subscription' }), {
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...cors, 'Content-Type': 'application/json' },
       });
     }
 
@@ -158,7 +192,6 @@ serve(async (req) => {
         .maybeSingle();
 
       if (rewarded) {
-        // Award referrer: +100 points, +1 successful_referral (with 5-milestone check)
         await supabase.rpc('increment_referral_rewards', {
           p_user_id: referral.referrer_id,
           p_points: 100,
@@ -177,12 +210,12 @@ serve(async (req) => {
           expiresAt: updated.expires_at,
         },
       }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { headers: { ...cors, 'Content-Type': 'application/json' } }
     );
   } catch (err) {
     return new Response(JSON.stringify({ error: (err as Error).message }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' },
     });
   }
 });
