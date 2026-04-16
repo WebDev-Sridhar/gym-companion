@@ -25,6 +25,8 @@ import RefundPolicy from './pages/RefundPolicy';
 import Disclaimer from './pages/Disclaimer';
 import Contact from './pages/Contact';
 import About from './pages/About';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentFailure from './pages/PaymentFailure';
 import { ToastContainer } from './components/ui/Toast';
 import { CoachPopupContainer } from './components/ui/CoachPopup';
 import { PaymentModalContainer, showUpgradeModal } from './components/ui/PaymentModal';
@@ -51,6 +53,13 @@ function ProtectedRoute({ children }) {
       {children}
     </>
   );
+}
+
+// Payment pages: require auth but no Navbar
+function PaymentRoute({ children }) {
+  const session = useAuthStore((s) => s.session);
+  if (!session) return <Navigate to="/auth" replace />;
+  return children;
 }
 
 function OnboardingRoute({ children }) {
@@ -145,6 +154,8 @@ export default function App() {
           <Route path="/rewards" element={<ProtectedRoute><Rewards /></ProtectedRoute>} />
           <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
           <Route path="/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
+          <Route path="/payment-success" element={<PaymentRoute><PaymentSuccess /></PaymentRoute>} />
+          <Route path="/payment-failure" element={<PaymentRoute><PaymentFailure /></PaymentRoute>} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/refund-policy" element={<RefundPolicy />} />

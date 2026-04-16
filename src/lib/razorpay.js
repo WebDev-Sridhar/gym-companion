@@ -67,6 +67,26 @@ export async function verifyPayment({
   return data;
 }
 
+export async function getPaymentStatus(paymentId) {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session?.access_token) {
+    throw new Error('Not authenticated. Please log in again.');
+  }
+
+  const { data, error } = await supabase.functions.invoke('get-payment-status', {
+    body: { paymentId },
+    headers: {
+      Authorization: `Bearer ${session.access_token}`,
+    },
+  });
+
+  if (error) throw new Error(error.message || 'Failed to fetch payment status');
+  return data;
+}
+
 export function openCheckout({
   orderId,
   amount,

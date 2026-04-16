@@ -130,8 +130,9 @@ export function PaymentModalContainer() {
                 </p>
                 <ul className="space-y-2">
                   {[
-                    'Save & track workout logs',
+                    'Unlimited plans',
                     'Custom workout builder',
+                    'Save & track workout logs',
                     'Exercise swap alternatives',
                     'Meal logging, swaps & supplements',
                     'Smart Coach AI insights',
