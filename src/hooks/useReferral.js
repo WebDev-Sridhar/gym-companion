@@ -17,7 +17,7 @@ export default function useReferral() {
   const isProUser = useUserStore((s) => s.isProUser);
 
   const referralLink = referralCode
-    ? `https://OwnGains.vercel.app/auth?ref=${referralCode}`
+    ? `https://Owngainz.vercel.app/auth?ref=${referralCode}`
     : null;
 
   const loadReferrals = useCallback(async () => {
